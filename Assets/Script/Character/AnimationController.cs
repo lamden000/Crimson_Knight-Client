@@ -36,7 +36,6 @@ public class AnimationController : MonoBehaviour
 
     private float timer;
     private int currentFrame;
-    private string currentKey;
     private float blinkTimer = 0f;
     private float blinkDuration = 0.2f;
     private float blinkInterval = 2f;  
@@ -70,14 +69,6 @@ public class AnimationController : MonoBehaviour
     private void Update()
     {
         PlayAnimation(currentDir, currentState);
-        if(currentDir == Direction.Up)
-        {
-            SetDirectionUp(true);
-        }
-        else
-        {
-            SetDirectionUp(false);   
-        }
     }
 
     private void PlayAnimation(Direction dir, State state)
@@ -146,54 +137,6 @@ public class AnimationController : MonoBehaviour
     }
 
 
-
-    public void SetAnimation(Direction dir, State state)
-    {
-        if (dir != currentDir || state != currentState)
-        {
-            currentDir = dir;
-            currentState = state;
-            currentFrame = 0;
-            timer = 0;
-        }
-    }
-
-    private void LoadSprites()
-    {
-        LoadBodyAndLegs();
-        LoadHead();
-        LoadHair();
-        LoadEyes();
-    }
-
-    private void EnsureDatabase(Direction dir, State state, CharacterPart part)
-    {
-        if (!database.ContainsKey(dir))
-            database[dir] = new Dictionary<State, Dictionary<CharacterPart, List<Sprite>>>();
-
-        if (!database[dir].ContainsKey(state))
-            database[dir][state] = new Dictionary<CharacterPart, List<Sprite>>();
-
-        if (!database[dir][state].ContainsKey(part))
-            database[dir][state][part] = new List<Sprite>();
-    }
-
-    private void AddSprite(CharacterPart part, int variant, int stateCode, Direction dir, State state)
-    {
-        EnsureDatabase(dir, state, part);
-
-        string sheetName = $"{(int)part}_{variant}";
-        string spriteName = $"{(int)part}_{variant}_{stateCode}";
-
-        Sprite[] all = Resources.LoadAll<Sprite>(folderPath + "/" + sheetName);
-        Sprite sprite = System.Array.Find(all, s => s.name == spriteName);
-
-        if (sprite != null)
-            database[dir][state][part].Add(sprite);
-        else
-            Debug.LogWarning($"Sprite not found: {spriteName}");
-    }
-
     public void SetDirectionUp(bool isUp)
     {
         if (isUp)
@@ -227,8 +170,109 @@ public class AnimationController : MonoBehaviour
         eye.localPosition = defaultEyeOffset;
     }
 
+    public void SetAnimation(Direction dir, State state)
+    {
+        if (dir != currentDir || state != currentState)
+        {
+            if(dir==Direction.Up)
+                SetDirectionUp(true);
+            else
+            {
+                SetDirectionUp(false);
+            }
+            if (dir == Direction.Left || dir == Direction.Right)
+            {
+                SetLeftOffset();
+            }
+            else
+            {
+                ResetLeftOffset();
+            }
+
+            currentDir = dir;
+            currentState = state;
+            currentFrame = 0;
+            timer = 0;
+        }
+    }
+
+    private void LoadSprites()
+    {
+        LoadBodyAndLegs();
+        LoadHead();
+        LoadHair();
+        LoadEyes();
+    }
+
+    private void EnsureDatabase(Direction dir, State state, CharacterPart part)
+    {
+        if (!database.ContainsKey(dir))
+            database[dir] = new Dictionary<State, Dictionary<CharacterPart, List<Sprite>>>();
+
+        if (!database[dir].ContainsKey(state))
+            database[dir][state] = new Dictionary<CharacterPart, List<Sprite>>();
+
+        if (!database[dir][state].ContainsKey(part))
+            database[dir][state][part] = new List<Sprite>();
+    }
+
+    private void ClearPartSprites(CharacterPart part)
+    {
+        foreach (var dir in database.Keys)
+        {
+            foreach (var state in database[dir].Keys)
+            {
+                if (database[dir][state].ContainsKey(part))
+                    database[dir][state][part].Clear();
+            }
+        }
+    }
+
+    private void AddSprite(CharacterPart part, int variant, int stateCode, Direction dir, State state)
+    {
+        EnsureDatabase(dir, state, part);
+
+        string sheetName = $"{(int)part}_{variant}";
+        string spriteName = $"{(int)part}_{variant}_{stateCode}";
+
+        Sprite[] all = Resources.LoadAll<Sprite>(folderPath + "/" + sheetName);
+        Sprite sprite = System.Array.Find(all, s => s.name == spriteName);
+
+        if (sprite != null)
+            database[dir][state][part].Add(sprite);
+        else
+            Debug.LogWarning($"Sprite not found: {spriteName}");
+    }
+
+    public void SetVariant(CharacterPart part, int newVariant)
+    {
+        // load lại tùy theo part
+        switch (part)
+        {
+            case CharacterPart.Body:
+                outfitVariant = newVariant;
+                LoadBodyAndLegs();
+                break;
+            case CharacterPart.Legs:
+                outfitVariant = newVariant;
+                LoadBodyAndLegs();
+                break;
+            case CharacterPart.Head:
+                headVariant = newVariant;
+                LoadHead();
+                break;
+            case CharacterPart.Hair:
+                hairVariant = newVariant;
+                LoadHair();
+                break;
+        }
+    }
+
+
     public void LoadBodyAndLegs()
     {
+        ClearPartSprites(CharacterPart.Body);
+        ClearPartSprites(CharacterPart.Legs);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleDown, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleUp, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleLeft, Direction.Left, State.Idle);
@@ -261,6 +305,7 @@ public class AnimationController : MonoBehaviour
     }
     public void LoadHead()
     {
+        ClearPartSprites(CharacterPart.Head);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Left, Direction.Left, State.Idle);
@@ -268,6 +313,7 @@ public class AnimationController : MonoBehaviour
 
     public void LoadHair()
     {
+        ClearPartSprites(CharacterPart.Hair);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Left, Direction.Left, State.Idle);
@@ -275,6 +321,7 @@ public class AnimationController : MonoBehaviour
 
     public void LoadEyes()
     {
+        ClearPartSprites(CharacterPart.Eyes);
         AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Left, Direction.Left, State.Idle);
