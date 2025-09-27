@@ -1,0 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+public enum State { Walk, Attack, Idle }
+public enum Direction { Left, Right, Up,Down }
