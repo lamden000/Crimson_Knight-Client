@@ -70,9 +70,6 @@ public class MovementController : MonoBehaviour
                     anim.SetAnimation(Direction.Left, State.Walk);
                     transform.rotation = Quaternion.Euler(0, 180f, 0);
 
-                    // mắt lệch sang phải
-                    anim.SetLeftOffset();
-              //      anim.SetDirectionUp(false);
                 }
                 else
                 {
@@ -80,9 +77,6 @@ public class MovementController : MonoBehaviour
                     anim.SetAnimation(Direction.Left, State.Walk);
                     transform.rotation = Quaternion.identity;
 
-                    // mắt lệch sang trái
-                    anim.SetLeftOffset();
-            //        anim.SetDirectionUp(false);
                 }
             }
             else
@@ -92,8 +86,6 @@ public class MovementController : MonoBehaviour
                     anim.SetAnimation(Direction.Up, State.Walk);
                     transform.rotation = Quaternion.identity;
 
-                    // khi quay lên
-         //           anim.SetDirectionUp(true);
                     anim.ResetLeftOffset();
                 }
                 else
@@ -101,7 +93,6 @@ public class MovementController : MonoBehaviour
                     anim.SetAnimation(Direction.Down, State.Walk);
                     transform.rotation = Quaternion.identity;
 
-             //       anim.SetDirectionUp(false);
                     anim.ResetLeftOffset();
                 }
             }
@@ -153,19 +144,16 @@ public class MovementController : MonoBehaviour
                 else
                     transform.rotation = Quaternion.identity;
 
-            //    anim.SetDirectionUp(false);
             }
             else
             {
                 if (dir.y > 0)
                 {
                     anim.SetAnimation(Direction.Up, State.Attack);
-                   // anim.SetDirectionUp(true);
                 }
                 else
                 {
                     anim.SetAnimation(Direction.Down, State.Attack);
-                //    anim.SetDirectionUp(false);
                 }
 
                 transform.rotation = Quaternion.identity;

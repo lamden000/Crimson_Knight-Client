@@ -148,13 +148,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 2_0_1
+      name: 2_0_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 36
-        height: 34
+        x: 36
+        y: 34
+        width: 32
+        height: 36
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -170,13 +170,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 2_0_2
+      name: 2_0_1
       rect:
         serializedVersion: 2
-        x: 36
-        y: 34
-        width: 32
-        height: 36
+        x: 0
+        y: 0
+        width: 36
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -206,8 +206,8 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       2_0_0: -3552610746455952701
-      2_0_1: -547027481
-      2_0_2: 863438836
+      2_0_1: 863438836
+      2_0_2: -547027481
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

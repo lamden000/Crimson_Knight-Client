@@ -4,7 +4,7 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 4211761467620165101
-    second: 1_0_0
+    second: 1_4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,15 +126,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 1_0_0
+      name: 1_4_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 66
+        y: 71
         width: 40
-        height: 20
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -148,15 +148,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_1
+      name: 1_4_1
       rect:
         serializedVersion: 2
         x: 40
-        y: 65
-        width: 30
-        height: 21
+        y: 71
+        width: 32
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -170,15 +170,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_2
+      name: 1_4_2
       rect:
         serializedVersion: 2
         x: 80
-        y: 68
+        y: 76
         width: 32
         height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -192,15 +192,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_3
+      name: 1_4_3
       rect:
         serializedVersion: 2
-        x: 112
-        y: 64
+        x: 114
+        y: 70
         width: 33
-        height: 22
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -214,15 +214,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_4
+      name: 1_4_4
       rect:
         serializedVersion: 2
         x: 0
-        y: 46
+        y: 50
         width: 40
-        height: 20
+        height: 21
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -236,15 +236,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_5
+      name: 1_4_5
       rect:
         serializedVersion: 2
         x: 40
-        y: 44
+        y: 48
         width: 40
-        height: 21
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -258,15 +258,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_6
+      name: 1_4_6
       rect:
         serializedVersion: 2
         x: 82
-        y: 51
-        width: 28
+        y: 59
+        width: 32
         height: 17
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -280,15 +280,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_7
+      name: 1_4_7
       rect:
         serializedVersion: 2
-        x: 113
-        y: 48
-        width: 25
-        height: 15
+        x: 114
+        y: 54
+        width: 26
+        height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -302,15 +302,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_8
+      name: 1_4_8
       rect:
         serializedVersion: 2
         x: 0
-        y: 25
-        width: 38
-        height: 21
+        y: 28
+        width: 39
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -324,15 +324,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_9
+      name: 1_4_9
       rect:
         serializedVersion: 2
         x: 40
-        y: 22
+        y: 25
         width: 40
-        height: 22
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -346,15 +346,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_10
+      name: 1_4_10
       rect:
         serializedVersion: 2
         x: 80
-        y: 30
+        y: 37
         width: 30
-        height: 21
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -368,15 +368,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_11
+      name: 1_4_11
       rect:
         serializedVersion: 2
-        x: 113
-        y: 29
+        x: 115
+        y: 33
         width: 27
-        height: 19
+        height: 21
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -390,15 +390,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_12
+      name: 1_4_14
       rect:
         serializedVersion: 2
         x: 80
-        y: 8
-        width: 21
-        height: 22
+        y: 12
+        width: 24
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -412,15 +412,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_13
+      name: 1_4_13
       rect:
         serializedVersion: 2
         x: 40
-        y: 1
+        y: 0
         width: 38
-        height: 21
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -434,15 +434,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_0_14
+      name: 1_4_12
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 31
+        y: 3
+        width: 32
         height: 25
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -469,21 +469,21 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      1_0_0: 4211761467620165101
-      1_0_1: -2056589326
-      1_0_10: -1975338888
-      1_0_11: 1695010798
-      1_0_12: 470648067
-      1_0_13: -1357938861
-      1_0_14: 502690895
-      1_0_2: 1914207022
-      1_0_3: -2094390726
-      1_0_4: 609472164
-      1_0_5: -1439097946
-      1_0_6: -547183382
-      1_0_7: 1739634179
-      1_0_8: -734970270
-      1_0_9: -647064317
+      1_4_0: 4211761467620165101
+      1_4_1: -2056589326
+      1_4_10: -1975338888
+      1_4_11: 1695010798
+      1_4_12: 502690895
+      1_4_13: -1357938861
+      1_4_14: 470648067
+      1_4_2: 1914207022
+      1_4_3: -2094390726
+      1_4_4: 609472164
+      1_4_5: -1439097946
+      1_4_6: -547183382
+      1_4_7: 1739634179
+      1_4_8: -734970270
+      1_4_9: -647064317
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

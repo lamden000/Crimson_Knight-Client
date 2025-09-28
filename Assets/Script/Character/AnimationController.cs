@@ -20,6 +20,7 @@ public class AnimationController : MonoBehaviour
     [SerializeField]
     private List<PartRendererPair> spriteRenderersInspector;
     private Dictionary<CharacterPart, SpriteRenderer> spriteRenderers;
+    private Character character;
 
     private Dictionary<Direction,Dictionary<State,Dictionary<CharacterPart, List<Sprite>>>> database = new Dictionary<Direction,Dictionary<State, Dictionary<CharacterPart, List<Sprite>>>>();
 
@@ -29,10 +30,11 @@ public class AnimationController : MonoBehaviour
     public int headVariant = 0;
     public int hatVariant = 0;
     public int eyeVariant = 9;
-    public int wingVariant = -1;
+    public int wingVariant = 0;
     public int weaponVariant = 1;
 
     private Vector3 defaultEyeOffset;
+    private Vector3 defaultWingOffset;
 
     private float timer;
     private int currentFrame;
@@ -58,6 +60,9 @@ public class AnimationController : MonoBehaviour
         currentDir=Direction.Down;
         currentState = State.Idle;
         defaultEyeOffset = spriteRenderers[CharacterPart.Eyes].transform.localPosition;
+        defaultWingOffset = spriteRenderers[CharacterPart.Wings].transform.localPosition;
+
+        character= GetComponent<Character>();
         foreach (var kvp in spriteRenderers)
         {
             if (kvp.Value == null)
@@ -69,6 +74,7 @@ public class AnimationController : MonoBehaviour
     private void Update()
     {
         PlayAnimation(currentDir, currentState);
+        Blink();
     }
 
     private void PlayAnimation(Direction dir, State state)
@@ -107,19 +113,19 @@ public class AnimationController : MonoBehaviour
             int frameIndex = currentFrame % frames.Count;
             spriteRenderers[part].sprite = frames[frameIndex];
         }
+    }
 
+    private void Blink()
+    {
         blinkTimer += Time.deltaTime;
         if (blinkTimer >= blinkInterval)
         {
-            // reset về 0 để chớp lại sau mỗi 1s
             blinkTimer = 0f;
         }
 
-        // tính phần trăm chớp trong [0..1]
         float t = blinkTimer / blinkDuration;
         if (t <= 1f)
         {
-            // Trong giai đoạn blink: scale Y giảm từ 1 -> 0 -> 1
             float scaleY = 1f - Mathf.Abs(Mathf.Lerp(-1f, 1f, t));
             var eyesGO = spriteRenderers[CharacterPart.Eyes].gameObject;
             Vector3 s = eyesGO.transform.localScale;
@@ -128,7 +134,6 @@ public class AnimationController : MonoBehaviour
         }
         else
         {
-            // ngoài giai đoạn blink, mắt mở bình thường
             var eyesGO = spriteRenderers[CharacterPart.Eyes].gameObject;
             Vector3 s = eyesGO.transform.localScale;
             s.y = 1f;
@@ -136,18 +141,19 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-
     public void SetDirectionUp(bool isUp)
     {
         if (isUp)
         {
             spriteRenderers[CharacterPart.Eyes].gameObject.SetActive(false);
-            spriteRenderers[CharacterPart.Weapon].sortingOrder = 1;
+            spriteRenderers[CharacterPart.Sword].sortingOrder = 4;
+            spriteRenderers[CharacterPart.Wings].sortingOrder = 5;
         }
         else
         {
             spriteRenderers[CharacterPart.Eyes].gameObject.SetActive(true);
-            spriteRenderers[CharacterPart.Weapon].sortingOrder = -1;
+            spriteRenderers[CharacterPart.Sword].sortingOrder = -1;
+            spriteRenderers[CharacterPart.Wings].sortingOrder = -2;
         }
 
     }
@@ -158,6 +164,8 @@ public class AnimationController : MonoBehaviour
     public void SetLeftOffset()
     {
         var eye = spriteRenderers[CharacterPart.Eyes].transform;
+        var wings = spriteRenderers[CharacterPart.Wings].transform;
+        wings.localPosition = new Vector3(0.24f, defaultWingOffset.y, 0);
         eye.localPosition = new Vector3(-0.06f, defaultEyeOffset.y, 0);
     }
 
@@ -168,6 +176,8 @@ public class AnimationController : MonoBehaviour
     {
         var eye = spriteRenderers[CharacterPart.Eyes].transform;
         eye.localPosition = defaultEyeOffset;
+        var wings = spriteRenderers[CharacterPart.Wings].transform;
+        wings.localPosition = defaultWingOffset;
     }
 
     public void SetAnimation(Direction dir, State state)
@@ -202,6 +212,9 @@ public class AnimationController : MonoBehaviour
         LoadHead();
         LoadHair();
         LoadEyes();
+        LoadHat();
+        LoadWings();
+        LoadWeapon();
     }
 
     private void EnsureDatabase(Direction dir, State state, CharacterPart part)
@@ -265,12 +278,26 @@ public class AnimationController : MonoBehaviour
                 hairVariant = newVariant;
                 LoadHair();
                 break;
+            case CharacterPart.Hat:
+                hatVariant = newVariant;
+                LoadHat();
+                break;
+            case CharacterPart.Sword:
+                weaponVariant = newVariant;
+                LoadWeapon();
+                break;
+            case CharacterPart.Wings:
+                wingVariant = newVariant;
+                LoadWings();
+                break;
         }
     }
 
 
     public void LoadBodyAndLegs()
     {
+        if (outfitVariant == -1)
+            return;
         ClearPartSprites(CharacterPart.Body);
         ClearPartSprites(CharacterPart.Legs);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleDown, Direction.Down, State.Idle);
@@ -305,14 +332,29 @@ public class AnimationController : MonoBehaviour
     }
     public void LoadHead()
     {
+        if (headVariant == -1)
+            return;
         ClearPartSprites(CharacterPart.Head);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Left, Direction.Left, State.Idle);
     }
 
+    public void LoadHat()
+    {
+        ClearPartSprites(CharacterPart.Hat);
+        spriteRenderers[CharacterPart.Hat].sprite = null;
+        if (hatVariant == -1)
+            return;
+        AddSprite(CharacterPart.Hat, hatVariant, (int)HeadState.Down, Direction.Down, State.Idle);
+        AddSprite(CharacterPart.Hat, hatVariant, (int)HeadState.Up, Direction.Up, State.Idle);
+        AddSprite(CharacterPart.Hat, hatVariant, (int)HeadState.Left, Direction.Left, State.Idle);
+    }
+
     public void LoadHair()
     {
+        if (hairVariant == -1)
+            return;
         ClearPartSprites(CharacterPart.Hair);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Up, Direction.Up, State.Idle);
@@ -321,9 +363,56 @@ public class AnimationController : MonoBehaviour
 
     public void LoadEyes()
     {
+        if (eyeVariant == -1)
+            return;
         ClearPartSprites(CharacterPart.Eyes);
         AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Left, Direction.Left, State.Idle);
+    }
+
+    public void LoadWings()
+    {
+        ClearPartSprites(CharacterPart.Wings);
+        spriteRenderers[CharacterPart.Wings].sprite=null;
+        if (wingVariant==-1)
+            return;
+        AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Down_1, Direction.Down, State.Idle);
+        AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Down_2, Direction.Down, State.Idle);
+
+        AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Down_1, Direction.Up, State.Idle);
+        AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Down_2, Direction.Up, State.Idle);
+
+
+        AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Left_1, Direction.Left, State.Idle);
+        AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Left_2, Direction.Left, State.Idle);
+    }
+
+    public void LoadWeapon()
+    {
+        CharacterPart weapon=CharacterPart.Sword;
+        Character.Class charClass=character.GetClass();
+        switch (charClass){
+            case Character.Class.Assassin:
+                weapon = CharacterPart.Knive;
+                break;
+            case Character.Class.Knight:
+                weapon = CharacterPart.Sword;
+                break;
+            case Character.Class.Wizard:
+                weapon = CharacterPart.Staff;
+                break;
+            case Character.Class.Markman:
+                weapon = CharacterPart.Gun;
+                break;
+        }
+
+        ClearPartSprites(weapon);
+        spriteRenderers[weapon].sprite = null;
+        if (weaponVariant == -1)
+            return;
+        AddSprite(weapon, weaponVariant, (int)WeaponState.Down, Direction.Down, State.Idle);
+        AddSprite(weapon, weaponVariant, (int)WeaponState.Up, Direction.Up, State.Idle);
+        AddSprite(weapon, weaponVariant, (int)WeaponState.Left, Direction.Left, State.Idle);
     }
 }

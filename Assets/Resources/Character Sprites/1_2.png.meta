@@ -390,7 +390,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_2_12
+      name: 1_2_14
       rect:
         serializedVersion: 2
         x: 85
@@ -434,7 +434,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1_2_14
+      name: 1_2_12
       rect:
         serializedVersion: 2
         x: 0
@@ -473,9 +473,9 @@ TextureImporter:
       1_2_1: -2056589326
       1_2_10: -1975338888
       1_2_11: 1695010798
-      1_2_12: 470648067
+      1_2_12: 502690895
       1_2_13: -1357938861
-      1_2_14: 502690895
+      1_2_14: 470648067
       1_2_2: 1914207022
       1_2_3: -2094390726
       1_2_4: 609472164

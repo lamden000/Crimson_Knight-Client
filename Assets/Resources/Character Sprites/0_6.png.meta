@@ -132,7 +132,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 0_2_0
+      name: 0_6_0
       rect:
         serializedVersion: 2
         x: 1
@@ -154,7 +154,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_1
+      name: 0_6_1
       rect:
         serializedVersion: 2
         x: 31
@@ -176,7 +176,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_2
+      name: 0_6_2
       rect:
         serializedVersion: 2
         x: 64
@@ -198,7 +198,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_3
+      name: 0_6_3
       rect:
         serializedVersion: 2
         x: 97
@@ -220,7 +220,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_4
+      name: 0_6_4
       rect:
         serializedVersion: 2
         x: 1
@@ -242,7 +242,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_5
+      name: 0_6_5
       rect:
         serializedVersion: 2
         x: 34
@@ -264,7 +264,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_6
+      name: 0_6_6
       rect:
         serializedVersion: 2
         x: 64
@@ -286,7 +286,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_7
+      name: 0_6_7
       rect:
         serializedVersion: 2
         x: 96
@@ -308,7 +308,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_8
+      name: 0_6_8
       rect:
         serializedVersion: 2
         x: 0
@@ -330,7 +330,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_9
+      name: 0_6_9
       rect:
         serializedVersion: 2
         x: 32
@@ -352,7 +352,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_10
+      name: 0_6_10
       rect:
         serializedVersion: 2
         x: 64
@@ -374,7 +374,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_11
+      name: 0_6_11
       rect:
         serializedVersion: 2
         x: 96
@@ -396,7 +396,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_12
+      name: 0_6_12
       rect:
         serializedVersion: 2
         x: 0
@@ -418,7 +418,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_13
+      name: 0_6_13
       rect:
         serializedVersion: 2
         x: 32
@@ -440,7 +440,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 0_2_14
+      name: 0_6_14
       rect:
         serializedVersion: 2
         x: 64
@@ -475,21 +475,21 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      0_2_0: 5845349385316874935
-      0_2_1: 2671950839225383031
-      0_2_10: 426421252
-      0_2_11: 2090206027
-      0_2_12: 374487023
-      0_2_13: -2140220375
-      0_2_14: 510599302
-      0_2_2: -4621347306533146628
-      0_2_3: 164167148
-      0_2_4: 26762459
-      0_2_5: 210114063
-      0_2_6: 1102298398
-      0_2_7: -579246351
-      0_2_8: 2118172657
-      0_2_9: -1272966928
+      0_6_0: 5845349385316874935
+      0_6_1: 2671950839225383031
+      0_6_10: 426421252
+      0_6_11: 2090206027
+      0_6_12: 374487023
+      0_6_13: -2140220375
+      0_6_14: 510599302
+      0_6_2: -4621347306533146628
+      0_6_3: 164167148
+      0_6_4: 26762459
+      0_6_5: 210114063
+      0_6_6: 1102298398
+      0_6_7: -579246351
+      0_6_8: 2118172657
+      0_6_9: -1272966928
       0_6_0: 7984094379050887774
       0_6_1: -8597526139428810531
       0_6_2: 1079047445512120786
