@@ -7,7 +7,6 @@ public class MovementController : MonoBehaviour
     private Rigidbody2D rb;
 
     [SerializeField] private float moveSpeed = 3f;
-    private Vector2 lastMoveDir = Vector2.down;
     private bool isAttacking = false;
     private float attackTimer = 0f;
     [SerializeField] private float attackAnimDuration = 0.5f;
@@ -49,19 +48,19 @@ public class MovementController : MonoBehaviour
             return; // không cho code Idle/Walk chạy
         }
 
-        if (Input.GetMouseButtonDown(0)) // click chuột phải
+        if (Input.GetMouseButtonDown(0))
         {
             if (TryAttackEnemy()) 
             {
                 isAttacking = true;
                 attackTimer = 0f;
                 rb.linearVelocity = Vector2.zero;
+                anim.SetAttackAnimation(true);
                 return;
             }
         }
         else if (moving)
         {
-            lastMoveDir = move;
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
                 if (h > 0)
@@ -85,44 +84,17 @@ public class MovementController : MonoBehaviour
                 {
                     anim.SetAnimation(Direction.Up, State.Walk);
                     transform.rotation = Quaternion.identity;
-
-                    anim.ResetLeftOffset();
                 }
                 else
                 {
                     anim.SetAnimation(Direction.Down, State.Walk);
                     transform.rotation = Quaternion.identity;
-
-                    anim.ResetLeftOffset();
                 }
             }
         }
         else
         {
-            // dùng lastMoveDir để xác định idle
-            if (Mathf.Abs(lastMoveDir.x) > Mathf.Abs(lastMoveDir.y))
-            {
-                if (lastMoveDir.x > 0)
-                {
-                    anim.SetAnimation(Direction.Left, State.Idle);
-                    transform.rotation = Quaternion.Euler(0, 180f, 0);
-                }
-                else
-                {
-                    anim.SetAnimation(Direction.Left, State.Idle);
-                    transform.rotation = Quaternion.identity;
-                }
-            }
-            else
-            {
-                if (lastMoveDir.y > 0)
-                    anim.SetAnimation(Direction.Up, State.Idle);
-                else
-                    anim.SetAnimation(Direction.Down, State.Idle);
-
-                transform.rotation = Quaternion.identity;
-            }
-
+            anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
             rb.linearVelocity = Vector2.zero;
         }
     }

@@ -134,10 +134,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 123
+        width: 54
         height: 66
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5000001, y: 0.3265042}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -154,12 +154,12 @@ TextureImporter:
       name: 3_96_1
       rect:
         serializedVersion: 2
-        x: 121
-        y: 12
+        x: 54
+        y: 17
         width: 67
-        height: 54
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        height: 49
+      alignment: 9
+      pivot: {x: 0.34722024, y: 0.5566521}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -172,11 +172,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: 3_96_2
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 14
+        width: 67
+        height: 52
+      alignment: 9
+      pivot: {x: 0.36275768, y: 0.33985043}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a0c592e9b2ebf445969c270fdced231
+      internalID: -1057376682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: f81c66c33cfdb3741b84bcd5a3257ab3
     internalID: 0
     vertices: []
     indices: 
@@ -188,6 +210,7 @@ TextureImporter:
     nameFileIdTable:
       3_96_0: 9178829412838802131
       3_96_1: -2841795355119012994
+      3_96_2: -1057376682
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

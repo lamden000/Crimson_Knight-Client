@@ -136,18 +136,18 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 10
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        y: 0
+        width: 24
+        height: 22
+      alignment: 9
+      pivot: {x: 0.50761354, y: 0.77408636}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c83e054d0bead55d0800000000000000
+      spriteID: 55692152124b61d40b7c24a3cf717d1a
       internalID: -3072107296297262196
       vertices: []
       indices: 
@@ -157,19 +157,19 @@ TextureImporter:
       name: 4_3_1
       rect:
         serializedVersion: 2
-        x: 6
+        x: 25
         y: 0
-        width: 30
+        width: 23
         height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.49470353, y: 0.80454046}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 8e12b3aaf2ec10260800000000000000
+      spriteID: 974b60b770d962e4f84071b54f5b6108
       internalID: 7062152394808435176
       vertices: []
       indices: 
@@ -179,19 +179,19 @@ TextureImporter:
       name: 4_3_2
       rect:
         serializedVersion: 2
-        x: 30
+        x: 48
         y: 0
-        width: 36
+        width: 18
         height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.7267134, y: 0.6965671}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9ae7e236074754440800000000000000
+      spriteID: 2320c6bc03dadc24096405bb9fe4b96b
       internalID: 4919466194021285545
       vertices: []
       indices: 
@@ -201,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 235ae73c35272ff4db603e7e6a8b0b28
     internalID: 0
     vertices: []
     indices: 

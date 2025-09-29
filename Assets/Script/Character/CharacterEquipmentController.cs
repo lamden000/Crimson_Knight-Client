@@ -11,6 +11,7 @@ public class CharacterEquipmentController : MonoBehaviour
     public TMP_InputField weaponInput;
     public TMP_InputField wingInput;
     public TMP_InputField hatInput;
+    public TMP_InputField eyesInput;
 
 
 
@@ -74,6 +75,14 @@ public class CharacterEquipmentController : MonoBehaviour
             if (int.TryParse(hatInput.text, out int hatVariant))
             {
                 characterLoader.SetVariant(CharacterPart.Hat, hatVariant);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(eyesInput.text))
+        {
+            if (int.TryParse(eyesInput.text, out int eyesVariant))
+            {
+                characterLoader.SetVariant(CharacterPart.Eyes, eyesVariant);
             }
         }
     }

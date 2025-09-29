@@ -136,8 +136,8 @@ TextureImporter:
         y: 0
         width: 52
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.36911348}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,10 +156,10 @@ TextureImporter:
         serializedVersion: 2
         x: 52
         y: 0
-        width: 94
+        width: 51
         height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.51320934, y: 0.31521899}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -172,11 +172,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: 3_90_2
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 0
+        width: 44
+        height: 70
+      alignment: 9
+      pivot: {x: 0.48162687, y: 0.40375987}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4713c2aa59ca2a4a98cd36211e42422
+      internalID: -2027118165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d25ec09517c8c3a44aa829a0396f81fb
     internalID: 0
     vertices: []
     indices: 
@@ -188,6 +210,7 @@ TextureImporter:
     nameFileIdTable:
       3_90_0: 4789071464721123305
       3_90_1: -292153959652565048
+      3_90_2: -2027118165
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

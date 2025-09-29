@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.TextCore.Text;
+using System.Collections;
 
 public class AnimationController : MonoBehaviour
 {
@@ -23,6 +20,7 @@ public class AnimationController : MonoBehaviour
     private Character character;
 
     private Dictionary<Direction,Dictionary<State,Dictionary<CharacterPart, List<Sprite>>>> database = new Dictionary<Direction,Dictionary<State, Dictionary<CharacterPart, List<Sprite>>>>();
+    private Dictionary<Direction, Dictionary<EyeState, List<Sprite>>> eyeDatabase = new Dictionary<Direction, Dictionary<EyeState, List<Sprite>>>();
 
     [Header ("Variant")]
     public int outfitVariant = 0;
@@ -33,17 +31,20 @@ public class AnimationController : MonoBehaviour
     public int wingVariant = 0;
     public int weaponVariant = 1;
 
-    private Vector3 defaultEyeOffset;
-    private Vector3 defaultWingOffset;
-
     private float timer;
     private int currentFrame;
     private float blinkTimer = 0f;
     private float blinkDuration = 0.2f;
-    private float blinkInterval = 2f;  
+    private float blinkInterval = 2f;
 
-    Direction currentDir;
-    State currentState;
+    private Direction currentDir;
+    private State currentState;
+    public EyeState currentEyeState;
+    private bool loadedEyes=false;
+
+
+    public Direction GetCurrentDirection()
+    { return currentDir; }
 
     private void Awake()
     {
@@ -59,8 +60,6 @@ public class AnimationController : MonoBehaviour
     {
         currentDir=Direction.Down;
         currentState = State.Idle;
-        defaultEyeOffset = spriteRenderers[CharacterPart.Eyes].transform.localPosition;
-        defaultWingOffset = spriteRenderers[CharacterPart.Wings].transform.localPosition;
 
         character= GetComponent<Character>();
         foreach (var kvp in spriteRenderers)
@@ -73,11 +72,39 @@ public class AnimationController : MonoBehaviour
 
     private void Update()
     {
-        PlayAnimation(currentDir, currentState);
+        PlayAnimation(currentDir, currentState,currentEyeState);
         Blink();
     }
+    private void LoadSprites()
+    {
+        LoadBodyAndLegs();
+        LoadHead();
+        LoadHair();
+        LoadEyes();
+        LoadHat();
+        LoadWings();
+        LoadWeapon();
+    }
 
-    private void PlayAnimation(Direction dir, State state)
+    public void SetAnimation(Direction dir, State state)
+    {
+        if (dir != currentDir || state != currentState)
+        {
+            if (dir == Direction.Up)
+                SetDirectionUp(true);
+            else
+            {
+                SetDirectionUp(false);
+            }
+
+            currentDir = dir;
+            currentState = state;
+            currentFrame = 0;
+            timer = 0;
+        }
+    }
+
+    private void PlayAnimation(Direction dir, State state, EyeState eyeState)
     {
         if (!database.ContainsKey(dir)) return;
         if (!database[dir].ContainsKey(state)) return;
@@ -91,32 +118,53 @@ public class AnimationController : MonoBehaviour
 
         foreach (var part in spriteRenderers.Keys)
         {
-            List<Sprite> frames = null;
-
-            if (database.ContainsKey(dir) &&
-                database[dir].ContainsKey(state) &&
-                database[dir][state].ContainsKey(part))
+            if (part != CharacterPart.Eyes)
             {
-                frames = database[dir][state][part];
-            }
+                List<Sprite> frames = null;
 
-            if ((frames == null || frames.Count == 0) &&
-                database.ContainsKey(dir) &&
-                database[dir].ContainsKey(State.Idle) &&
-                database[dir][State.Idle].ContainsKey(part))
+                if (database.ContainsKey(dir) &&
+                    database[dir].ContainsKey(state) &&
+                    database[dir][state].ContainsKey(part))
+                {
+                    frames = database[dir][state][part];
+                }
+
+                if ((frames == null || frames.Count == 0) &&
+                    database.ContainsKey(dir) &&
+                    database[dir].ContainsKey(State.Idle) &&
+                    database[dir][State.Idle].ContainsKey(part))
+                {
+                    frames = database[dir][State.Idle][part];
+                }
+
+                if (frames == null || frames.Count == 0) continue;
+
+                int frameIndex = currentFrame % frames.Count;
+                spriteRenderers[part].sprite = frames[frameIndex];
+            }
+            else
             {
-                frames = database[dir][State.Idle][part];
+                List<Sprite> frames = null;
+
+                if (eyeDatabase.ContainsKey(dir) &&
+                    eyeDatabase[dir].ContainsKey(eyeState))
+                {
+                    frames = eyeDatabase[dir][eyeState];
+                }
+
+                if (frames == null || frames.Count == 0) continue;
+
+                int frameIndex = currentFrame % frames.Count;
+                spriteRenderers[part].sprite = frames[frameIndex];
             }
-
-            if (frames == null || frames.Count == 0) continue;
-
-            int frameIndex = currentFrame % frames.Count;
-            spriteRenderers[part].sprite = frames[frameIndex];
         }
+
     }
 
     private void Blink()
     {
+        if(currentEyeState!=EyeState.Idle)
+            return;
         blinkTimer += Time.deltaTime;
         if (blinkTimer >= blinkInterval)
         {
@@ -158,63 +206,26 @@ public class AnimationController : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// Dịch mắt theo trục X (lệch trái/phải)
-    /// </summary>
-    public void SetLeftOffset()
+    public void SetAttackAnimation(bool isAttacking)
     {
-        var eye = spriteRenderers[CharacterPart.Eyes].transform;
-        var wings = spriteRenderers[CharacterPart.Wings].transform;
-        wings.localPosition = new Vector3(0.24f, defaultWingOffset.y, 0);
-        eye.localPosition = new Vector3(-0.06f, defaultEyeOffset.y, 0);
-    }
-
-    /// <summary>
-    /// Reset mắt về vị trí gốc
-    /// </summary>
-    public void ResetLeftOffset()
-    {
-        var eye = spriteRenderers[CharacterPart.Eyes].transform;
-        eye.localPosition = defaultEyeOffset;
-        var wings = spriteRenderers[CharacterPart.Wings].transform;
-        wings.localPosition = defaultWingOffset;
-    }
-
-    public void SetAnimation(Direction dir, State state)
-    {
-        if (dir != currentDir || state != currentState)
+        if(isAttacking)
         {
-            if(dir==Direction.Up)
-                SetDirectionUp(true);
-            else
-            {
-                SetDirectionUp(false);
-            }
-            if (dir == Direction.Left || dir == Direction.Right)
-            {
-                SetLeftOffset();
-            }
-            else
-            {
-                ResetLeftOffset();
-            }
-
-            currentDir = dir;
-            currentState = state;
-            currentFrame = 0;
-            timer = 0;
+            spriteRenderers[CharacterPart.Sword].gameObject.SetActive(false);
+            currentEyeState=EyeState.Attack;
+            StartCoroutine(ResetAttackAnimation(0.3f));
+        } 
+        else
+        {
+            spriteRenderers[CharacterPart.Sword].gameObject.SetActive(true);
+            currentEyeState = EyeState.Idle;
         }
+
     }
 
-    private void LoadSprites()
+    private IEnumerator ResetAttackAnimation(float delay)
     {
-        LoadBodyAndLegs();
-        LoadHead();
-        LoadHair();
-        LoadEyes();
-        LoadHat();
-        LoadWings();
-        LoadWeapon();
+        yield return new WaitForSeconds(delay);
+        SetAttackAnimation(false);
     }
 
     private void EnsureDatabase(Direction dir, State state, CharacterPart part)
@@ -229,8 +240,19 @@ public class AnimationController : MonoBehaviour
             database[dir][state][part] = new List<Sprite>();
     }
 
+    private void EnsureEyeDatabase(Direction dir, EyeState state)
+    {
+        if (!eyeDatabase.ContainsKey(dir))
+            eyeDatabase[dir] = new Dictionary<EyeState, List<Sprite>>();
+
+        if (!eyeDatabase[dir].ContainsKey(state))
+            eyeDatabase[dir][state] = new List<Sprite>();
+
+    }
+
     private void ClearPartSprites(CharacterPart part)
     {
+        spriteRenderers[part].sprite = null;
         foreach (var dir in database.Keys)
         {
             foreach (var state in database[dir].Keys)
@@ -240,6 +262,17 @@ public class AnimationController : MonoBehaviour
             }
         }
     }
+
+    private void ClearEyeSprites()
+    {
+        spriteRenderers[CharacterPart.Eyes].sprite = null;
+        foreach (var dir in eyeDatabase.Keys)
+        {
+            if (eyeDatabase[dir].ContainsKey(EyeState.Idle))
+                eyeDatabase[dir][EyeState.Idle].Clear();
+        }
+    }
+
 
     private void AddSprite(CharacterPart part, int variant, int stateCode, Direction dir, State state)
     {
@@ -256,6 +289,25 @@ public class AnimationController : MonoBehaviour
         else
             Debug.LogWarning($"Sprite not found: {spriteName}");
     }
+
+    private void AddEyeSprite(int variant, int stateCode, Direction dir, EyeState state)
+    {
+        EnsureEyeDatabase(dir, state);
+        int part = (int)CharacterPart.Eyes;
+
+        string sheetName = $"{(int)part}_{variant}";
+        string spriteName = $"{(int)part}_{variant}_{stateCode}";
+
+        Sprite[] all = Resources.LoadAll<Sprite>(folderPath + "/" + sheetName);
+        Sprite sprite = System.Array.Find(all, s => s.name == spriteName);
+
+        if (sprite != null)
+            eyeDatabase[dir][state].Add(sprite);
+        else
+            Debug.LogWarning($"Sprite not found: {spriteName}");
+    }
+
+
 
     public void SetVariant(CharacterPart part, int newVariant)
     {
@@ -289,6 +341,10 @@ public class AnimationController : MonoBehaviour
             case CharacterPart.Wings:
                 wingVariant = newVariant;
                 LoadWings();
+                break;
+            case CharacterPart.Eyes:
+                eyeVariant = newVariant;
+                LoadEyes();
                 break;
         }
     }
@@ -332,9 +388,9 @@ public class AnimationController : MonoBehaviour
     }
     public void LoadHead()
     {
+        ClearPartSprites(CharacterPart.Head);
         if (headVariant == -1)
             return;
-        ClearPartSprites(CharacterPart.Head);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Head, headVariant, (int)HeadState.Left, Direction.Left, State.Idle);
@@ -343,7 +399,6 @@ public class AnimationController : MonoBehaviour
     public void LoadHat()
     {
         ClearPartSprites(CharacterPart.Hat);
-        spriteRenderers[CharacterPart.Hat].sprite = null;
         if (hatVariant == -1)
             return;
         AddSprite(CharacterPart.Hat, hatVariant, (int)HeadState.Down, Direction.Down, State.Idle);
@@ -353,9 +408,9 @@ public class AnimationController : MonoBehaviour
 
     public void LoadHair()
     {
+        ClearPartSprites(CharacterPart.Hair);
         if (hairVariant == -1)
             return;
-        ClearPartSprites(CharacterPart.Hair);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Down, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Up, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Hair, hairVariant, (int)HeadState.Left, Direction.Left, State.Idle);
@@ -363,18 +418,40 @@ public class AnimationController : MonoBehaviour
 
     public void LoadEyes()
     {
+        ClearEyeSprites();
         if (eyeVariant == -1)
             return;
-        ClearPartSprites(CharacterPart.Eyes);
-        AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Down, Direction.Down, State.Idle);
-        AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Up, Direction.Up, State.Idle);
-        AddSprite(CharacterPart.Eyes, eyeVariant, (int)HeadState.Left, Direction.Left, State.Idle);
+        AddEyeSprite(eyeVariant, (int)HeadState.Down, Direction.Down, EyeState.Idle);
+        AddEyeSprite(eyeVariant, (int)HeadState.Up, Direction.Up, EyeState.Idle);
+        AddEyeSprite(eyeVariant, (int)HeadState.Left, Direction.Left, EyeState.Idle);
+
+        if(loadedEyes)
+            return;
+        AddEyeSprite( (int)EyeVariant.Attack, (int)HeadState.Down, Direction.Down, EyeState.Attack);
+        AddEyeSprite( (int)EyeVariant.Attack, (int)HeadState.Up, Direction.Up, EyeState.Attack);
+        AddEyeSprite( (int)EyeVariant.Attack, (int)HeadState.Left, Direction.Left, EyeState.Attack);
+
+        AddEyeSprite( (int)EyeVariant.GetHit, (int)HeadState.Down, Direction.Down, EyeState.GetHit);
+        AddEyeSprite( (int)EyeVariant.GetHit, (int)HeadState.Up, Direction.Up, EyeState.GetHit);
+        AddEyeSprite((int)EyeVariant.GetHit, (int)HeadState.Left, Direction.Left, EyeState.GetHit);
+
+        AddEyeSprite((int)EyeVariant.Beaten, (int)HeadState.Down, Direction.Down, EyeState.Beaten);
+        AddEyeSprite((int)EyeVariant.Beaten, (int)HeadState.Up, Direction.Up, EyeState.Beaten);
+        AddEyeSprite((int)EyeVariant.Beaten, (int)HeadState.Left, Direction.Left, EyeState.Beaten);
+
+        AddEyeSprite((int)EyeVariant.Laugh, (int)HeadState.Down, Direction.Down, EyeState.Laugh);
+        AddEyeSprite((int)EyeVariant.Laugh, (int)HeadState.Up, Direction.Up, EyeState.Laugh);
+        AddEyeSprite((int)EyeVariant.Laugh, (int)HeadState.Left, Direction.Left, EyeState.Laugh);
+
+        AddEyeSprite((int)EyeVariant.Smile, (int)HeadState.Down, Direction.Down, EyeState.Smile);
+        AddEyeSprite((int)EyeVariant.Smile, (int)HeadState.Up, Direction.Up, EyeState.Smile);
+        AddEyeSprite((int)EyeVariant.Smile, (int)HeadState.Left, Direction.Left, EyeState.Smile);
+        loadedEyes = true;
     }
 
     public void LoadWings()
     {
         ClearPartSprites(CharacterPart.Wings);
-        spriteRenderers[CharacterPart.Wings].sprite=null;
         if (wingVariant==-1)
             return;
         AddSprite(CharacterPart.Wings, wingVariant, (int)WingState.Down_1, Direction.Down, State.Idle);
@@ -408,11 +485,11 @@ public class AnimationController : MonoBehaviour
         }
 
         ClearPartSprites(weapon);
-        spriteRenderers[weapon].sprite = null;
         if (weaponVariant == -1)
             return;
         AddSprite(weapon, weaponVariant, (int)WeaponState.Down, Direction.Down, State.Idle);
         AddSprite(weapon, weaponVariant, (int)WeaponState.Up, Direction.Up, State.Idle);
         AddSprite(weapon, weaponVariant, (int)WeaponState.Left, Direction.Left, State.Idle);
     }
+
 }
