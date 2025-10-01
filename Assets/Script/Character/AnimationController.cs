@@ -194,14 +194,16 @@ public class AnimationController : MonoBehaviour
         if (isUp)
         {
             spriteRenderers[CharacterPart.Eyes].gameObject.SetActive(false);
-            spriteRenderers[CharacterPart.Sword].sortingOrder = 4;
-            spriteRenderers[CharacterPart.Wings].sortingOrder = 5;
+            int hairOrder = spriteRenderers[CharacterPart.Hair].sortingOrder;
+            spriteRenderers[CharacterPart.Sword].sortingOrder = hairOrder+1;
+            spriteRenderers[CharacterPart.Wings].sortingOrder = hairOrder + 2;
         }
         else
         {
             spriteRenderers[CharacterPart.Eyes].gameObject.SetActive(true);
-            spriteRenderers[CharacterPart.Sword].sortingOrder = -1;
-            spriteRenderers[CharacterPart.Wings].sortingOrder = -2;
+            int legOrder = spriteRenderers[CharacterPart.Legs].sortingOrder;
+            spriteRenderers[CharacterPart.Sword].sortingOrder = legOrder - 1;
+            spriteRenderers[CharacterPart.Wings].sortingOrder = legOrder - 2;
         }
 
     }

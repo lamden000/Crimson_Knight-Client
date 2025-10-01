@@ -3,13 +3,24 @@
 [RequireComponent(typeof(AnimationController))]
 public class MovementController : MonoBehaviour
 {
-    private AnimationController anim;
-    private Rigidbody2D rb;
 
+    [SerializeField] private float attackRange = 1.2f;
+    [SerializeField] private float attackCooldown = 0.8f;
     [SerializeField] private float moveSpeed = 3f;
+
+    private Transform targetEnemy;
+    private bool isMovingToEnemy = false;
+
     private bool isAttacking = false;
     private float attackTimer = 0f;
-    [SerializeField] private float attackAnimDuration = 0.5f;
+    private float attackCooldownTimer = 0f;
+
+    private Rigidbody2D rb;
+
+    private Vector2 moveAxisInput;
+    private AnimationController anim;
+    float attackAnimDuration = 0.4f;
+
 
     private void Awake()
     {
@@ -19,77 +30,155 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        HandleInput();
-    }
-
-    private void HandleInput()
-    {
+        // đọc input
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
+        moveAxisInput = new Vector2(h, v);
 
-        Vector2 move = new Vector2(h, v).normalized;
-
-        // di chuyển nhân vật
-        rb.linearVelocity = move * moveSpeed;
-
-        bool moving = move != Vector2.zero;
-
-
+        // update attack timer
         if (isAttacking)
         {
             attackTimer += Time.deltaTime;
-            rb.linearVelocity = Vector2.zero;
-
             if (attackTimer >= attackAnimDuration)
             {
                 isAttacking = false;
+                // khi hết animation Attack thì chuyển về Idle nhưng vẫn giữ cooldown
+                anim.SetAnimation(anim.GetCurrentDirection(),State.Idle);
+                anim.SetAttackAnimation(false);
             }
-
-            return; // không cho code Idle/Walk chạy
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (attackCooldownTimer > 0)
+            attackCooldownTimer -= Time.deltaTime;
+
+        // nếu đang follow enemy
+        if (isMovingToEnemy && targetEnemy != null)
         {
-            if (TryAttackEnemy()) 
+            // cancel nếu có input tay
+            if (moveAxisInput != Vector2.zero)
             {
-                isAttacking = true;
-                attackTimer = 0f;
-                rb.linearVelocity = Vector2.zero;
-                anim.SetAttackAnimation(true);
+                CancelAutoFollow();
+                ManualMove();
                 return;
             }
+
+            // nếu enemy chết
+            Enemy enemy = targetEnemy.GetComponent<Enemy>();
+            if (enemy == null || enemy.IsDead)
+            {
+                CancelAutoFollow();
+                return;
+            }
+
+            AutoMoveToEnemy();
+            return;
         }
-        else if (moving)
+
+        // click chuột trái chọn enemy
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hit = Physics2D.OverlapPoint(worldPos);
+
+            if (hit != null && hit.CompareTag("Enemy"))
+            {
+                targetEnemy = hit.transform;
+                isMovingToEnemy = true;
+            }
+        }
+
+        // điều khiển tay
+        ManualMove();
+    }
+
+    private void AutoMoveToEnemy()
+    {
+        Vector3 dir = targetEnemy.position - transform.position;
+
+        // nếu trong tầm đánh
+        if (dir.magnitude <= attackRange)
+        {
+            rb.linearVelocity = Vector2.zero;
+            TryAttack(dir);
+            return;
+        }
+
+        // --- di chuyển (ưu tiên X trước, rồi Y) ---
+        if (Mathf.Abs(dir.x) > 0.1f)
+        {
+            rb.linearVelocity = new Vector2(Mathf.Sign(dir.x) * moveSpeed, 0);
+
+            anim.SetAnimation(Direction.Left, State.Walk);
+            transform.rotation = (dir.x > 0)
+                ? Quaternion.Euler(0, 180f, 0)
+                : Quaternion.identity;
+        }
+        else
+        {
+            rb.linearVelocity = new Vector2(0, Mathf.Sign(dir.y) * moveSpeed);
+
+            if (dir.y > 0)
+                anim.SetAnimation(Direction.Up, State.Walk);
+            else
+                anim.SetAnimation(Direction.Down, State.Walk);
+
+            transform.rotation = Quaternion.identity;
+        }
+    }
+
+    private void TryAttack(Vector3 dir)
+    {
+        if (isAttacking || attackCooldownTimer > 0) return;
+
+        isAttacking = true;
+        attackTimer = 0f;
+        attackCooldownTimer = attackCooldown;
+
+        rb.linearVelocity = Vector2.zero;
+
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            anim.SetAnimation(Direction.Left, State.Attack);
+            transform.rotation = (dir.x > 0)
+                ? Quaternion.Euler(0, 180f, 0)
+                : Quaternion.identity;
+        }
+        else
+        {
+            if (dir.y > 0)
+                anim.SetAnimation(Direction.Up, State.Attack);
+            else
+                anim.SetAnimation(Direction.Down, State.Attack);
+
+            transform.rotation = Quaternion.identity;
+        }
+        anim.SetAttackAnimation(true);
+    }
+
+    private void ManualMove()
+    {
+        float h = moveAxisInput.x;
+        float v = moveAxisInput.y;
+        bool moving = moveAxisInput != Vector2.zero;
+
+        if (moving)
         {
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
-                if (h > 0)
-                {
-                    // đi sang phải: play walk left rồi flip
-                    anim.SetAnimation(Direction.Left, State.Walk);
-                    transform.rotation = Quaternion.Euler(0, 180f, 0);
-
-                }
-                else
-                {
-                    // đi sang trái: play walk left bình thường
-                    anim.SetAnimation(Direction.Left, State.Walk);
-                    transform.rotation = Quaternion.identity;
-
-                }
+                rb.linearVelocity = new Vector2(h * moveSpeed, 0);
+                anim.SetAnimation(Direction.Left, State.Walk);
+                transform.rotation = (h > 0)
+                    ? Quaternion.Euler(0, 180f, 0)
+                    : Quaternion.identity;
             }
             else
             {
+                rb.linearVelocity = new Vector2(0, v * moveSpeed);
                 if (v > 0)
-                {
                     anim.SetAnimation(Direction.Up, State.Walk);
-                    transform.rotation = Quaternion.identity;
-                }
                 else
-                {
                     anim.SetAnimation(Direction.Down, State.Walk);
-                    transform.rotation = Quaternion.identity;
-                }
+                transform.rotation = Quaternion.identity;
             }
         }
         else
@@ -98,42 +187,11 @@ public class MovementController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
     }
-    private bool TryAttackEnemy()
+
+    private void CancelAutoFollow()
     {
-        Vector2 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Collider2D hit = Physics2D.OverlapPoint(worldPos);
-
-        if (hit != null && hit.CompareTag("Enemy"))
-        {
-            Vector3 dir = hit.transform.position - transform.position;
-
-            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-            {
-                anim.SetAnimation(Direction.Left, State.Attack);
-
-                if (dir.x > 0)
-                    transform.rotation = Quaternion.Euler(0, 180f, 0);
-                else
-                    transform.rotation = Quaternion.identity;
-
-            }
-            else
-            {
-                if (dir.y > 0)
-                {
-                    anim.SetAnimation(Direction.Up, State.Attack);
-                }
-                else
-                {
-                    anim.SetAnimation(Direction.Down, State.Attack);
-                }
-
-                transform.rotation = Quaternion.identity;
-            }
-
-            return true;
-        }
-
-        return false;
+        isMovingToEnemy = false;
+        targetEnemy = null;
     }
+
 }
