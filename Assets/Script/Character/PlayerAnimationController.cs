@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class AnimationController : MonoBehaviour
+public class PlayerAnimationController : MonoBehaviour
 {
     public string folderPath = "Character Sprites";
     [SerializeField] private float frameRate = 0.2f;
@@ -77,7 +77,8 @@ public class AnimationController : MonoBehaviour
     }
     private void LoadSprites()
     {
-        LoadBodyAndLegs();
+        LoadBody();
+        LoadLegs();
         LoadHead();
         LoadHair();
         LoadEyes();
@@ -318,11 +319,11 @@ public class AnimationController : MonoBehaviour
         {
             case CharacterPart.Body:
                 outfitVariant = newVariant;
-                LoadBodyAndLegs();
+                LoadBody();
                 break;
             case CharacterPart.Legs:
                 outfitVariant = newVariant;
-                LoadBodyAndLegs();
+                LoadLegs();
                 break;
             case CharacterPart.Head:
                 headVariant = newVariant;
@@ -352,12 +353,11 @@ public class AnimationController : MonoBehaviour
     }
 
 
-    public void LoadBodyAndLegs()
+    public void LoadBody()
     {
         if (outfitVariant == -1)
             return;
         ClearPartSprites(CharacterPart.Body);
-        ClearPartSprites(CharacterPart.Legs);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleDown, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleUp, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.IdleLeft, Direction.Left, State.Idle);
@@ -372,7 +372,15 @@ public class AnimationController : MonoBehaviour
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackDown, Direction.Down, State.Attack);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackUp, Direction.Up, State.Attack);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackLeft, Direction.Left, State.Attack);
+    }
 
+
+
+    public void LoadLegs()
+    {
+        if (outfitVariant == -1)
+            return;
+        ClearPartSprites(CharacterPart.Legs);
         AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.IdleDown, Direction.Down, State.Idle);
         AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.IdleUp, Direction.Up, State.Idle);
         AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.IdleLeft, Direction.Left, State.Idle);

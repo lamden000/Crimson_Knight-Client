@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 1
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -484,7 +484,6 @@ TextureImporter:
       0_5_7: -579246351
       0_5_8: 2118172657
       0_5_9: -1272966928
-      0_5_0: -271640768413334590
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

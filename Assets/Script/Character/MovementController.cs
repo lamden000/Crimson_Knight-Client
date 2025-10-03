@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AnimationController))]
+[RequireComponent(typeof(PlayerAnimationController))]
 public class MovementController : MonoBehaviour
 {
 
@@ -18,17 +18,17 @@ public class MovementController : MonoBehaviour
     private Rigidbody2D rb;
 
     private Vector2 moveAxisInput;
-    private AnimationController anim;
+    private PlayerAnimationController anim;
     float attackAnimDuration = 0.4f;
 
 
     private void Awake()
     {
-        anim = GetComponent<AnimationController>();
+        anim = GetComponent<PlayerAnimationController>();
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         // đọc input
         float h = Input.GetAxisRaw("Horizontal");

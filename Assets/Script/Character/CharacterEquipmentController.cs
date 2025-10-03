@@ -15,7 +15,7 @@ public class CharacterEquipmentController : MonoBehaviour
 
 
 
-    public AnimationController characterLoader; // script cũ của cậu để load sprites
+    public PlayerAnimationController characterLoader; // script cũ của cậu để load sprites
 
     void Update()
     {
@@ -34,6 +34,7 @@ public class CharacterEquipmentController : MonoBehaviour
             if (int.TryParse(outfitInput.text, out int bodyVariant))
             {
                 characterLoader.SetVariant(CharacterPart.Body, bodyVariant);
+                characterLoader.SetVariant(CharacterPart.Legs, bodyVariant);
             }
         }
 
