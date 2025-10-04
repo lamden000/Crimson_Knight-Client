@@ -13,7 +13,7 @@ public class CharacterEquipmentController : MonoBehaviour
     public TMP_InputField hatInput;
     public TMP_InputField eyesInput;
 
-
+    public Character character;
 
     public PlayerAnimationController characterLoader; // script cũ của cậu để load sprites
 
@@ -33,8 +33,8 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(outfitInput.text, out int bodyVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Body, bodyVariant);
-                characterLoader.SetVariant(CharacterPart.Legs, bodyVariant);
+                characterLoader.LoadPart(CharacterPart.Body, bodyVariant);
+                characterLoader.LoadPart(CharacterPart.Legs, bodyVariant);
             }
         }
 
@@ -43,7 +43,7 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(hairInput.text, out int hairVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Hair, hairVariant);
+                characterLoader.LoadPart(CharacterPart.Hair, hairVariant);
             }
         }
 
@@ -51,7 +51,7 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(headInput.text, out int headVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Head, headVariant);
+                characterLoader.LoadPart(CharacterPart.Head, headVariant);
             }
         }
 
@@ -59,7 +59,7 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(wingInput.text, out int wingVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Wings, wingVariant);
+                characterLoader.LoadPart(CharacterPart.Wings, wingVariant);
             }
         }
 
@@ -67,7 +67,7 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(weaponInput.text, out int weaponVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Sword, weaponVariant);
+                characterLoader.LoadPart(character.getWeaponType(), weaponVariant);
             }
         }
 
@@ -75,7 +75,7 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(hatInput.text, out int hatVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Hat, hatVariant);
+                characterLoader.LoadPart(CharacterPart.Hat, hatVariant);
             }
         }
 
@@ -83,7 +83,7 @@ public class CharacterEquipmentController : MonoBehaviour
         {
             if (int.TryParse(eyesInput.text, out int eyesVariant))
             {
-                characterLoader.SetVariant(CharacterPart.Eyes, eyesVariant);
+                characterLoader.LoadPart(CharacterPart.Eyes, eyesVariant);
             }
         }
     }

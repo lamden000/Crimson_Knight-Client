@@ -2365,6 +2365,7 @@ MonoBehaviour:
   wingInput: {fileID: 957522471}
   hatInput: {fileID: 1881812075}
   eyesInput: {fileID: 1433731210}
+  character: {fileID: 2097302572}
   characterLoader: {fileID: 2097302573}
 --- !u!4 &750600340
 Transform:
@@ -4149,6 +4150,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1375037658
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1375037660}
+  - component: {fileID: 1375037659}
+  m_Layer: 0
+  m_Name: SpriteDatabase
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1375037659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375037658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04502f421e2fe1846b7da4d27994d475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderPath: Character Sprites
+--- !u!4 &1375037660
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375037658}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -160.63956, y: -99.93422, z: -2.750731}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1402268752
 GameObject:
   m_ObjectHideFlags: 0
@@ -6449,7 +6495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 053c5be5fec4a8147aa3d89e4faf86de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Class: 1
+  m_Class: 2
 --- !u!114 &2097302573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6462,7 +6508,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acfa6bfbb9d84b441aeab77969305725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderPath: Character Sprites
   frameRate: 0.2
   spriteRenderersInspector:
   - part: 0
@@ -6477,24 +6522,26 @@ MonoBehaviour:
     renderer: {fileID: 1689975993}
   - part: 6
     renderer: {fileID: 2139070067}
-  - part: 50
-    renderer: {fileID: 1250327385}
-  - part: 51
-    renderer: {fileID: 1250327385}
-  - part: 52
-    renderer: {fileID: 1250327385}
-  - part: 53
-    renderer: {fileID: 1250327385}
   - part: 2
     renderer: {fileID: 1273243532}
-  outfitVariant: 0
-  hairVariant: 0
-  headVariant: 0
-  hatVariant: -1
-  eyeVariant: 9
-  wingVariant: -1
-  weaponVariant: 0
+  variantsInspector:
+  - part: 1
+    variant: 0
+  - part: 0
+    variant: 0
+  - part: 2
+    variant: 0
+  - part: 3
+    variant: -1
+  - part: 4
+    variant: 9
+  - part: 5
+    variant: 0
+  - part: 6
+    variant: -1
   currentEyeState: 5
+  weaponSpriteRenderer: {fileID: 1250327385}
+  weaponVariant: 0
 --- !u!1 &2139070065
 GameObject:
   m_ObjectHideFlags: 0
@@ -6593,3 +6640,4 @@ SceneRoots:
   - {fileID: 1406675337}
   - {fileID: 750600340}
   - {fileID: 1425264069}
+  - {fileID: 1375037660}
