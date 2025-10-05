@@ -125,8 +125,9 @@ public class MapLoader : MonoBehaviour
 
         Tile tile = ScriptableObject.CreateInstance<Tile>();
         tile.sprite = sprite;
-        float scale = 1f / tileWidth;
-        tile.transform = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));
+        /* float scale = 1f / tileWidth;
+         tile.transform = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));*/
+        tile.transform = Matrix4x4.identity;
         tile.flags = TileFlags.LockTransform;
 
         _tileCache[gid] = tile;

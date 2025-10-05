@@ -6,7 +6,7 @@ public class MainCamera : MonoBehaviour
     public float smoothSpeed = 5f;        // Độ mượt khi camera theo dõi
     public Vector3 offset = new Vector3(0, 0, -10); // Giữ camera lùi ra sau Z
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         if (target == null) return;
 
