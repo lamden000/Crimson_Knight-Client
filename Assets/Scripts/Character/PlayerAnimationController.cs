@@ -57,7 +57,6 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Awake()
     {
-        database=SpriteDatabase.Instance;
         spriteRenderers = new Dictionary<CharacterPart, SpriteRenderer>();
         foreach (var pair in spriteRenderersInspector)
         {
@@ -74,6 +73,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Start()
     {
+        database = SpriteDatabase.Instance;
         character = gameObject.GetComponent<Character>();
         currentDir=Direction.Down;
         currentState = State.Idle;
