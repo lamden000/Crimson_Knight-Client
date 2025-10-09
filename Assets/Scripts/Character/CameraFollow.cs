@@ -1,26 +1,64 @@
-using UnityEngine;
+﻿using UnityEngine;
 
+using UnityEngine.U2D; 
+
+[RequireComponent(typeof(Camera))]
+[RequireComponent(typeof(PixelPerfectCamera))]
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private Transform target;   // Player
-    [SerializeField] private float smoothSpeed = 5f; // t?c ?? m??t
-    [SerializeField] private Vector3 offset;     // l?ch tr?c camera
+    public Transform target;               // Player hoặc object cần theo dõi
+    public float smoothSpeed = 5f;         // Tốc độ di chuyển camera
+    public BoxCollider2D bounds;           // Vùng giới hạn camera
 
-    private void LateUpdate()
+    private float halfHeight;
+    private float halfWidth;
+    private Vector3 minBounds;
+    private Vector3 maxBounds;
+    private PixelPerfectCamera ppc;
+
+    private void Start()
+    {
+        Camera cam = GetComponent<Camera>();
+        ppc = GetComponent<PixelPerfectCamera>();
+
+        halfHeight = cam.orthographicSize;
+        halfWidth = halfHeight * cam.aspect;
+
+        if (bounds != null)
+        {
+            minBounds = bounds.bounds.min;
+            maxBounds = bounds.bounds.max;
+        }
+    }
+
+    private void FixedUpdate()
     {
         if (target == null) return;
 
-        // V? tr� c?n ??n (theo player + offset)
-        Vector3 desiredPosition = target.position + offset;
+        // Camera theo dõi player
+        Vector3 targetPos = Vector3.Lerp(transform.position, target.position, smoothSpeed * Time.deltaTime);
 
-        // Gi? nguy�n z (camera 2D th??ng ? -10)
-        desiredPosition.z = transform.position.z;
+        // Giới hạn trong BoxCollider
+        if (bounds != null)
+        {
+            float clampX = Mathf.Clamp(targetPos.x, minBounds.x + halfWidth, maxBounds.x - halfWidth);
+            float clampY = Mathf.Clamp(targetPos.y, minBounds.y + halfHeight, maxBounds.y - halfHeight);
+            targetPos = new Vector3(clampX, clampY, transform.position.z);
+        }
+        else
+        {
+            targetPos.z = transform.position.z;
+        }
 
-        // Di chuy?n m??t ??n v? tr� ?�
-        transform.position = Vector3.Lerp(
-            transform.position,
-            desiredPosition,
-            smoothSpeed * Time.deltaTime
-        );
+        // Snap theo Pixel Perfect Camera
+        if (ppc != null && ppc.refResolutionX > 0) // kiểm tra PPU > 0
+        {
+            float unitsPerPixel = 1f / ppc.assetsPPU;
+            targetPos.x = Mathf.Round(targetPos.x / unitsPerPixel) * unitsPerPixel;
+            targetPos.y = Mathf.Round(targetPos.y / unitsPerPixel) * unitsPerPixel;
+        }
+
+        transform.position = targetPos;
     }
 }
+
