@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c21819ff89fe7a74caa447a532a654eb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - mainCanvas: {instanceID: 0}
+  - dialogYesNoPrefab: {instanceID: 0}
+  - dialogOKPrefab: {fileID: 6184649968681583061, guid: 77a70c2033b31744e8b64b7efac897ad, type: 3}
+  - dialogDropdownPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
