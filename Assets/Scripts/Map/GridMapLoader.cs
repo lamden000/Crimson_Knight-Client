@@ -83,11 +83,11 @@ public class GridmapLoader : MonoBehaviour
     {
         int width = map.width;
         int height = map.height;
-
+        TileNode[,] gridNodes = new TileNode[height, width];
         foreach (var layer in map.layers)
         {
             if (layer.type != "tilelayer") continue;
-
+            bool isCollisionLayer = layer.name.ToLower().Contains("block");
             for (int i = 0; i < layer.data.Length; i++)
             {
                 uint rawGid = (uint)layer.data[i];
@@ -102,10 +102,11 @@ public class GridmapLoader : MonoBehaviour
                 if (!gidToTile.ContainsKey(gid)) continue;
 
                 int x = i % width;
-                int y = height - 1 - (i / width);
-                Vector3Int pos = new Vector3Int(x, y, 0);
+                int logicY = i / width; 
+                int drawY = height - 1 - logicY;
+                Vector3Int pos = new Vector3Int(x, drawY, 0);
                 Vector3 worldPos = tilemap.CellToWorld(pos);
-        //        Debug.Log($"[{layer.name}] Tile {gid} at grid({x},{y}) -> world({worldPos.x:F2}, {worldPos.y:F2}, {worldPos.z:F2}) | H:{flipH} V:{flipV} D:{flipD}");
+                //        Debug.Log($"[{layer.name}] Tile {gid} at grid({x},{y}) -> world({worldPos.x:F2}, {worldPos.y:F2}, {worldPos.z:F2}) | H:{flipH} V:{flipV} D:{flipD}");
                 Tile tile = gidToTile[gid];
                 Matrix4x4 matrix = Matrix4x4.identity;
 
@@ -124,8 +125,14 @@ public class GridmapLoader : MonoBehaviour
 
                 tilemap.SetTile(pos, tile);
                 tilemap.SetTransformMatrix(pos, matrix);
+                if (gridNodes[logicY, x] == null)
+                    gridNodes[logicY, x] = new TileNode(x, logicY, worldPos, true);
+                if (isCollisionLayer)
+                    gridNodes[logicY, x].walkable = false;
             }
         }
+        Pathfinder.Instance.Init(gridNodes);
+       //Debug.Log("World:"+gridNodes[0, 0].worldPos+" Grid:"+ gridNodes[0, 0].gridPos);
     }
 }
 [System.Serializable]
