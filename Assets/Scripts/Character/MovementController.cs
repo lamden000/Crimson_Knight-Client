@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(PlayerAnimationController))]
@@ -26,6 +27,7 @@ public class MovementController : MonoBehaviour
     private Vector2 moveAxisInput;
     private PlayerAnimationController anim;
     private float attackAnimDuration = 0.4f;
+    private Vector2 moveInput;
 
     private void Awake()
     {
@@ -38,12 +40,15 @@ public class MovementController : MonoBehaviour
         pathfinder=Pathfinder.Instance;
     }
 
+    private void OnMove(InputValue input)
+    {
+        moveInput=input.Get<Vector2>();
+    }
+
     private void FixedUpdate()
     {
         // Đọc input tay
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        moveAxisInput = new Vector2(h, v);
+        moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
         UpdateAttackTimers();
 
@@ -68,10 +73,14 @@ public class MovementController : MonoBehaviour
             AutoMoveToEnemyPath();
             return;
         }
+        var mouse = Mouse.current;
 
-        if (Input.GetMouseButtonDown(0))
+        if (mouse.leftButton.wasPressedThisFrame)
         {
-            Vector2 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 screenPos = mouse.position.ReadValue();
+
+            Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+
             Collider2D hit = Physics2D.OverlapPoint(worldPos);
             if (hit != null && hit.CompareTag("Enemy"))
             {
