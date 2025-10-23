@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.Tilemaps;
 
 [ExecuteAlways]
+[RequireComponent(typeof(Pathfinder))]
 public class GridmapLoader : MonoBehaviour
 {
     public string jsonFileName = "map1.json";
