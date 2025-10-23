@@ -372,6 +372,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
       insertIndex: -1
       addedObject: {fileID: 822986131}
+    - targetCorrespondingSourceObject: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 822986136}
   m_SourcePrefab: {fileID: 100100000, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
 --- !u!4 &822986126 stripped
 Transform:
@@ -424,6 +427,36 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &822986136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17356333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &983756843
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,7 +676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69c36e8436c5db468ba569e98a420e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFileName: map1..json
+  jsonFileName: Map1.json
   tilemap: {fileID: 812316890}
   tileScale: 1
   loadInEditMode: 0
@@ -660,8 +693,8 @@ GameObject:
   - component: {fileID: 1341744492}
   - component: {fileID: 1341744491}
   - component: {fileID: 1341744495}
-  - component: {fileID: 1341744496}
   - component: {fileID: 1341744497}
+  - component: {fileID: 1341744496}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -749,14 +782,14 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.04972376
     width: 1
-    height: 1
+    height: 0.9002072
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 277.5
+  orthographic size: 270
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -801,9 +834,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
   m_AssetsPPU: 1
-  m_RefResolutionX: 640
-  m_RefResolutionY: 360
-  m_CropFrame: 0
+  m_RefResolutionX: 960
+  m_RefResolutionY: 540
+  m_CropFrame: 4
   m_GridSnapping: 0
   m_FilterMode: 0
   m_UpscaleRT: 0

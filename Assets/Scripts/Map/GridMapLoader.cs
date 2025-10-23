@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Xml;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.Tilemaps;
 
 [ExecuteAlways]
 public class GridmapLoader : MonoBehaviour
 {
-    public string jsonFileName = "map.json";
+    public string jsonFileName = "map1.json";
     public Tilemap tilemap;  
     public float tileScale = 1f;
 
@@ -18,7 +20,7 @@ public class GridmapLoader : MonoBehaviour
     private void Start()
     {
         if (Application.isPlaying)
-            LoadMap();
+            StartCoroutine(LoadJsonFile(jsonFileName));
     }
 
     private void Update()
@@ -28,36 +30,45 @@ public class GridmapLoader : MonoBehaviour
         if (!Application.isPlaying && loadInEditMode)
         {
             loadInEditMode = false; // Tắt toggle để tránh load liên tục
-            LoadMap();
+            StartCoroutine(LoadJsonFile(jsonFileName));
         }
 #endif
     }
 
-    void LoadMap()
+    IEnumerator LoadJsonFile(string jsonFileName)
     {
+
         string jsonPath = Path.Combine(Application.streamingAssetsPath, jsonFileName);
-        if (!File.Exists(jsonPath))
+
+        string jsonPathUri = new System.Uri(Path.Combine(Application.streamingAssetsPath, jsonFileName)).AbsoluteUri;
+
+        using (UnityWebRequest www = UnityWebRequest.Get(jsonPathUri))
         {
-            Debug.LogWarning($"File không tồn tại: {jsonPath}");
-            return;
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"Loi khi tai file tu streamingAssets: {www.error} tai duong dan: {jsonPathUri}");
+            }
+            else
+            {
+                string jsonText = www.downloadHandler.text;
+                Debug.Log($"Đã tải thành công file JSON. Độ dài dữ liệu: {jsonText.Length}");
+                TiledMap map = JsonUtility.FromJson<TiledMap>(jsonText);
+
+                foreach (var ts in map.tilesets)
+                    LoadTileset(ts);
+
+                LoadLayers(map);
+            }
         }
-
-        string jsonText = File.ReadAllText(jsonPath);
-        TiledMap map = JsonUtility.FromJson<TiledMap>(jsonText);
-
-        foreach (var ts in map.tilesets)
-            LoadTileset(ts);
-
-        LoadLayers(map);
-
-        Debug.Log("Map loaded in edit mode");
     }
 
     void LoadTileset(TiledTileset ts)
     {
         int firstGid = ts.firstgid;
 
-        string folder = Path.GetFileNameWithoutExtension(ts.source); // nếu ts.source = "0.tsx" → "0"
+        string folder = Path.GetFileNameWithoutExtension(ts.source); 
 
         for (int id = 0; ; id++)
         {
