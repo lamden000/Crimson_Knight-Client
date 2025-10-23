@@ -319,6 +319,10 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 9042967047990573357, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -483,7 +487,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &983756845
@@ -661,9 +665,8 @@ GameObject:
   - component: {fileID: 1341744493}
   - component: {fileID: 1341744492}
   - component: {fileID: 1341744491}
-  - component: {fileID: 1341744495}
-  - component: {fileID: 1341744497}
   - component: {fileID: 1341744496}
+  - component: {fileID: 1341744498}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -751,14 +754,14 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049700875
+    y: 0
     width: 1
-    height: 0.8997929
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 270
+  orthographic size: 0.9
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -789,30 +792,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1341744495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1341744489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ComponentVersion: 1
-  m_AssetsPPU: 1
-  m_RefResolutionX: 960
-  m_RefResolutionY: 540
-  m_CropFrame: 4
-  m_GridSnapping: 0
-  m_FilterMode: 0
-  m_UpscaleRT: 0
-  m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
 --- !u!114 &1341744496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,7 +807,7 @@ MonoBehaviour:
   target: {fileID: 822986126}
   smoothSpeed: 5
   bounds: {fileID: 2132625529}
---- !u!114 &1341744497
+--- !u!114 &1341744498
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -837,17 +816,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1341744489}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c23ba1940028034faf35d0dd3182dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AssetsPPU: 100
-  m_RefResolutionX: 320
-  m_RefResolutionY: 180
-  m_UpscaleRT: 0
-  m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
+  referenceHeight: 540
+  pixelRatio: 1
+  cameraFollow: {fileID: 1341744496}
 --- !u!1 &1615316083
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,64 +1,59 @@
 ﻿using UnityEngine;
 
-using UnityEngine.U2D; 
-
 [RequireComponent(typeof(Camera))]
-[RequireComponent(typeof(PixelPerfectCamera))]
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;               // Player hoặc object cần theo dõi
-    public float smoothSpeed = 5f;         // Tốc độ di chuyển camera
-    public BoxCollider2D bounds;           // Vùng giới hạn camera
+    public Transform target;
+    public float smoothSpeed = 5f;
+    public BoxCollider2D bounds;
 
     private float halfHeight;
     private float halfWidth;
     private Vector3 minBounds;
     private Vector3 maxBounds;
-    private PixelPerfectCamera ppc;
+    private Camera cam;
 
-    private void Start()
+    public void InitializeBounds(float calculatedOrthographicSize)
     {
-        Camera cam = GetComponent<Camera>();
-        ppc = GetComponent<PixelPerfectCamera>();
+        if (cam == null)
+        {
+            cam = GetComponent<Camera>();
+        }
+        halfHeight = calculatedOrthographicSize;
 
-        halfHeight = cam.orthographicSize;
         halfWidth = halfHeight * cam.aspect;
 
         if (bounds != null)
         {
             minBounds = bounds.bounds.min;
             maxBounds = bounds.bounds.max;
+            Debug.Log("CameraFollow Bounds Initialized! halfHeight: " + halfHeight + ", halfWidth: " + halfWidth);
+        }
+        else
+        {
+            Debug.LogWarning("CameraFollow: Bounds collider is not set!");
         }
     }
-
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         if (target == null) return;
 
-        // Camera theo dõi player
+        if (bounds != null && halfWidth == 0)
+        {
+            float calculatedOrthoSize = 540f / (1f * 2f);
+            InitializeBounds(calculatedOrthoSize);
+        }
+
         Vector3 targetPos = Vector3.Lerp(transform.position, target.position, smoothSpeed * Time.deltaTime);
 
-        // Giới hạn trong BoxCollider
         if (bounds != null)
         {
             float clampX = Mathf.Clamp(targetPos.x, minBounds.x + halfWidth, maxBounds.x - halfWidth);
             float clampY = Mathf.Clamp(targetPos.y, minBounds.y + halfHeight, maxBounds.y - halfHeight);
-            targetPos = new Vector3(clampX, clampY, transform.position.z);
-        }
-        else
-        {
-            targetPos.z = transform.position.z;
+            targetPos.x = clampX;
+            targetPos.y = clampY;
         }
 
-        // Snap theo Pixel Perfect Camera
-        if (ppc != null && ppc.refResolutionX > 0) // kiểm tra PPU > 0
-        {
-            float unitsPerPixel = 1f / ppc.assetsPPU;
-            targetPos.x = Mathf.Round(targetPos.x / unitsPerPixel) * unitsPerPixel;
-            targetPos.y = Mathf.Round(targetPos.y / unitsPerPixel) * unitsPerPixel;
-        }
-
-        transform.position = targetPos;
+        transform.position = new Vector3(targetPos.x, targetPos.y, transform.position.z);
     }
 }
-
