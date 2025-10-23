@@ -693,8 +693,8 @@ GameObject:
   - component: {fileID: 1341744492}
   - component: {fileID: 1341744491}
   - component: {fileID: 1341744495}
-  - component: {fileID: 1341744496}
   - component: {fileID: 1341744497}
+  - component: {fileID: 1341744496}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -782,9 +782,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.04972376
     width: 1
-    height: 1
+    height: 0.9002072
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -836,7 +836,7 @@ MonoBehaviour:
   m_AssetsPPU: 1
   m_RefResolutionX: 960
   m_RefResolutionY: 540
-  m_CropFrame: 0
+  m_CropFrame: 4
   m_GridSnapping: 0
   m_FilterMode: 0
   m_UpscaleRT: 0
