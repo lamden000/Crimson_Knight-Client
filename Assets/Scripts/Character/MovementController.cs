@@ -132,7 +132,7 @@ public class MovementController : MonoBehaviour
         }
 
         // Nếu chưa có path hoặc đã đến node hiện tại → tìm lại đường
-        if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile())
+        if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile()||pathfinder!=null)
         {
             var startNode = pathfinder.GetTileFromWorld(transform.position);
             var endNode = pathfinder.GetTileFromWorld(targetEnemy.position);
