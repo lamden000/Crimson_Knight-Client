@@ -49,7 +49,7 @@ public class PlayerAnimationController : MonoBehaviour
     private Direction currentDir;
     private State currentState;
 
-    private SpriteDatabase database;
+    private CharacterSpriteDatabase database;
     Character character;
 
     public Direction GetCurrentDirection()
@@ -73,13 +73,16 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Start()
     {
-        database = SpriteDatabase.Instance;
+        database = CharacterSpriteDatabase.Instance;
         character = gameObject.GetComponent<Character>();
         currentDir=Direction.Down;
         currentState = State.Idle;
+
         weaponType = character.getWeaponType();
         partVariants[weaponType]=weaponVariant;
         spriteRenderers[weaponType]=weaponSpriteRenderer;
+
+
         LoadSprites();
     }
 
