@@ -1,33 +1,54 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Enemy))]
 public class EnemyAnimationController : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
+    private BoxCollider2D boxCollider;
     private EnemyName _name;
     private EnemySpriteDatabase database;
+    private Enemy enemy;
 
     private float frameRate = 0.2f;
     private float timer;
     private int currentFrame;
-    [SerializeField]
-    private EnemyState currentState;
+
 
     void Start()
     {
+        enemy = GetComponent<Enemy>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        _name = GetComponent<Enemy>().GetName();
+        _name = enemy.GetName();
+        boxCollider = GetComponent<BoxCollider2D>();
         database=EnemySpriteDatabase.Instance;
-        currentState = EnemyState.Idle;
 
         database.LoadSprites(_name);
+
+        spriteRenderer.sprite = database.GetSprites(_name,enemy.currentState)[0];
+        AdjustColliderToSprite();
     }
 
-    // Update is called once per frame
+    public void AdjustColliderToSprite()
+    {
+        if (spriteRenderer.sprite == null)
+        {
+            Debug.LogWarning("Không có Sprite để điều chỉnh Collider.");
+            return;
+        }
+
+        Bounds spriteBounds = spriteRenderer.sprite.bounds;
+
+        boxCollider.size = spriteBounds.size;
+
+        boxCollider.offset = spriteBounds.center;
+
+        Debug.Log($"Collider đã được điều chỉnh. Kích thước mới: {boxCollider.size}, Offset: {boxCollider.offset}");
+    }
+
     void Update()
     {
-        PlayAnimation(currentState);
+        PlayAnimation(enemy.currentState);
     }
 
 
@@ -50,11 +71,11 @@ public class EnemyAnimationController : MonoBehaviour
         {
             frames = database.GetSprites(_name, EnemyState.Idle);
         }
-
-        if (frames == null || frames.Count == 0)
-            return;
-
-        int frameIndex = currentFrame % frames.Count;
-        spriteRenderer.sprite = frames[frameIndex];
+        else
+        {
+            int frameIndex = currentFrame % frames.Count;
+            spriteRenderer.sprite = frames[frameIndex];
+        }
     }
+
 }

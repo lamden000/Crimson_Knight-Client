@@ -54,7 +54,6 @@ public class GridmapLoader : MonoBehaviour
             else
             {
                 string jsonText = www.downloadHandler.text;
-                Debug.Log($"Đã tải thành công file JSON. Độ dài dữ liệu: {jsonText.Length}");
                 TiledMap map = JsonUtility.FromJson<TiledMap>(jsonText);
 
                 foreach (var ts in map.tilesets)

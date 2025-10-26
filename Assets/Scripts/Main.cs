@@ -49,7 +49,6 @@ public class Main : MonoBehaviour
             ppc.refResolutionX = 0;
             ppc.refResolutionY = REFERENCE_HEIGHT;
             ppc.gridSnapping = PixelPerfectCamera.GridSnapping.None;
-            Debug.Log("Setup ok URP Pixel Perfect Camera for MOBILE (Unity 6).");
         }
     }
     private void ConfigurePixelPerfectCameraForPC(int targetWidth, int targetHeight)
@@ -61,7 +60,6 @@ public class Main : MonoBehaviour
             ppc.refResolutionX = targetWidth;
             ppc.refResolutionY = targetHeight;
             ppc.gridSnapping = PixelPerfectCamera.GridSnapping.None;
-            Debug.Log("Setup ok URP Pixel Perfect Camera for PC (Unity 6).");
         }
     }
     private PixelPerfectCamera GetOrAddPixelPerfectCamera()
@@ -75,7 +73,6 @@ public class Main : MonoBehaviour
         if (ppc == null)
         {
             ppc = Camera.main.gameObject.AddComponent<PixelPerfectCamera>();
-            Debug.Log("AddComponent<UnityEngine.Rendering.Universal.PixelPerfectCamera>();");
         }
         return ppc;
     }

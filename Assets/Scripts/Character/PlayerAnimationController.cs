@@ -214,6 +214,18 @@ public class PlayerAnimationController : MonoBehaviour
             spriteRenderers[weaponType].gameObject.SetActive(true);
             currentEyeState = EyeState.Idle;
         }
+    }
+
+    public void SetGetHitAnimation(bool getHit)
+    {
+        if (getHit)
+        {
+            currentEyeState = EyeState.GetHit;
+        }
+        else
+        {
+            currentEyeState = EyeState.Idle;
+        }
 
     }
 

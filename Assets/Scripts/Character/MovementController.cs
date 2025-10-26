@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(PlayerAnimationController))]
 public class MovementController : MonoBehaviour
@@ -28,6 +29,7 @@ public class MovementController : MonoBehaviour
     private PlayerAnimationController anim;
     private float attackAnimDuration = 0.4f;
     private Vector2 moveInput;
+    private bool isGettingHit = false;
 
     private void Awake()
     {
@@ -47,7 +49,11 @@ public class MovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Đọc input tay
+        if (isGettingHit)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        } 
         moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
         UpdateAttackTimers();
@@ -93,6 +99,29 @@ public class MovementController : MonoBehaviour
 
         // Điều khiển bằng tay
         ManualMove();
+    }
+
+    public void HandleGetHit()
+    {
+        if (isGettingHit) return; 
+
+        isGettingHit = true;
+        CancelAutoFollow(); 
+        anim.SetGetHitAnimation(true);
+        rb.linearVelocity = Vector2.zero; 
+
+        StartCoroutine(GetHitDelayRoutine());
+    }
+
+    private IEnumerator GetHitDelayRoutine()
+    {
+        // Khóa hành động trong 0.2s
+        yield return new WaitForSeconds(attackAnimDuration);
+
+        isGettingHit = false;
+
+        // Quay lại trạng thái Idle sau khi GetHit kết thúc
+        anim.SetGetHitAnimation(false);
     }
 
     private void UpdateAttackTimers()
@@ -244,6 +273,7 @@ public class MovementController : MonoBehaviour
                 anim.SetAnimation(Direction.Down, State.Attack);
             transform.rotation = Quaternion.identity;
         }
+        targetEnemy.gameObject.GetComponent<Enemy>().TakeDamage(100,gameObject);
         anim.SetAttackAnimation(true);
     }
 
