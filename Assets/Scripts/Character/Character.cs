@@ -1,3 +1,5 @@
+using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
 using System;
 using UnityEngine;
 
@@ -37,9 +39,7 @@ public class Character : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log("vao day");
-            Vector3 targetPosition = new Vector3(1034.6f, 481.5147f, transform.position.z);
-            transform.position = targetPosition;
+            Session.Connect();
         }
 
         if (Input.touchCount > 0)
@@ -52,4 +52,7 @@ public class Character : MonoBehaviour
             }
         }
     }
+
+
+  
 }

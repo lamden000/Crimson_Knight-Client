@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -247,6 +249,7 @@ public class MovementController : MonoBehaviour
         anim.SetAttackAnimation(true);
     }
 
+    private static long timeStartSendMove = 0;
     private void ManualMove()
     {
         float h = moveAxisInput.x;
@@ -271,6 +274,12 @@ public class MovementController : MonoBehaviour
                 else
                     anim.SetAnimation(Direction.Down, State.Walk);
                 transform.rotation = Quaternion.identity;
+            }
+
+            if (SystemUtil.CurrentTimeMillis() - timeStartSendMove > 2000)
+            {
+                timeStartSendMove = SystemUtil.CurrentTimeMillis();
+                RequestManager.PlayerMove((int)this.transform.position.x, (int)this.transform.position.y);
             }
         }
         else
