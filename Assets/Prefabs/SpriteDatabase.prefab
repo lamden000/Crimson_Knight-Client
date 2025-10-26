@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1386558109838265370}
-  - component: {fileID: 1875727274910797292}
+  - component: {fileID: 7787478678074451360}
+  - component: {fileID: 8101090432938182731}
   m_Layer: 0
   m_Name: SpriteDatabase
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1875727274910797292
+--- !u!114 &7787478678074451360
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +42,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 3423594951452250666}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04502f421e2fe1846b7da4d27994d475, type: 3}
+  m_Script: {fileID: 11500000, guid: c0060e0f3722c9d46bdf5689729cf932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   folderPath: Character Sprites
+--- !u!114 &8101090432938182731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3423594951452250666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5519456ccafe28147b6c12f8de6d16ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderPath: Enemies

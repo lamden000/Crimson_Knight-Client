@@ -27,7 +27,6 @@ public class CameraFollow : MonoBehaviour
         {
             minBounds = bounds.bounds.min;
             maxBounds = bounds.bounds.max;
-            Debug.Log("CameraFollow Bounds Initialized! halfHeight: " + halfHeight + ", halfWidth: " + halfWidth);
         }
         else
         {

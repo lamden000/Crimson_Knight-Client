@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySpriteDatabase : MonoBehaviour
 {
 
-    enum EnemySprite { Idle_1 = 0, Walk_1 = 1, Walk_2 = 2, Attack = 3, GetHit = 4, Idle_2 = 6 }
+    enum EnemySprite { Idle_1 = 0, Walk_1 = 1, Walk_2 = 2, Attack = 3, GetHit = 4, Idle_2 = 5 }
 
     private Dictionary<EnemyName,Dictionary<EnemyState,List<Sprite>>> database
       = new Dictionary<EnemyName, Dictionary<EnemyState, List<Sprite>>>();
@@ -39,7 +39,7 @@ public class EnemySpriteDatabase : MonoBehaviour
         AddSprite(enemyName, EnemySprite.GetHit, EnemyState.GetHit);
 
         AddSprite(enemyName, EnemySprite.Idle_1, EnemyState.Idle);
-        AddSprite(enemyName, EnemySprite.Idle_2, EnemyState.Idle);
+      //  AddSprite(enemyName, EnemySprite.Idle_2, EnemyState.Idle);
 
         loadedEnemy.Add(enemyName);
     }
@@ -59,9 +59,9 @@ public class EnemySpriteDatabase : MonoBehaviour
         Sprite[] all = Resources.LoadAll<Sprite>(folderPath + "/" + sheetName);
         Sprite sprite = System.Array.Find(all, s => s.name == spriteName);
 
-        if (sprite != null&&(int)stateCode!=5)
+        if (sprite != null)
             database[enemyName][state].Add(sprite);
-        else
+        else if((int)stateCode!=5)
             Debug.LogWarning($"Sprite not found: {spriteName}");
     }
 

@@ -12,7 +12,7 @@ public class Pathfinder : MonoBehaviour
     [Header("Debug Options")]
     [SerializeField] private bool debugLogs = false;
     [SerializeField] private bool drawGizmos = false;
-
+    public static bool IsInitialized { get; private set; } = false;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,9 +28,22 @@ public class Pathfinder : MonoBehaviour
         grid = gridNodes;
         height = grid.GetLength(0);
         width = grid.GetLength(1);
+        IsInitialized = true;
     }
 
-    // Convert world position to grid node
+    public TileNode GetTile(int x, int z)
+    {
+        if (z < 0 || z >= width || x < 0 || x >= height)
+        {
+            if(debugLogs)
+             Debug.LogWarning($"[Pathfinder] Tọa độ lưới ({x}, {z}) nằm ngoài ranh giới bản đồ (Width: {width}, Height: {height})");
+
+            return null; 
+        }
+
+        return grid[x, z];
+    }
+
     public TileNode GetTileFromWorld(Vector3 worldPos)
     {
         if (grid == null)

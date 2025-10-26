@@ -33,6 +33,11 @@ public class Character : MonoBehaviour
         return weapon;
     }
 
+    public void TakeDamage(int damage, GameObject attacker)
+    {
+
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
