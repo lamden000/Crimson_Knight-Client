@@ -1,23 +1,17 @@
 ﻿using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerAnimationController))]
-public class MovementController : MonoBehaviour
+public class PlayerMovementController : MovementControllerBase
 {
     [Header("Movement Settings")]
     [SerializeField] private float attackRange = 1.2f;
     [SerializeField] private float attackCooldown = 0.8f;
-    [SerializeField] private float moveSpeed = 3f;
-
-    private Pathfinder pathfinder;
-    private List<Vector3> currentPath = new List<Vector3>();
-    private int currentNodeIndex = 0;
 
     private Transform targetEnemy;
     private bool isMovingToEnemy = false;
@@ -33,20 +27,21 @@ public class MovementController : MonoBehaviour
     private Vector2 moveInput;
     private bool isGettingHit = false;
 
+    protected override void Start()
+    {
+        base.Start();
+        // moveSpeed có thể được set trong inspector; nếu cần khác có thể set ở đây.
+    }
+
     private void Awake()
     {
         anim = GetComponent<PlayerAnimationController>();
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Start()
-    {
-        pathfinder=Pathfinder.Instance;
-    }
-
     private void OnMove(InputValue input)
     {
-        moveInput=input.Get<Vector2>();
+        moveInput = input.Get<Vector2>();
     }
 
     private void FixedUpdate()
@@ -55,14 +50,13 @@ public class MovementController : MonoBehaviour
         {
             rb.linearVelocity = Vector2.zero;
             return;
-        } 
+        }
         moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
         UpdateAttackTimers();
 
         if (isMovingToEnemy && targetEnemy != null)
         {
-            // cancel nếu có input tay
             if (moveAxisInput != Vector2.zero)
             {
                 CancelAutoFollow();
@@ -70,7 +64,6 @@ public class MovementController : MonoBehaviour
                 return;
             }
 
-            // nếu enemy chết
             Enemy enemy = targetEnemy.GetComponent<Enemy>();
             if (enemy == null || enemy.IsDead)
             {
@@ -81,48 +74,40 @@ public class MovementController : MonoBehaviour
             AutoMoveToEnemyPath();
             return;
         }
-        var mouse = Mouse.current;
 
+        var mouse = Mouse.current;
         if (mouse.leftButton.wasPressedThisFrame)
         {
             Vector2 screenPos = mouse.position.ReadValue();
-
             Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-
             Collider2D hit = Physics2D.OverlapPoint(worldPos);
             if (hit != null && hit.CompareTag("Enemy"))
             {
-              
-                currentPath.Clear();
+                ClearPath();
                 targetEnemy = hit.transform;
                 isMovingToEnemy = true;
             }
         }
 
-        // Điều khiển bằng tay
         ManualMove();
     }
 
     public void HandleGetHit()
     {
-        if (isGettingHit) return; 
+        if (isGettingHit) return;
 
         isGettingHit = true;
-        CancelAutoFollow(); 
+        CancelAutoFollow();
         anim.SetGetHitAnimation(true);
-        rb.linearVelocity = Vector2.zero; 
+        rb.linearVelocity = Vector2.zero;
 
         StartCoroutine(GetHitDelayRoutine());
     }
 
     private IEnumerator GetHitDelayRoutine()
     {
-        // Khóa hành động trong 0.2s
         yield return new WaitForSeconds(attackAnimDuration);
-
         isGettingHit = false;
-
-        // Quay lại trạng thái Idle sau khi GetHit kết thúc
         anim.SetGetHitAnimation(false);
     }
 
@@ -163,7 +148,7 @@ public class MovementController : MonoBehaviour
         }
 
         // Nếu chưa có path hoặc đã đến node hiện tại → tìm lại đường
-        if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile()||pathfinder!=null)
+            if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile() || pathfinder != null)
         {
             var startNode = pathfinder.GetTileFromWorld(transform.position);
             var endNode = pathfinder.GetTileFromWorld(targetEnemy.position);
@@ -174,15 +159,16 @@ public class MovementController : MonoBehaviour
                 return;
             }
 
-            var path = pathfinder.FindPath(startNode, endNode);
+            // pass the agent's BoxCollider2D size to pathfinder so obstacles are considered with agent's size
+            var agentSize = GetAgentSizeForPathfinding();
+            var path = pathfinder.FindPath(startNode, endNode, agentSize);
             if (path == null || path.Count == 0)
             {
-                Debug.LogWarning("[AutoMove] ❌ No valid path found!");
                 return;
             }
 
             currentPath = path.Select(n => n.worldPos).ToList();
-            currentNodeIndex = 0;
+            pathIndex = 0;
 
             string pathStr = string.Join(" → ", path.Select(p => $"({p.gridPos.x},{p.gridPos.y})"));
         }
@@ -191,21 +177,21 @@ public class MovementController : MonoBehaviour
     }
 
 
-    private void MoveAlongPath()
+    override protected void MoveAlongPath()
     {
-        if (currentPath == null || currentNodeIndex >= currentPath.Count)
+        if (currentPath == null || pathIndex >= currentPath.Count)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        Vector3 targetPos = currentPath[currentNodeIndex];
+        Vector3 targetPos = currentPath[pathIndex];
         Vector3 dir = targetPos - transform.position;
 
         float dist = dir.magnitude;
         if (dist < 0.1f)
         {
-            currentNodeIndex++;
+            pathIndex++;
             return;
         }
 
@@ -215,7 +201,7 @@ public class MovementController : MonoBehaviour
             targetPos,
             moveSpeed * Time.fixedDeltaTime
         );
-                rb.MovePosition(nextPos);
+        rb.MovePosition(nextPos);
 
         // Animation theo hướng di chuyển
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
@@ -235,21 +221,16 @@ public class MovementController : MonoBehaviour
         }
     }
 
-
     private bool ReachedTargetTile()
     {
         if (targetEnemy == null) return false;
+        if (!EnsurePathfinder()) return false;
 
         var playerNode = pathfinder.GetTileFromWorld(transform.position);
         var enemyNode = pathfinder.GetTileFromWorld(targetEnemy.position);
-
         if (playerNode == null || enemyNode == null) return false;
-
-        bool reached = playerNode.gridPos == enemyNode.gridPos;
-        return reached;
+        return playerNode.gridPos == enemyNode.gridPos;
     }
-
-
 
     private void TryAttack(Vector3 dir)
     {
@@ -275,7 +256,7 @@ public class MovementController : MonoBehaviour
                 anim.SetAnimation(Direction.Down, State.Attack);
             transform.rotation = Quaternion.identity;
         }
-        targetEnemy.gameObject.GetComponent<Enemy>().TakeDamage(100,gameObject);
+        targetEnemy.gameObject.GetComponent<Enemy>().TakeDamage(100, gameObject);
         anim.SetAttackAnimation(true);
     }
 
@@ -323,7 +304,6 @@ public class MovementController : MonoBehaviour
     {
         isMovingToEnemy = false;
         targetEnemy = null;
-        currentPath.Clear();
-        currentNodeIndex = 0;
+        ClearPath();
     }
 }

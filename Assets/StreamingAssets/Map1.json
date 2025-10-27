@@ -138,6 +138,17 @@
                  "width":156,
                  "x":724.762105263158,
                  "y":627.132631578947
+                }, 
+                {
+                 "height":128.538947368421,
+                 "id":40,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":164.917894736842,
+                 "x":970.105263157895,
+                 "y":448.673684210526
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -146,7 +157,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":39,
+ "nextobjectid":41,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

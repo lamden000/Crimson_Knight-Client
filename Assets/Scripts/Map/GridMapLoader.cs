@@ -300,13 +300,12 @@ public class GridmapLoader : MonoBehaviour
                     }
                 }
 
-                Debug.Log($"[Collider] {obj.id} blocks tiles X({minTileX}-{maxTileX}) Tiled Y Index({minTileY}-{maxTileY})");
             }
         }
     }
     private void OnDrawGizmos()
     {
-        if(!drawGizmo) return;
+        if(!drawGizmo||!Application.isPlaying) return;
         TileNode[,] gridNodes = pathfinder.grid;
         // Chỉ vẽ Gizmos khi game đang chạy và gridNodes đã được khởi tạo
         if (gridNodes == null || !Application.isPlaying)
