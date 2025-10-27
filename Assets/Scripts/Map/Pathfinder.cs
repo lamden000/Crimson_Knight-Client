@@ -8,6 +8,10 @@ public class Pathfinder : MonoBehaviour
     public TileNode[,] grid{ get; private set; }
     private int width;
     private int height;
+    // approximate tile world size (in world units)
+    private float tileSizeX = 1f;
+    private float tileSizeY = 1f;
+    private Vector3 originWorldPos = Vector3.zero;
 
     [Header("Debug Options")]
     [SerializeField] private bool debugLogs = false;
@@ -28,6 +32,20 @@ public class Pathfinder : MonoBehaviour
         grid = gridNodes;
         height = grid.GetLength(0);
         width = grid.GetLength(1);
+        // compute approximate tile size using neighboring nodes (safe-guards in case map is 1x1)
+        if (height > 0 && width > 0 && grid[0,0] != null)
+        {
+            originWorldPos = grid[0,0].worldPos;
+            if (width > 1 && grid[0,1] != null)
+                tileSizeX = Mathf.Abs(grid[0,1].worldPos.x - grid[0,0].worldPos.x);
+            if (height > 1 && grid[1,0] != null)
+                tileSizeY = Mathf.Abs(grid[1,0].worldPos.y - grid[0,0].worldPos.y);
+
+            // fallback to 1 unit if detected zero sizes
+            if (tileSizeX <= 0f) tileSizeX = 1f;
+            if (tileSizeY <= 0f) tileSizeY = 1f;
+        }
+
         IsInitialized = true;
     }
 
@@ -72,7 +90,7 @@ public class Pathfinder : MonoBehaviour
         return closest;
     }
 
-    public List<TileNode> FindPath(TileNode startNode, TileNode endNode)
+    public List<TileNode> FindPath(TileNode startNode, TileNode endNode, Vector2 agentSize = default)
     {
         if (startNode == null || endNode == null)
         {
@@ -80,9 +98,10 @@ public class Pathfinder : MonoBehaviour
             return null;
         }
 
-        if (!endNode.walkable)
+        // Check end node traversability taking the agent size into account
+        if (!IsNodeTraversable(endNode, agentSize))
         {
-            Debug.Log("[Pathfinder] End node is not walkable!");
+            Debug.Log("[Pathfinder] End node is not traversable for this agent size!");
             return null;
         }
 
@@ -116,7 +135,8 @@ public class Pathfinder : MonoBehaviour
 
             foreach (var neighbor in GetNeighbors(current))
             {
-                if (!neighbor.walkable) continue;
+                // ensure neighbor is traversable for this agent size (considers nearby non-walkable tiles)
+                if (!IsNodeTraversable(neighbor, agentSize)) continue;
 
                 float tentativeG = gCost[current] + Vector3.Distance(current.worldPos, neighbor.worldPos);
 
@@ -184,6 +204,62 @@ public class Pathfinder : MonoBehaviour
         }
 
         return neighbors;
+    }
+
+    // Returns true if the agent with given box size (world units) can be centered on 'node'
+    // without overlapping any non-walkable tile.
+    private bool IsNodeTraversable(TileNode node, Vector2 agentSize)
+    {
+        if (node == null) return false;
+
+        // If no size provided, fall back to simple walkable check
+        if (agentSize == Vector2.zero)
+            return node.walkable;
+
+        // agent AABB when centered at node.worldPos
+        Vector3 agentHalf = new Vector3(agentSize.x / 2f, agentSize.y / 2f, 0f);
+        Vector3 agentMin = node.worldPos - agentHalf;
+        Vector3 agentMax = node.worldPos + agentHalf;
+
+        // Determine grid search bounds in indices, using gridPos as column (x) and row (y)
+        int col = node.gridPos.x;
+        int row = node.gridPos.y;
+
+        int colRadius = Mathf.CeilToInt((agentSize.x / 2f) / tileSizeX) + 1;
+        int rowRadius = Mathf.CeilToInt((agentSize.y / 2f) / tileSizeY) + 1;
+
+        int colMin = col - colRadius;
+        int colMax = col + colRadius;
+        int rowMin = row - rowRadius;
+        int rowMax = row + rowRadius;
+
+        for (int r = rowMin; r <= rowMax; r++)
+        {
+            for (int c = colMin; c <= colMax; c++)
+            {
+                if (c < 0 || c >= width || r < 0 || r >= height) continue;
+                var tile = grid[r, c];
+                if (tile == null) continue;
+
+                if (tile.walkable) continue;
+
+                // compute tile AABB (assume tile.worldPos is center)
+                Vector3 tileHalf = new Vector3(tileSizeX / 2f, tileSizeY / 2f, 0f);
+                Vector3 tileMin = tile.worldPos - tileHalf;
+                Vector3 tileMax = tile.worldPos + tileHalf;
+
+                // AABB overlap test
+                bool overlap = !(agentMax.x < tileMin.x || agentMin.x > tileMax.x ||
+                                 agentMax.y < tileMin.y || agentMin.y > tileMax.y);
+
+                if (overlap)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     // --- DEBUG GIZMOS ---

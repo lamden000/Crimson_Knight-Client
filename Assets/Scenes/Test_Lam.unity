@@ -375,7 +375,7 @@ MonoBehaviour:
   tileScale: 1
   loadInEditMode: 0
   offsetCorrectionY: 200
-  drawGizmo: 1
+  drawGizmo: 0
 --- !u!114 &1001723880
 MonoBehaviour:
   m_ObjectHideFlags: 0
