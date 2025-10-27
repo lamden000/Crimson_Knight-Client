@@ -5,7 +5,7 @@ public class Pathfinder : MonoBehaviour
 {
     public static Pathfinder Instance { get; private set; }
 
-    private TileNode[,] grid;
+    public TileNode[,] grid{ get; private set; }
     private int width;
     private int height;
 
