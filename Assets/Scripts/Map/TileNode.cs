@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [Serializable]
 public class TiledMap
@@ -78,4 +79,9 @@ public class TiledTileset
 {
     public int firstgid;
     public string source;
+}
+[System.Serializable]
+public class MultiSpriteTile : Tile
+{
+    public Sprite[] sprites;
 }

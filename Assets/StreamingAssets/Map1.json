@@ -39,15 +39,15 @@
          "name":"Terrarian",
          "objects":[
                 {
-                 "height":43.6547368421052,
+                 "height":21.6547368421052,
                  "id":6,
                  "name":"",
                  "rotation":0,
                  "type":"Collider",
                  "visible":true,
-                 "width":94.5852631578945,
-                 "x":754.256842105263,
-                 "y":582.063157894737
+                 "width":36.5852631578945,
+                 "x":787.256842105263,
+                 "y":577.063157894737
                 }, 
                 {
                  "height":955.553684210526,
@@ -105,7 +105,7 @@
                  "y":1.4210854715202e-14
                 }, 
                 {
-                 "height":147.941052631579,
+                 "height":107.941052631579,
                  "id":19,
                  "name":"",
                  "rotation":0,
@@ -140,15 +140,63 @@
                  "y":627.132631578947
                 }, 
                 {
-                 "height":128.538947368421,
+                 "height":130.538947368421,
                  "id":40,
                  "name":"",
                  "rotation":0,
                  "type":"Collider",
                  "visible":true,
-                 "width":164.917894736842,
-                 "x":970.105263157895,
-                 "y":448.673684210526
+                 "width":156.917894736842,
+                 "x":978.105263157895,
+                 "y":458.673684210526
+                }, 
+                {
+                 "gid":137,
+                 "height":152,
+                 "id":42,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":116,
+                 "x":280.666666666667,
+                 "y":691.333333333333
+                }, 
+                {
+                 "gid":178,
+                 "height":122,
+                 "id":51,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":60,
+                 "x":858,
+                 "y":135.666666666667
+                }, 
+                {
+                 "gid":178,
+                 "height":122,
+                 "id":52,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":60,
+                 "x":666,
+                 "y":141
+                }, 
+                {
+                 "gid":261,
+                 "height":192,
+                 "id":53,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":156,
+                 "x":530,
+                 "y":344
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -157,7 +205,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":41,
+ "nextobjectid":54,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

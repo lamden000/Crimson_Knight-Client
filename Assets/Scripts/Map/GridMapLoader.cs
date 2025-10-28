@@ -18,7 +18,6 @@ public class GridmapLoader : MonoBehaviour
 
     private Dictionary<int, Tile> gidToTile = new Dictionary<int, Tile>();
     public bool loadInEditMode = false;
-    public float offsetCorrectionY= 200;
     private Pathfinder pathfinder;
     private TiledMap map;
     public bool drawGizmo=false;
@@ -101,9 +100,6 @@ public class GridmapLoader : MonoBehaviour
         }
     }
 
-    // ==========================================================
-    // 🔹 LOAD TILESET
-    // ==========================================================
     void LoadTileset(TiledTileset ts, HashSet<int> usedGids)
     {
         int firstGid = ts.firstgid;
@@ -120,20 +116,53 @@ public class GridmapLoader : MonoBehaviour
 
             int localId = gid - firstGid;
             string resourcePath = $"Tiles/{folder}/{localId + 1}";
-            Sprite sprite = Resources.Load<Sprite>(resourcePath);
 
-            if (sprite == null)
-                continue;
+            // 🔸 Nếu là folder "Objects" thì load sprite sheet multiple
+            Sprite[] sprites;
+            if (folder == "Objects")
+            {
+                sprites = Resources.LoadAll<Sprite>(resourcePath);
+                if (sprites == null || sprites.Length == 0)
+                {
+                    Debug.LogWarning($"⚠️ Không tìm thấy sprites trong {resourcePath}");
+                    continue;
+                }
+            }
+            else
+            {
+                Sprite s = Resources.Load<Sprite>(resourcePath);
+                if (s == null)
+                {
+                    Debug.LogWarning($"⚠️ Không tìm thấy sprite trong {resourcePath}");
+                    continue;
+                }
+                sprites = new Sprite[] { s };
+            }
 
             if (!gidToTile.ContainsKey(gid))
             {
-                Tile tile = ScriptableObject.CreateInstance<Tile>();
-                tile.sprite = sprite;
-                gidToTile[gid] = tile;
+                // 🔹 Nếu là Objects → dùng MultiSpriteTile
+                if (folder == "Objects")
+                {
+                    MultiSpriteTile multi = ScriptableObject.CreateInstance<MultiSpriteTile>();
+                    multi.sprites = sprites;
+                    multi.sprite = sprites[0]; // đặt sprite đầu tiên làm đại diện
+                    gidToTile[gid] = multi;
+                }
+                else
+                {
+                    Tile tile = ScriptableObject.CreateInstance<Tile>();
+                    tile.sprite = sprites[0];
+                    gidToTile[gid] = tile;
+                }
+
                 loadedCount++;
             }
         }
+
+        Debug.Log($"✅ Loaded {loadedCount} tiles from '{folder}'");
     }
+
 
     void LoadTileLayers()
     {
@@ -188,41 +217,64 @@ public class GridmapLoader : MonoBehaviour
 
             foreach (var obj in layer.objects)
             {
-                // 🔸 Nếu là collider → tạo box collider
                 if (obj.type == "Collider")
                 {
                     CreateColliderBox(obj);
                     continue;
                 }
 
-                // 🔸 Nếu là object có sprite
-                if (obj.gid > 0 && gidToTile.TryGetValue(obj.gid, out Tile tile))
+                if (obj.gid > 0 && gidToTile.TryGetValue(obj.gid, out Tile baseTile))
                 {
-                    GameObject go = new GameObject($"Object_{obj.id}");
-                    var sr = go.AddComponent<SpriteRenderer>();
-                    sr.sortingOrder = 5;
-                    sr.sprite = tile.sprite;
-
+                    GameObject parent = new GameObject($"Object_{obj.id}");
                     float mapHeightInWorldUnits = map.height * map.tileheight;
                     float centerX = obj.x + obj.width / 2f;
+
                     float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
-                    centerY += offsetCorrectionY;
-                    go.transform.position = new Vector3(centerX, centerY, 0);
-                    float spritePixelWidth = sr.sprite.bounds.size.x;
-                    float spritePixelHeight = sr.sprite.bounds.size.y;
+                    float offsetToFixWhateverTheProblemIs=0;
 
-                    go.transform.localScale = new Vector3(
-                        obj.width / spritePixelWidth,
-                        obj.height / spritePixelHeight,
-                        1
-                    );
+                    if (baseTile is MultiSpriteTile multi && multi.sprites.Length > 1)
+                    {
+                        var s0 = multi.sprites[0]; 
+                        var s1 = multi.sprites[1]; 
+
+                        float h0 = s0.bounds.size.y; 
+                        float h1 = s1.bounds.size.y; 
+
+                        float totalHeight = h0 + h1;
+                        offsetToFixWhateverTheProblemIs = totalHeight;
+
+                        float bottomEdge = -totalHeight / 2f;
+                        float splitY = bottomEdge + h0;
 
 
-                    Debug.Log($"[Object] {obj.id} GID={obj.gid} Pos=({obj.x:F1},{obj.y:F1}) Size=({obj.width}x{obj.height}) Sprite={sr.sprite?.name}");
+                        for (int i = 0; i < multi.sprites.Length; i++)
+                        {
+                            Sprite s = multi.sprites[i];
+                            GameObject child = new GameObject($"part_{i}");
+                            child.transform.SetParent(parent.transform, false);
+
+                            var sr = child.AddComponent<SpriteRenderer>();
+                            sr.sprite = s;
+                            sr.sortingLayerName = "Default";
+                            sr.sortingOrder = (i == 0 ? 10 : -6);
+
+                            child.transform.localPosition = new Vector3(0, -splitY, 0);
+                        }
+                    }
+                    else
+                    {
+                        var sr = parent.AddComponent<SpriteRenderer>();
+                        sr.sprite = baseTile.sprite;
+                        sr.sortingLayerName = "Default";
+                        sr.sortingOrder = 5;  
+                        offsetToFixWhateverTheProblemIs=sr.bounds.size.y;
+                    }
+                    parent.transform.position = new Vector3(centerX, centerY+offsetToFixWhateverTheProblemIs, 0);
                 }
             }
         }
     }
+
 
     void CreateColliderBox(TiledObject obj)
     {
@@ -257,40 +309,29 @@ public class GridmapLoader : MonoBehaviour
             {
                 if (obj.type != "Collider" || obj.width <= 0 || obj.height <= 0) continue;
 
-                // 1. Tọa độ Y Tiled (pixel, gốc trên)
+
                 float tiledYTop = obj.y;
                 float tiledYBottom = obj.y + obj.height;
 
-                // 2. Chuyển đổi tọa độ Tiled Y sang World Y (Logic Y tăng từ dưới lên)
-                // World Y Top (tọa độ pixel thấp) -> Logic Y cao
+
                 float worldYTop = (map.height * tileH) - tiledYTop;
 
-                // World Y Bottom (tọa độ pixel cao) -> Logic Y thấp
+
                 float worldYBottom = (map.height * tileH) - tiledYBottom;
 
               
                 int tempMinTileY = Mathf.Max(0, Mathf.FloorToInt(worldYBottom / tileH));
 
-                // Lấy chỉ số logic Y cao nhất (max Tile Y index)
-                // Math.FloorToInt(worldYTop / tileH) là logic Y index cao.
-                // Nếu Object nằm hoàn toàn trong ô đó, chúng ta muốn lấy chỉ số ngay trước biên (floor)
                 int tempMaxTileY = Mathf.Min(gridHeight - 1, Mathf.FloorToInt(worldYTop / tileH) - 1);
 
                 int maxTileY = Mathf.Min(gridHeight - 1, Mathf.CeilToInt(tiledYBottom / tileH) - 1);
 
-                // Lấy chỉ số Y cao (gần đỉnh map)
-                // obj.y là tọa độ pixel của đỉnh Object.
                 int minTileY = Mathf.Max(0, Mathf.FloorToInt(tiledYTop / tileH));
 
-                // Lấy chỉ số X (giữ nguyên)
                 int minTileX = Mathf.Max(0, Mathf.FloorToInt(obj.x / tileW));
                 int maxTileX = Mathf.Min(gridWidth - 1, Mathf.CeilToInt((obj.x + obj.width) / tileW) - 1);
 
-
-                // --- LẶP QUA CÁC Ô BỊ CHẶN ---
-
-                // Duyệt theo Tiled Y logic (tăng từ trên xuống)
-                for (int y = minTileY; y <= maxTileY; y++) // y ở đây là Tiled Y index (tăng từ trên xuống)
+                for (int y = minTileY; y <= maxTileY; y++) 
                 {
                     for (int x = minTileX; x <= maxTileX; x++)
                     {
@@ -307,14 +348,14 @@ public class GridmapLoader : MonoBehaviour
     {
         if(!drawGizmo||!Application.isPlaying) return;
         TileNode[,] gridNodes = pathfinder.grid;
-        // Chỉ vẽ Gizmos khi game đang chạy và gridNodes đã được khởi tạo
+
         if (gridNodes == null || !Application.isPlaying)
             return;
 
         int gridHeight = gridNodes.GetLength(0);
         int gridWidth = gridNodes.GetLength(1);
 
-        // Lặp qua tất cả các Node
+
         for (int y = 0; y < gridHeight; y++)
         {
             for (int x = 0; x < gridWidth; x++)
@@ -334,15 +375,6 @@ public class GridmapLoader : MonoBehaviour
                     Gizmos.color = new Color(0f, 1f, 0f, 0.1f);
                 }
 
-                // 2. Lấy vị trí World của ô (tâm)
-                // Vì TileNode lưu vị trí góc (từ CellToWorld), ta cần cộng 1/2 kích thước ô
-                // **LƯU Ý:** Bạn cần truy cập kích thước ô (ví dụ: map.tilewidth/tileheight) 
-                // Nếu kích thước ô là 1 World Unit, thì WorldPos đã đúng.
-
-                // Nếu bạn dùng PPU=48 và 1 tile = 1 World Unit: tileWidthWorld = 1.
-                // Nếu bạn dùng PPU=1 và 1 tile = 48 World Units: tileWidthWorld = 48.
-
-                // Dùng kích thước Tiled Object để đồng bộ hóa
                 float worldTileWidth = map.tilewidth;
                 float worldTileHeight = map.tileheight;
 
