@@ -188,8 +188,8 @@ public class PlayerAnimationController : MonoBehaviour
         {
             spriteRenderers[CharacterPart.Eyes].gameObject.SetActive(false);
             int hairOrder = spriteRenderers[CharacterPart.Hair].sortingOrder;
-            spriteRenderers[weaponType].sortingOrder = hairOrder+1;
-            spriteRenderers[CharacterPart.Wings].sortingOrder = hairOrder + 2;
+            spriteRenderers[weaponType].sortingOrder = hairOrder;
+            spriteRenderers[CharacterPart.Wings].sortingOrder = hairOrder + 1;
         }
         else
         {
