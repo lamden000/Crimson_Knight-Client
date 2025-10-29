@@ -46,6 +46,9 @@ public class PlayerMovementController : MovementControllerBase
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.CanPlayerMove)
+            return;
+
         if (isGettingHit)
         {
             rb.linearVelocity = Vector2.zero;
@@ -64,7 +67,7 @@ public class PlayerMovementController : MovementControllerBase
                 return;
             }
 
-            Enemy enemy = targetEnemy.GetComponent<Enemy>();
+            Monster enemy = targetEnemy.GetComponent<Monster>();
             if (enemy == null || enemy.IsDead)
             {
                 CancelAutoFollow();
@@ -81,11 +84,19 @@ public class PlayerMovementController : MovementControllerBase
             Vector2 screenPos = mouse.position.ReadValue();
             Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
             Collider2D hit = Physics2D.OverlapPoint(worldPos);
-            if (hit != null && hit.CompareTag("Enemy"))
+            if (hit != null)
             {
-                ClearPath();
-                targetEnemy = hit.transform;
-                isMovingToEnemy = true;
+                if (hit.CompareTag("Enemy"))
+                {
+                    ClearPath();
+                    targetEnemy = hit.transform;
+                    isMovingToEnemy = true;
+                }
+                else if(hit.CompareTag("NPC"))
+                {
+                    NPCDialogueController npc=hit.gameObject.GetComponent<NPCDialogueController>();
+                    npc.StartDialogue();
+                }
             }
         }
 
@@ -256,7 +267,7 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Down, State.Attack);
             transform.rotation = Quaternion.identity;
         }
-        targetEnemy.gameObject.GetComponent<Enemy>().TakeDamage(100, gameObject);
+        targetEnemy.gameObject.GetComponent<Monster>().TakeDamage(100, gameObject);
         anim.SetAttackAnimation(true);
     }
 

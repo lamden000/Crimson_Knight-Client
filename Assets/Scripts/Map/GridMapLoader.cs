@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Tilemaps;
@@ -84,19 +85,12 @@ public class GridmapLoader : MonoBehaviour
                 }
             }
 
-            Debug.Log($"[GridmapLoader] 🧩 Tổng cộng {usedGids.Count} GID được dùng.");
-
-            // 🔹 B2: Load các tileset cần thiết
             foreach (var ts in map.tilesets)
                 LoadTileset(ts, usedGids);
 
-            // 🔹 B3: Load tile layer
             LoadTileLayers();
 
-            // 🔹 B4: Load object layer
             LoadObjectLayers();
-
-            Debug.Log("✅ Map loaded hoàn tất.");
         }
     }
 
@@ -124,7 +118,6 @@ public class GridmapLoader : MonoBehaviour
                 sprites = Resources.LoadAll<Sprite>(resourcePath);
                 if (sprites == null || sprites.Length == 0)
                 {
-                    Debug.LogWarning($"⚠️ Không tìm thấy sprites trong {resourcePath}");
                     continue;
                 }
             }
@@ -132,8 +125,7 @@ public class GridmapLoader : MonoBehaviour
             {
                 Sprite s = Resources.Load<Sprite>(resourcePath);
                 if (s == null)
-                {
-                    Debug.LogWarning($"⚠️ Không tìm thấy sprite trong {resourcePath}");
+                {               
                     continue;
                 }
                 sprites = new Sprite[] { s };
@@ -219,7 +211,13 @@ public class GridmapLoader : MonoBehaviour
             {
                 if (obj.type == "Collider")
                 {
-                    CreateColliderBox(obj);
+                    CreateColliderBox(obj,false);
+                    continue;
+                }
+
+                if (obj.type == "Water")
+                {
+                    CreateColliderBox(obj, true);
                     continue;
                 }
 
@@ -235,7 +233,7 @@ public class GridmapLoader : MonoBehaviour
                     if (baseTile is MultiSpriteTile multi && multi.sprites.Length > 1)
                     {
                         var s0 = multi.sprites[0]; 
-                        var s1 = multi.sprites[1]; 
+                        var s1 = multi.sprites[1];
 
                         float h0 = s0.bounds.size.y; 
                         float h1 = s1.bounds.size.y; 
@@ -256,7 +254,7 @@ public class GridmapLoader : MonoBehaviour
                             var sr = child.AddComponent<SpriteRenderer>();
                             sr.sprite = s;
                             sr.sortingLayerName = "Default";
-                            sr.sortingOrder = (i == 0 ? 10 : -6);
+                            sr.sortingOrder = (i == 0 ? 5 : -6);                          
 
                             child.transform.localPosition = new Vector3(0, -splitY, 0);
                         }
@@ -266,7 +264,7 @@ public class GridmapLoader : MonoBehaviour
                         var sr = parent.AddComponent<SpriteRenderer>();
                         sr.sprite = baseTile.sprite;
                         sr.sortingLayerName = "Default";
-                        sr.sortingOrder = 5;  
+                        sr.sortingOrder = 4;  
                         offsetToFixWhateverTheProblemIs=sr.bounds.size.y;
                     }
                     parent.transform.position = new Vector3(centerX, centerY+offsetToFixWhateverTheProblemIs, 0);
@@ -275,11 +273,13 @@ public class GridmapLoader : MonoBehaviour
         }
     }
 
-
-    void CreateColliderBox(TiledObject obj)
+    void CreateColliderBox(TiledObject obj, bool isWater)
     {
-        GameObject go = new GameObject("ColliderBox");
+        string name = isWater? "WaterBox":"ColliderBox";
+        GameObject go = new GameObject(name);
         var col = go.AddComponent<BoxCollider2D>();
+
+        col.isTrigger = isWater;
 
         float centerX = obj.x + obj.width / 2f;
         float mapHeightInWorldUnits = map.height * map.tileheight;
