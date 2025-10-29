@@ -152,7 +152,7 @@ public class GridmapLoader : MonoBehaviour
             }
         }
 
-        Debug.Log($"✅ Loaded {loadedCount} tiles from '{folder}'");
+       // Debug.Log($"✅ Loaded {loadedCount} tiles from '{folder}'");
     }
 
 

@@ -66,7 +66,8 @@ public class Pathfinder : MonoBehaviour
     {
         if (grid == null)
         {
-            Debug.LogWarning("[Pathfinder] Grid not initialized!");
+            if (debugLogs)
+                Debug.LogWarning("[Pathfinder] Grid not initialized!");
             return null;
         }
 
@@ -94,14 +95,16 @@ public class Pathfinder : MonoBehaviour
     {
         if (startNode == null || endNode == null)
         {
-            Debug.LogWarning("[Pathfinder] Start or End node is null!");
+            if (debugLogs)
+                Debug.LogWarning("[Pathfinder] Start or End node is null!");
             return null;
         }
 
         // Check end node traversability taking the agent size into account
         if (!IsNodeTraversable(endNode, agentSize))
         {
-            Debug.Log("[Pathfinder] End node is not traversable for this agent size!");
+            if (debugLogs)
+                Debug.Log("[Pathfinder] End node is not traversable for this agent size!");
             return null;
         }
 
@@ -151,8 +154,8 @@ public class Pathfinder : MonoBehaviour
                 }
             }
         }
-
-        Debug.LogWarning("[Pathfinder] ❌ No path found!");
+        if (debugLogs)
+            Debug.LogWarning("[Pathfinder] ❌ No path found!");
         return null;
     }
 
@@ -169,7 +172,8 @@ public class Pathfinder : MonoBehaviour
         if (debugLogs)
         {
             string pathStr = string.Join(" -> ", path.ConvertAll(p => p.gridPos.ToString()));
-            Debug.Log($"[Pathfinder] ✅ Path reconstructed ({path.Count} nodes): {pathStr}");
+            if (debugLogs)
+                Debug.Log($"[Pathfinder] ✅ Path reconstructed ({path.Count} nodes): {pathStr}");
         }
 
         return path;

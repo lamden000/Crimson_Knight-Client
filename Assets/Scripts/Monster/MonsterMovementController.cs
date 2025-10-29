@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class MonsterMovementController : MovementControllerBase
 {
@@ -97,7 +96,10 @@ public class MonsterMovementController : MovementControllerBase
             else if (distance > attackRange)
             {
                 if (isDebugging) Debug.Log($"[ChaseRoutine] Khoảng cách {distance:F2} > AttackRange. Bắt đầu DI CHUYỂN.");
-                yield return StartCoroutine(MoveToTarget(playerTarget.position));
+                // set walking state so animation updates, then use base MoveToTarget (uses agent size)
+                enemy.SetState(EnemyState.Walk);
+                yield return StartCoroutine(MoveToTarget(playerTarget, attackRange, arrivalDistance));
+                enemy.SetState(EnemyState.Idle);
             }
             else
             {
@@ -132,43 +134,7 @@ public class MonsterMovementController : MovementControllerBase
         if (isDebugging) Debug.Log("[AttackAction] Cooldown KẾT THÚC.");
     }
 
-    private IEnumerator MoveToTarget(Vector3 targetWorldPos)
-    {
-        if (!EnsurePathfinder()) yield break;
-
-        TileNode startNode = pathfinder.GetTileFromWorld(transform.position);
-        TileNode endNode = pathfinder.GetTileFromWorld(targetWorldPos);
-
-        if (startNode == null || endNode == null) yield break;
-
-        var agentSize = GetAgentSizeForPathfinding();
-        var nodePath = pathfinder.FindPath(startNode, endNode, agentSize);
-        SetCurrentPathFromNodes(nodePath);
-
-        if (currentPath == null || currentPath.Count <= 1)
-        {
-            enemy.SetState(EnemyState.Idle);
-            yield break;
-        }
-
-        enemy.SetState(EnemyState.Walk);
-
-        while (pathIndex < currentPath.Count)
-        {
-            if (Vector3.Distance(transform.position, GetCurrentTargetWorldPos()) < arrivalDistance)
-            {
-                pathIndex++;
-            }
-            MoveAlongPath();
-            yield return null;
-
-            if (playerTarget != null && Vector3.Distance(transform.position, playerTarget.position) <= attackRange)
-            {
-                break;
-            }
-        }
-        enemy.SetState(EnemyState.Idle);
-    }
+    // NOTE: Uses MovementControllerBase.MoveToTarget coroutine now.
 
     IEnumerator WaitForPathfinderInitialization()
     {
@@ -206,7 +172,8 @@ public class MonsterMovementController : MovementControllerBase
 
     void Update()
     {
-        if (isPatrolling && currentPath != null && pathIndex < currentPath.Count)
+        // Only perform frame-based MoveAlongPath when not already running the follow coroutine.
+        if (isPatrolling && followCoroutine == null && currentPath != null && pathIndex < currentPath.Count)
         {
             MoveAlongPath();
         }
@@ -299,7 +266,10 @@ public class MonsterMovementController : MovementControllerBase
                     Debug.Log($"Bắt đầu di chuyển ngẫu nhiên đến node: {endNode.gridPos}");
 
                 enemy.SetState(EnemyState.Walk);
-                yield return StartCoroutine(FollowPath());
+                // run follow with reference so Update() knows a coroutine is active
+                followCoroutine = StartCoroutine(FollowPath(arrivalDistance));
+                yield return followCoroutine;
+                followCoroutine = null;
 
                 enemy.SetState(EnemyState.Idle);
             }
@@ -308,23 +278,7 @@ public class MonsterMovementController : MovementControllerBase
         }
     }
 
-    IEnumerator FollowPath()
-    {
-        while (currentPath != null && pathIndex < currentPath.Count)
-        {
-            if (enemy.currentState != EnemyState.Walk)
-                enemy.SetState(EnemyState.Walk);
-
-            if (Vector3.Distance(transform.position, GetCurrentTargetWorldPos()) < arrivalDistance)
-            {
-                pathIndex++;
-            }
-            yield return null;
-        }
-
-        if (isDebugging)
-            Debug.Log("Đã hoàn thành một chặng tuần tra ngẫu nhiên.");
-    }
+    // FollowPath coroutine is implemented in MovementControllerBase; use that instead.
 
     protected override void MoveAlongPath()
     {
