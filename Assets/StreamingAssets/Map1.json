@@ -208,6 +208,50 @@
                  "width":156,
                  "x":978.666666666667,
                  "y":453.333333333333
+                }, 
+                {
+                 "height":41.3333333333333,
+                 "id":63,
+                 "name":"Slime",
+                 "rotation":0,
+                 "type":"Monster",
+                 "visible":true,
+                 "width":44,
+                 "x":574.666666666667,
+                 "y":868
+                }, 
+                {
+                 "height":41.3333333333333,
+                 "id":66,
+                 "name":"Bunny",
+                 "rotation":0,
+                 "type":"Monster",
+                 "visible":true,
+                 "width":44,
+                 "x":1109.33333333333,
+                 "y":278.666666666667
+                }, 
+                {
+                 "height":41.3333333333333,
+                 "id":67,
+                 "name":"Slime",
+                 "rotation":0,
+                 "type":"Monster",
+                 "visible":true,
+                 "width":44,
+                 "x":482.666666666667,
+                 "y":602.666666666667
+                }, 
+                {
+                 "height":76,
+                 "id":68,
+                 "name":"Mom",
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":39.9999999999999,
+                 "x":1002.66666666667,
+                 "y":165.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -216,7 +260,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":63,
+ "nextobjectid":69,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -12,7 +12,7 @@ public class PlayerMovementController : MovementControllerBase
     [Header("Movement Settings")]
     [SerializeField] private float attackRange = 1.2f;
     [SerializeField] private float attackCooldown = 0.8f;
-
+    private static long timeStartSendMove = 0;
     private Transform targetEnemy;
     private bool isMovingToEnemy = false;
 
@@ -26,6 +26,10 @@ public class PlayerMovementController : MovementControllerBase
     private float attackAnimDuration = 0.4f;
     private Vector2 moveInput;
     private bool isGettingHit = false;
+    [Header("Interaction")]
+    [SerializeField] private float npcInteractRange = 1.2f;
+    private Coroutine npcTalkCoroutine;
+    private NPCDialogueController pendingNpcDialogue;
 
     protected override void Start()
     {
@@ -44,10 +48,21 @@ public class PlayerMovementController : MovementControllerBase
         moveInput = input.Get<Vector2>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (!GameManager.Instance.CanPlayerMove)
+        {
+            rb.linearVelocity = Vector2.zero;
+            CancelAutoFollow();
+            if (npcTalkCoroutine != null)
+            {
+                StopCoroutine(npcTalkCoroutine);
+                npcTalkCoroutine = null;
+                pendingNpcDialogue = null;
+            }
+            anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
             return;
+        }
 
         if (isGettingHit)
         {
@@ -83,9 +98,8 @@ public class PlayerMovementController : MovementControllerBase
         {
             Camera cam=Camera.main;
             Vector2 screenPos = Mouse.current.position.ReadValue();
-            Vector3 screenToWorld = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -cam.transform.position.z));
+            Vector3 screenToWorld = cam.ScreenToWorldPoint(screenPos);
             Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
-
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
 
             if (hit.collider != null)
@@ -98,8 +112,21 @@ public class PlayerMovementController : MovementControllerBase
                 }
                 else if (hit.collider.CompareTag("NPC"))
                 {
-                    NPCDialogueController npc = hit.collider.GetComponent<NPCDialogueController>();
-                    npc.StartDialogue();
+                    var npc = hit.collider.GetComponent<NPCDialogueController>();
+                    if (npc == null) return;
+
+                    // cancel any existing movement/dialogue interaction
+                    CancelAutoFollow();
+                    if (npcTalkCoroutine != null)
+                    {
+                        StopCoroutine(npcTalkCoroutine);
+                        npcTalkCoroutine = null;
+                        pendingNpcDialogue = null;
+                    }
+
+                    // start moving toward NPC and speak when within range
+                    pendingNpcDialogue = npc;
+                    npcTalkCoroutine = StartCoroutine(MoveToNPCAndTalk(npc));
                 }
             }
         }
@@ -162,8 +189,8 @@ public class PlayerMovementController : MovementControllerBase
             return;
         }
 
-        // Nếu chưa có path hoặc đã đến node hiện tại → tìm lại đường
-            if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile() || pathfinder != null)
+        // Nếu chưa có path hoặc đã đến node hiện tại → tìm lại đường và bắt đầu coroutine follow
+        if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile() || pathfinder != null)
         {
             var startNode = pathfinder.GetTileFromWorld(transform.position);
             var endNode = pathfinder.GetTileFromWorld(targetEnemy.position);
@@ -182,13 +209,13 @@ public class PlayerMovementController : MovementControllerBase
                 return;
             }
 
-            currentPath = path.Select(n => n.worldPos).ToList();
+            SetCurrentPathFromNodes(path);
             pathIndex = 0;
 
-            string pathStr = string.Join(" → ", path.Select(p => $"({p.gridPos.x},{p.gridPos.y})"));
+            // start base follow coroutine, but stop early when within attackRange of the enemy
+            StartFollow(1f, targetEnemy, attackRange);
+            return;
         }
-
-        MoveAlongPath();
     }
 
 
@@ -275,7 +302,6 @@ public class PlayerMovementController : MovementControllerBase
         anim.SetAttackAnimation(true);
     }
 
-    private static long timeStartSendMove = 0;
     private void ManualMove()
     {
         float h = moveAxisInput.x;
@@ -284,6 +310,13 @@ public class PlayerMovementController : MovementControllerBase
 
         if (moving)
         {
+            // manual input cancels any pending NPC interaction
+            if (npcTalkCoroutine != null)
+            {
+                StopCoroutine(npcTalkCoroutine);
+                npcTalkCoroutine = null;
+                pendingNpcDialogue = null;
+            }
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
                 rb.linearVelocity = new Vector2(h * moveSpeed, 0);
@@ -319,6 +352,45 @@ public class PlayerMovementController : MovementControllerBase
     {
         isMovingToEnemy = false;
         targetEnemy = null;
+        // stop any running follow coroutine from base
+        if (followCoroutine != null)
+        {
+            StopCoroutine(followCoroutine);
+            followCoroutine = null;
+        }
+        // stop any pending NPC interaction
+        if (npcTalkCoroutine != null)
+        {
+            StopCoroutine(npcTalkCoroutine);
+            npcTalkCoroutine = null;
+            pendingNpcDialogue = null;
+        }
         ClearPath();
+    }
+
+    private IEnumerator MoveToNPCAndTalk(NPCDialogueController npc)
+    {
+        if (npc == null) yield break;
+
+        // if already in range, start immediately
+        if (Vector3.Distance(transform.position, npc.transform.position) <= npcInteractRange)
+        {
+            npc.StartDialogue();
+            npcTalkCoroutine = null;
+            pendingNpcDialogue = null;
+            yield break;
+        }
+
+        // use base MoveToTarget that stops when within npcInteractRange
+        yield return StartCoroutine(MoveToTarget(npc.transform, npcInteractRange));
+
+        // after arriving, ensure npc still exists then start dialogue
+        if (npc != null)
+        {
+            npc.StartDialogue();
+        }
+
+        npcTalkCoroutine = null;
+        pendingNpcDialogue = null;
     }
 }

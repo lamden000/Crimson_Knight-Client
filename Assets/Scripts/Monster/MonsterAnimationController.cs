@@ -6,7 +6,7 @@ public class MonsterAnimationController : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
-    private EnemyName _name;
+    private MonsterName _name;
     private MonsterSpriteDatabase database;
     private Monster enemy;
 
@@ -52,7 +52,7 @@ public class MonsterAnimationController : MonoBehaviour
     }
 
 
-    private void PlayAnimation(EnemyState state)
+    private void PlayAnimation(MonsterState state)
     {
         if (database == null) return;
 
@@ -69,7 +69,7 @@ public class MonsterAnimationController : MonoBehaviour
 
         if ((frames == null || frames.Count == 0))
         {
-            frames = database.GetSprites(_name, EnemyState.Idle);
+            frames = database.GetSprites(_name, MonsterState.Idle);
         }
         else
         {
