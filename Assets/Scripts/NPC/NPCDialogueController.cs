@@ -5,24 +5,24 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+
+[RequireComponent(typeof(NPC))]
 public class NPCDialogueController : MonoBehaviour
 {
     [Header("Dialogue Data")]
-    public NPCDialogue dialogueData;
     public string currentQuest;
 
-    [Header("UI References")]
-    public GameObject dialoguePanel;
-    public TextMeshProUGUI dialogueText;
-    public Image portraitImage;
-    public Button questButton;
-    public Button closeButton;
+    private GameObject dialoguePanel;
+    private TextMeshProUGUI dialogueText;
+    private Image portraitImage;
+    private Button questButton;
+    private Button closeButton;
 
     [Header("World-Space Chat Bubble")]
     public GameObject chatBubblePrefab;      
     public float bubbleDuration = 3f;    
     public float bubbleScalePerChar = 0.02f;
-    public Vector2 bubbleOffset;
+    public Vector2 bubbleOffset=new Vector2(0,100);
 
     private AudioSource audioSource;
 
@@ -31,12 +31,20 @@ public class NPCDialogueController : MonoBehaviour
     private bool isTyping;
     private bool skipTyping;
     private bool isDialogueActive;
+    private Canvas worldCanvas;
+    private NPCDialogue dialogueData;
 
 
     private void Start()
-    {
-        SpeakBubble("Idle");
+    {     
         audioSource = GetComponent<AudioSource>();
+        worldCanvas = CharacterDialogManager.Instance.worldCanvas;
+        dialoguePanel = CharacterDialogManager.Instance.dialoguePanel;
+        dialogueText = CharacterDialogManager.Instance.dialogueText;
+        portraitImage = CharacterDialogManager.Instance.portraitImage;
+        questButton = CharacterDialogManager.Instance.questButton;
+        closeButton = CharacterDialogManager.Instance.closeButton;
+        LoadDialogueData();
     }
 
 
@@ -55,6 +63,19 @@ public class NPCDialogueController : MonoBehaviour
         portraitImage.sprite = dialogueData.npcPotrait;
 
         PlayDialogue("Idle");
+    }
+
+    private void LoadDialogueData()
+    {
+        NPCName npcName=GetComponent<NPC>().npcName;
+        int npcIndex = (int)npcName;
+        string path = $"NPCs/Dialogue/{npcIndex}/NPC_{npcIndex}_Dialog";
+        dialogueData = Resources.Load<NPCDialogue>(path);
+
+        if (dialogueData == null)
+            Debug.LogWarning($"Dialogue data not found for {npcName} at Resources/{path}");
+        else
+            Debug.Log($"Loaded dialogue for {npcName} from {path}");
     }
 
     private void PlayDialogue(string key)
@@ -196,10 +217,9 @@ public class NPCDialogueController : MonoBehaviour
             audioSource.clip = clip;
             audioSource.Play();
         }
-        Canvas worldCanvas = GameObject.FindGameObjectWithTag("WorldCanvas")?.GetComponent<Canvas>();
         if (worldCanvas == null)
         {
-            Debug.LogWarning("No world-space canvas found with tag 'WorldCanvas'.");
+            Debug.LogWarning("No world-space canvas found.");
             return;
         }
 

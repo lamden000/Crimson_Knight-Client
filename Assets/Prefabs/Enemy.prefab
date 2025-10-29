@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 200
-  R: 5
+  R: 10
   waitTime: 1
   arrivalDistance: 0.1
   attackRange: 100
