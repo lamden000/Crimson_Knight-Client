@@ -79,22 +79,26 @@ public class PlayerMovementController : MovementControllerBase
         }
 
         var mouse = Mouse.current;
-        if (mouse.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Vector2 screenPos = mouse.position.ReadValue();
-            Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-            Collider2D hit = Physics2D.OverlapPoint(worldPos);
-            if (hit != null)
+            Camera cam=Camera.main;
+            Vector2 screenPos = Mouse.current.position.ReadValue();
+            Vector3 screenToWorld = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -cam.transform.position.z));
+            Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+            if (hit.collider != null)
             {
-                if (hit.CompareTag("Enemy"))
+                if (hit.collider.CompareTag("Enemy"))
                 {
                     ClearPath();
                     targetEnemy = hit.transform;
                     isMovingToEnemy = true;
                 }
-                else if(hit.CompareTag("NPC"))
+                else if (hit.collider.CompareTag("NPC"))
                 {
-                    NPCDialogueController npc=hit.gameObject.GetComponent<NPCDialogueController>();
+                    NPCDialogueController npc = hit.collider.GetComponent<NPCDialogueController>();
                     npc.StartDialogue();
                 }
             }
