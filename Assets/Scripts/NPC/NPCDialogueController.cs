@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+
 public class NPCDialogueController : MonoBehaviour
 {
-
     [Header("Dialogue Data")]
     public NPCDialogue dialogueData;
     public string currentQuest;
@@ -18,6 +18,12 @@ public class NPCDialogueController : MonoBehaviour
     public Button questButton;
     public Button closeButton;
 
+    [Header("World-Space Chat Bubble")]
+    public GameObject chatBubblePrefab;      
+    public float bubbleDuration = 3f;    
+    public float bubbleScalePerChar = 0.02f;
+    public Vector2 bubbleOffset;
+
     private AudioSource audioSource;
 
     private DialogueEntry currentEntry;
@@ -26,24 +32,29 @@ public class NPCDialogueController : MonoBehaviour
     private bool skipTyping;
     private bool isDialogueActive;
 
+
     private void Start()
     {
-        audioSource=GetComponent<AudioSource>();    
+        SpeakBubble("Idle");
+        audioSource = GetComponent<AudioSource>();
     }
 
-    // Call this when player interacts with the NPC
+
+    // ========= Player triggered dialogue =========
     public void StartDialogue()
     {
         if (isDialogueActive) return;
 
-        if(currentQuest.Length==0)
+        if (currentQuest.Length == 0)
             questButton.gameObject.SetActive(false);
+
         dialoguePanel.SetActive(true);
         questButton.onClick.AddListener(OnQuestButton);
         closeButton.onClick.AddListener(CloseDialogue);
         isDialogueActive = true;
         portraitImage.sprite = dialogueData.npcPotrait;
-        PlayDialogue("Idle"); 
+
+        PlayDialogue("Idle");
     }
 
     private void PlayDialogue(string key)
@@ -75,12 +86,16 @@ public class NPCDialogueController : MonoBehaviour
             if (auto)
                 yield return new WaitForSeconds(dialogueData.autoProgressDelay);
             else
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            {
+                yield return new WaitUntil(() =>
+                    Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame ||
+                    Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame
+                );
+            }
 
             currentLineIndex++;
         }
 
-        // After Idle or Quest dialogue finishes, show buttons
         questButton.gameObject.SetActive(true);
         closeButton.gameObject.SetActive(true);
     }
@@ -145,7 +160,6 @@ public class NPCDialogueController : MonoBehaviour
     {
         questButton.gameObject.SetActive(false);
         closeButton.gameObject.SetActive(false);
-
         PlayDialogue(currentQuest);
     }
 
@@ -163,5 +177,37 @@ public class NPCDialogueController : MonoBehaviour
     {
         if (isTyping)
             skipTyping = true;
+    }
+
+    // ========= Ambient talk: world-space chat bubble =========
+    public void SpeakBubble(string key)
+    {
+        var entry = GetDialogueEntry(key);
+        if (entry == null || entry.lines.Count == 0)
+            return;
+
+        string line = entry.lines[Random.Range(0, entry.lines.Count)];
+        AudioClip clip = entry.audioClips != null && entry.audioClips.Length > 0 ?
+            entry.audioClips[Random.Range(0, entry.audioClips.Length)] : null;
+
+        if (clip != null)
+        {
+            audioSource.pitch = dialogueData.voicePitch;
+            audioSource.clip = clip;
+            audioSource.Play();
+        }
+        Canvas worldCanvas = GameObject.FindGameObjectWithTag("WorldCanvas")?.GetComponent<Canvas>();
+        if (worldCanvas == null)
+        {
+            Debug.LogWarning("No world-space canvas found with tag 'WorldCanvas'.");
+            return;
+        }
+
+        Vector3 position = transform.position+new Vector3(bubbleOffset.x,bubbleOffset.y);
+        GameObject bubble = Instantiate(chatBubblePrefab,position, Quaternion.identity, worldCanvas.gameObject.transform);
+        var text = bubble.GetComponentInChildren<TextMeshProUGUI>();
+
+        text.text = line;
+        Destroy(bubble, bubbleDuration);
     }
 }
