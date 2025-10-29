@@ -16,6 +16,8 @@ public class GridmapLoader : MonoBehaviour
     public string jsonFileName = "map1.json";
     public Tilemap tilemap;
     public float tileScale = 1f;
+    public GameObject monsterPrefab;
+    public GameObject npcPrefab;
 
     private Dictionary<int, Tile> gidToTile = new Dictionary<int, Tile>();
     public bool loadInEditMode = false;
@@ -209,71 +211,128 @@ public class GridmapLoader : MonoBehaviour
 
             foreach (var obj in layer.objects)
             {
-                if (obj.type == "Collider")
+                switch (obj.type)
                 {
-                    CreateColliderBox(obj,false);
-                    continue;
-                }
+                    case "Collider":
+                        CreateColliderBox(obj, false);
+                        break;
 
-                if (obj.type == "Water")
-                {
-                    CreateColliderBox(obj, true);
-                    continue;
-                }
+                    case "Water":
+                        CreateColliderBox(obj, true);
+                        break;
 
-                if (obj.gid > 0 && gidToTile.TryGetValue(obj.gid, out Tile baseTile))
-                {
-                    GameObject parent = new GameObject($"Object_{obj.id}");
-                    float mapHeightInWorldUnits = map.height * map.tileheight;
-                    float centerX = obj.x + obj.width / 2f;
+                    case "NPC":
+                        SpawnNPC(obj);
+                        break;
 
-                    float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
-                    float offsetToFixWhateverTheProblemIs=0;
+                    case "Monster":
+                        SpawnMonster(obj);
+                        break;
 
-                    if (baseTile is MultiSpriteTile multi && multi.sprites.Length > 1)
-                    {
-                        var s0 = multi.sprites[0]; 
-                        var s1 = multi.sprites[1];
-
-                        float h0 = s0.bounds.size.y; 
-                        float h1 = s1.bounds.size.y; 
-
-                        float totalHeight = h0 + h1;
-                        offsetToFixWhateverTheProblemIs = totalHeight;
-
-                        float bottomEdge = -totalHeight / 2f;
-                        float splitY = bottomEdge + h0;
-
-
-                        for (int i = 0; i < multi.sprites.Length; i++)
-                        {
-                            Sprite s = multi.sprites[i];
-                            GameObject child = new GameObject($"part_{i}");
-                            child.transform.SetParent(parent.transform, false);
-
-                            var sr = child.AddComponent<SpriteRenderer>();
-                            sr.sprite = s;
-                            sr.sortingLayerName = "Default";
-                            sr.sortingOrder = (i == 0 ? 5 : -6);                          
-
-                            child.transform.localPosition = new Vector3(0, -splitY, 0);
-                        }
-                    }
-                    else
-                    {
-                        var sr = parent.AddComponent<SpriteRenderer>();
-                        sr.sprite = baseTile.sprite;
-                        sr.sortingLayerName = "Default";
-                        sr.sortingOrder = 4;  
-                        offsetToFixWhateverTheProblemIs=sr.bounds.size.y;
-                    }
-                    parent.transform.position = new Vector3(centerX, centerY+offsetToFixWhateverTheProblemIs, 0);
+                    default:
+                        if (obj.gid > 0 && gidToTile.TryGetValue(obj.gid, out Tile baseTile))
+                            CreateStaticObject(obj, baseTile);
+                        break;
                 }
             }
         }
     }
 
-    void CreateColliderBox(TiledObject obj, bool isWater)
+    private void SpawnNPC(TiledObject obj)
+    {
+        if (npcPrefab == null)
+        {
+            Debug.LogError("NPC prefab not assigned!");
+            return;
+        }
+
+        Vector3 pos = GetWorldPosition(obj);
+        GameObject npc = Instantiate(npcPrefab, pos, Quaternion.identity);
+        npc.name = $"NPC_{obj.name}_{obj.id}";
+
+        // Auto-assign NPCName enum if it matches
+        var npcCtrl = npc.GetComponent<NPC>();
+        if (npcCtrl != null && System.Enum.TryParse(obj.name, out NPCName npcEnum))
+        {
+            npcCtrl.npcName = npcEnum;
+        }
+    }
+
+    private void SpawnMonster(TiledObject obj)
+    {
+        if (monsterPrefab == null)
+        {
+            Debug.LogError("Monster prefab not assigned!");
+            return;
+        }
+
+        Vector3 pos = GetWorldPosition(obj);
+        GameObject monster = Instantiate(monsterPrefab, pos, Quaternion.identity);
+        monster.name = $"Monster_{obj.name}_{obj.id}";
+        var monsterCtrl = monster.GetComponent<Monster>();
+        if (monsterCtrl != null && System.Enum.TryParse(obj.name, out MonsterName npcEnum))
+        {
+            monsterCtrl.monsterName = npcEnum;
+        }
+    }
+
+    private void CreateStaticObject(TiledObject obj, Tile baseTile)
+    {
+        GameObject parent = new GameObject($"Object_{obj.id}");
+        float mapHeightInWorldUnits = map.height * map.tileheight;
+        float centerX = obj.x + obj.width / 2f;
+        float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
+
+        float offsetY = 0;
+
+        if (baseTile is MultiSpriteTile multi && multi.sprites.Length > 1)
+        {
+            var s0 = multi.sprites[0];
+            var s1 = multi.sprites[1];
+
+            float h0 = s0.bounds.size.y;
+            float h1 = s1.bounds.size.y;
+
+            float totalHeight = h0 + h1;
+            offsetY = totalHeight;
+
+            float bottomEdge = -totalHeight / 2f;
+            float splitY = bottomEdge + h0;
+
+            for (int i = 0; i < multi.sprites.Length; i++)
+            {
+                Sprite s = multi.sprites[i];
+                GameObject child = new GameObject($"part_{i}");
+                child.transform.SetParent(parent.transform, false);
+
+                var sr = child.AddComponent<SpriteRenderer>();
+                sr.sprite = s;
+                sr.sortingLayerName = "Default";
+                sr.sortingOrder = (i == 0 ? 5 : -6);
+
+                child.transform.localPosition = new Vector3(0, -splitY, 0);
+            }
+        }
+        else
+        {
+            var sr = parent.AddComponent<SpriteRenderer>();
+            sr.sprite = baseTile.sprite;
+            sr.sortingLayerName = "Default";
+            sr.sortingOrder = 4;
+            offsetY = sr.bounds.size.y;
+        }
+
+        parent.transform.position = new Vector3(centerX, centerY + offsetY, 0);
+    }
+
+    private Vector3 GetWorldPosition(TiledObject obj)
+    {
+        float mapHeight = map.height * map.tileheight;
+        float x = obj.x + obj.width / 2f;
+        float y = (mapHeight - obj.y) - obj.height / 2f;
+        return new Vector3(x, y, 0);
+    }
+void CreateColliderBox(TiledObject obj, bool isWater)
     {
         string name = isWater? "WaterBox":"ColliderBox";
         GameObject go = new GameObject(name);

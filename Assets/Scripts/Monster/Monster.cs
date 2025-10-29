@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 
-public enum EnemyState { Idle, Walk, Attack, GetHit }
-public enum EnemyName {Slime=1000,Snail=1001,Scorpion=1103,Bunny=1173,Frog=1215 }
+public enum MonsterState { Idle, Walk, Attack, GetHit }
+public enum MonsterName {Slime=1000,Snail=1001,Scorpion=1103,Bunny=1173,Frog=1215 }
 
 public class Monster : MonoBehaviour
 {
     private MonsterMovementController movementController;
-    [SerializeField]
-    private EnemyName _name=EnemyName.Slime;
+    public MonsterName monsterName=MonsterName.Slime;
 
-    public EnemyState currentState;
+    public MonsterState currentState;
     private bool isDead=false;
     [Tooltip("Tự động tấn công người chơi khi lại gần")]
     public bool isHostile = false;
@@ -18,7 +17,7 @@ public class Monster : MonoBehaviour
     void Start()
     {
         movementController = GetComponent<MonsterMovementController>();
-        currentState = EnemyState.Idle;
+        currentState = MonsterState.Idle;
     }
 
     // Update is called once per frame
@@ -27,10 +26,10 @@ public class Monster : MonoBehaviour
         
     }
 
-    public EnemyName GetName()
-    { return _name; }
+    public MonsterName GetName()
+    { return monsterName; }
 
-    public void SetState(EnemyState state)
+    public void SetState(MonsterState state)
     {
         if (isDead) return;
         currentState = state;
@@ -38,7 +37,7 @@ public class Monster : MonoBehaviour
 
     public void TakeDamage(int damage,GameObject attacker)
     {
-        SetState(EnemyState.GetHit);
+        SetState(MonsterState.GetHit);
         if (movementController != null && attacker != null)
         {
             movementController.HandleGetHit(attacker.transform);

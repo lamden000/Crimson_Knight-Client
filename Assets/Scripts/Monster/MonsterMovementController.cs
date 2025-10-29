@@ -56,7 +56,7 @@ public class MonsterMovementController : MovementControllerBase
 
         if (isDebugging) Debug.Log("[GetHit] Kẻ địch bị đánh. Dừng mọi Coroutine di chuyển.");
 
-        enemy.SetState(EnemyState.GetHit);
+        enemy.SetState(MonsterState.GetHit);
 
         StartCoroutine(GetHitDelay(attacker));
     }
@@ -69,13 +69,13 @@ public class MonsterMovementController : MovementControllerBase
         if (attacker != null)
         {
             if (isDebugging) Debug.Log("[GetHitDelay] Animation GetHit kết thúc. Bắt đầu CHASE.");
-            enemy.SetState(EnemyState.Idle);
+            enemy.SetState(MonsterState.Idle);
             StartChase(attacker);
         }
         else
         {
             if (isDebugging) Debug.Log("[GetHitDelay] Không có Attacker. Quay lại Patrol.");
-            enemy.SetState(EnemyState.Idle);
+            enemy.SetState(MonsterState.Idle);
             patrolCoroutine = StartCoroutine(PatrolRoutine());
         }
     }
@@ -84,7 +84,7 @@ public class MonsterMovementController : MovementControllerBase
     {
         if (isDebugging) Debug.Log("[ChaseRoutine] Bắt đầu vòng lặp truy đuổi.");
 
-        while (playerTarget != null && enemy.currentState != EnemyState.GetHit)
+        while (playerTarget != null && enemy.currentState != MonsterState.GetHit)
         {
             float distance = Vector3.Distance(transform.position, playerTarget.position);
 
@@ -97,14 +97,14 @@ public class MonsterMovementController : MovementControllerBase
             {
                 if (isDebugging) Debug.Log($"[ChaseRoutine] Khoảng cách {distance:F2} > AttackRange. Bắt đầu DI CHUYỂN.");
                 // set walking state so animation updates, then use base MoveToTarget (uses agent size)
-                enemy.SetState(EnemyState.Walk);
+                enemy.SetState(MonsterState.Walk);
                 yield return StartCoroutine(MoveToTarget(playerTarget, attackRange, arrivalDistance));
-                enemy.SetState(EnemyState.Idle);
+                enemy.SetState(MonsterState.Idle);
             }
             else
             {
                 if (isDebugging) Debug.Log("[ChaseRoutine] Đang chờ Cooldown. Trạng thái Idle.");
-                enemy.SetState(EnemyState.Idle);
+                enemy.SetState(MonsterState.Idle);
                 yield return null;
             }
             yield return null;
@@ -117,7 +117,7 @@ public class MonsterMovementController : MovementControllerBase
         if (isDebugging) Debug.Log("[AttackAction] Thiết lập Attack. Cooldown BẮT ĐẦU.");
 
         ClearPath();
-        enemy.SetState(EnemyState.Attack);
+        enemy.SetState(MonsterState.Attack);
         isAttackOnCooldown = true;
 
         FlipSprite(playerTarget.position.x > transform.position.x);
@@ -126,7 +126,7 @@ public class MonsterMovementController : MovementControllerBase
 
         playerTarget.gameObject.GetComponent<PlayerMovementController>().HandleGetHit();
 
-        enemy.SetState(EnemyState.Idle);
+        enemy.SetState(MonsterState.Idle);
 
         if (isDebugging) Debug.Log($"[AttackAction] Bắt đầu Cooldown: {attackCooldown}s.");
         yield return new WaitForSeconds(attackCooldown - animationDelay);
@@ -165,7 +165,7 @@ public class MonsterMovementController : MovementControllerBase
             StopCoroutine(patrolCoroutine);
             patrolCoroutine = null;
         }
-        GetComponent<Monster>().SetState(EnemyState.Idle);
+        GetComponent<Monster>().SetState(MonsterState.Idle);
         ClearPath();
         if (isDebugging) Debug.Log("[Patrol] Tuần tra đã bị ngắt.");
     }
@@ -235,7 +235,7 @@ public class MonsterMovementController : MovementControllerBase
 
             if (endNode == null)
             {
-                enemy.SetState(EnemyState.Idle);
+                enemy.SetState(MonsterState.Idle);
                 yield return new WaitForSeconds(waitTime);
                 continue;
             }
@@ -244,7 +244,7 @@ public class MonsterMovementController : MovementControllerBase
 
             if (startNode == null || startNode == endNode)
             {
-                enemy.SetState(EnemyState.Idle);
+                enemy.SetState(MonsterState.Idle);
                 yield return new WaitForSeconds(waitTime);
                 continue;
             }
@@ -258,20 +258,20 @@ public class MonsterMovementController : MovementControllerBase
                 if (isDebugging)
                     Debug.LogWarning($"Không tìm thấy đường đi từ {startNode.gridPos} đến {endNode.gridPos}.");
 
-                enemy.SetState(EnemyState.Idle);
+                enemy.SetState(MonsterState.Idle);
             }
             else
             {
                 if (isDebugging)
                     Debug.Log($"Bắt đầu di chuyển ngẫu nhiên đến node: {endNode.gridPos}");
 
-                enemy.SetState(EnemyState.Walk);
+                enemy.SetState(MonsterState.Walk);
                 // run follow with reference so Update() knows a coroutine is active
                 followCoroutine = StartCoroutine(FollowPath(arrivalDistance));
                 yield return followCoroutine;
                 followCoroutine = null;
 
-                enemy.SetState(EnemyState.Idle);
+                enemy.SetState(MonsterState.Idle);
             }
 
             yield return new WaitForSeconds(waitTime);
