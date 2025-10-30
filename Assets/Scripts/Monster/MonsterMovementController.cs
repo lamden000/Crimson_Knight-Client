@@ -142,7 +142,7 @@ public class MonsterMovementController : MovementControllerBase
         {
             yield return null;
         }
-
+        
         centerNode = pathfinder.GetTileFromWorld(transform.position);
         if (centerNode == null)
         {

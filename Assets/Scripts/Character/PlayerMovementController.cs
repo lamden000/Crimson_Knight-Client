@@ -245,13 +245,9 @@ public class PlayerMovementController : MovementControllerBase
         );
         rb.MovePosition(nextPos);
 
-        // Animation theo hướng di chuyển
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
-            anim.SetAnimation(Direction.Left, State.Walk);
-            transform.rotation = (dir.x > 0)
-                ? Quaternion.Euler(0, 180f, 0)
-                : Quaternion.identity;
+            anim.SetAnimation(Direction.Right, State.Walk);
         }
         else
         {
@@ -259,7 +255,6 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Up, State.Walk);
             else
                 anim.SetAnimation(Direction.Down, State.Walk);
-            transform.rotation = Quaternion.identity;
         }
     }
 
@@ -285,10 +280,10 @@ public class PlayerMovementController : MovementControllerBase
 
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
-            anim.SetAnimation(Direction.Left, State.Attack);
-            transform.rotation = (dir.x > 0)
-                ? Quaternion.Euler(0, 180f, 0)
-                : Quaternion.identity;
+            Direction direction = (dir.x > 0)
+                ? Direction.Right
+                : Direction.Left; ;
+            anim.SetAnimation(direction, State.Attack);
         }
         else
         {
@@ -296,7 +291,6 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Up, State.Attack);
             else
                 anim.SetAnimation(Direction.Down, State.Attack);
-            transform.rotation = Quaternion.identity;
         }
         targetEnemy.gameObject.GetComponent<Monster>().TakeDamage(100, gameObject);
         anim.SetAttackAnimation(true);
@@ -320,10 +314,8 @@ public class PlayerMovementController : MovementControllerBase
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
                 rb.linearVelocity = new Vector2(h * moveSpeed, 0);
-                anim.SetAnimation(Direction.Left, State.Walk);
-                transform.rotation = (h > 0)
-                    ? Quaternion.Euler(0, 180f, 0)
-                    : Quaternion.identity;
+                Direction direction = (h > 0) ? Direction.Right: Direction.Left; 
+                anim.SetAnimation(direction, State.Walk);
             }
             else
             {
@@ -332,7 +324,6 @@ public class PlayerMovementController : MovementControllerBase
                     anim.SetAnimation(Direction.Up, State.Walk);
                 else
                     anim.SetAnimation(Direction.Down, State.Walk);
-                transform.rotation = Quaternion.identity;
             }
 
             if (SystemUtil.CurrentTimeMillis() - timeStartSendMove > 2000)

@@ -108,14 +108,25 @@ public class PlayerAnimationController : MonoBehaviour
                 SetDirectionUp(true);
             else
             {
-                SetDirectionUp(false);
+                SetDirectionUp(false);              
+            }
+
+            if (dir == Direction.Right)
+            {
+                transform.rotation = Quaternion.Euler(0, 180f, 0);
+            }
+            else
+            {
+                transform.rotation = Quaternion.identity;
             }
 
             currentDir = dir;
             currentState = state;
             currentFrame = 0;
             timer = 0;
+
         }
+
     }
 
     private void PlayAnimation(Direction dir, State state, EyeState eyeState)
@@ -132,6 +143,8 @@ public class PlayerAnimationController : MonoBehaviour
         foreach (var part in spriteRenderers.Keys)
         {
             List<Sprite> frames = null;
+            if(dir == Direction.Right)
+                dir = Direction.Left;
 
             if (part != CharacterPart.Eyes)
             {

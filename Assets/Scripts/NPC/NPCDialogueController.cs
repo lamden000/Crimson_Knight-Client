@@ -44,11 +44,8 @@ public class NPCDialogueController : MonoBehaviour
         portraitImage = CharacterDialogManager.Instance.portraitImage;
         questButton = CharacterDialogManager.Instance.questButton;
         closeButton = CharacterDialogManager.Instance.closeButton;
-        LoadDialogueData();
     }
 
-
-    // ========= Player triggered dialogue =========
     public void StartDialogue()
     {
         if (isDialogueActive) return;
@@ -65,9 +62,8 @@ public class NPCDialogueController : MonoBehaviour
         PlayDialogue("Idle");
     }
 
-    private void LoadDialogueData()
+    public void LoadDialogueData(NPCName npcName)
     {
-        NPCName npcName=GetComponent<NPC>().npcName;
         int npcIndex = (int)npcName;
         string path = $"NPCs/Dialogue/{npcIndex}/NPC_{npcIndex}_Dialog";
         dialogueData = Resources.Load<NPCDialogue>(path);

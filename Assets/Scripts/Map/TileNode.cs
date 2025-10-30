@@ -80,8 +80,3 @@ public class TiledTileset
     public int firstgid;
     public string source;
 }
-[System.Serializable]
-public class MultiSpriteTile : Tile
-{
-    public Sprite[] sprites;
-}
