@@ -172,18 +172,92 @@ public class GridmapLoader : MonoBehaviour
             }
         }
 
-        // Sau khi set tile → xử lý collider
-        ApplyObjectCollidersToGrid(gridNodes);
+        // --- B2: tạo subgrid chi tiết từ collider thực tế ---
+        TileNode[,] subGrid = CreateSubGridFromColliders(gridNodes, subDivisions: 2);
 
-        Pathfinder.Instance.Init(gridNodes);
-        // Ensure a child BoxCollider2D exists and matches the full map boundary
+        // --- B3: gửi subgrid cho Pathfinder ---
+        Pathfinder.Instance.Init(subGrid);
+
         AdjustBoundaryCollider();
     }
 
-    /// <summary>
-    /// Find (or create) a child BoxCollider2D intended as the map boundary and
-    /// scale/position it to cover the entire map in world units.
-    /// </summary>
+    TileNode[,] CreateSubGridFromColliders(TileNode[,] baseGrid, int subDivisions)
+    {
+        int baseHeight = baseGrid.GetLength(0);
+        int baseWidth = baseGrid.GetLength(1);
+        float tileW = map.tilewidth;
+        float tileH = map.tileheight;
+
+        // Subgrid có kích thước gấp subDivisions lần
+        int newWidth = baseWidth * subDivisions;
+        int newHeight = baseHeight * subDivisions;
+        float subW = tileW / subDivisions;
+        float subH = tileH / subDivisions;
+
+        TileNode[,] subGrid = new TileNode[newHeight, newWidth];
+
+        for (int y = 0; y < newHeight; y++)
+        {
+            for (int x = 0; x < newWidth; x++)
+            {
+                int baseX = x / subDivisions;
+                int baseY = y / subDivisions;
+
+                TileNode parent = baseGrid[baseY, baseX];
+                if (parent == null) continue;
+
+                float worldX = x * subW + subW / 2f;
+                float worldY = y * subH + subH / 2f;
+                Vector3 worldPos = new Vector3(worldX, worldY, 0f);
+
+                bool walkable = true;
+
+                foreach (var layer in map.layers)
+                {
+                    if (layer.type != "objectgroup" || layer.objects == null)
+                        continue;
+
+                    foreach (var obj in layer.objects)
+                    {
+                        if (obj.type != "Collider" || obj.width <= 0 || obj.height <= 0)
+                            continue;
+
+                        // --- Convert Tiled → Unity ---
+                        float worldYBottom = (map.height * tileH) - (obj.y + obj.height);
+                        float worldYTop = (map.height * tileH) - obj.y;
+
+                        // --- AABB của subcell (có offset trừ) ---
+                        float subMinX = (x * subW);
+                        float subMaxX = subMinX + subW;
+                        float subMinY = (y * subH);
+                        float subMaxY = subMinY + subH;
+
+                        // --- Overlap ---
+                        float overlapX = Mathf.Max(0, Mathf.Min(subMaxX, obj.x + obj.width) - Mathf.Max(subMinX, obj.x));
+                        float overlapY = Mathf.Max(0, Mathf.Min(subMaxY, worldYTop) - Mathf.Max(subMinY, worldYBottom));
+
+                        float overlapArea = overlapX * overlapY;
+                        float subArea = subW * subH;
+                        float overlapRatio = overlapArea / subArea;
+
+                        if (overlapRatio >= 0.3f)
+                        {
+                            walkable = false;
+                            goto SkipRemaining;
+                        }
+                    }
+                }
+
+            SkipRemaining:
+                subGrid[y, x] = new TileNode(x, y, worldPos, walkable);
+            }
+        }
+
+ //       Debug.Log($"✅ SubGrid created ({newWidth}x{newHeight}) - offset applied ({offsetX}, {offsetY})");
+        return subGrid;
+    }
+
+
     private void AdjustBoundaryCollider()
     {
         if (map == null) return;
@@ -362,56 +436,6 @@ void CreateColliderBox(TiledObject obj, bool isWater)
         go.transform.SetParent(transform);
     }
 
-    private void ApplyObjectCollidersToGrid( TileNode[,] gridNodes)
-    {
-        int gridHeight = gridNodes.GetLength(0);
-        int gridWidth = gridNodes.GetLength(1);
-        float tileW = map.tilewidth;
-        float tileH = map.tileheight;
-
-        foreach (var layer in map.layers)
-        {
-            if (layer.type != "objectgroup" || layer.objects == null) continue;
-
-            foreach (var obj in layer.objects)
-            {
-                if (obj.type != "Collider" || obj.width <= 0 || obj.height <= 0) continue;
-
-
-                float tiledYTop = obj.y;
-                float tiledYBottom = obj.y + obj.height;
-
-
-                float worldYTop = (map.height * tileH) - tiledYTop;
-
-
-                float worldYBottom = (map.height * tileH) - tiledYBottom;
-
-              
-                int tempMinTileY = Mathf.Max(0, Mathf.FloorToInt(worldYBottom / tileH));
-
-                int tempMaxTileY = Mathf.Min(gridHeight - 1, Mathf.FloorToInt(worldYTop / tileH) - 1);
-
-                int maxTileY = Mathf.Min(gridHeight - 1, Mathf.CeilToInt(tiledYBottom / tileH) - 1);
-
-                int minTileY = Mathf.Max(0, Mathf.FloorToInt(tiledYTop / tileH));
-
-                int minTileX = Mathf.Max(0, Mathf.FloorToInt(obj.x / tileW));
-                int maxTileX = Mathf.Min(gridWidth - 1, Mathf.CeilToInt((obj.x + obj.width) / tileW) - 1);
-
-                for (int y = minTileY; y <= maxTileY; y++) 
-                {
-                    for (int x = minTileX; x <= maxTileX; x++)
-                    {
-                        var node = gridNodes[y, x];
-                        if (node == null) continue;
-                        node.walkable = false;
-                    }
-                }
-
-            }
-        }
-    }
     private void OnDrawGizmos()
     {
         if (!drawGizmo||!Application.isPlaying) return;

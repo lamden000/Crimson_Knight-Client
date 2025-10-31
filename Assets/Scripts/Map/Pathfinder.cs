@@ -48,6 +48,7 @@ public class Pathfinder : MonoBehaviour
             if (tileSizeY <= 0f) tileSizeY = 1f;
         }
 
+        Debug.Log(height * width);
         IsInitialized = true;
     }
 
