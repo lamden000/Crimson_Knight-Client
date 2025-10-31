@@ -252,6 +252,28 @@
                  "width":39.9999999999999,
                  "x":1002.66666666667,
                  "y":165.333333333333
+                }, 
+                {
+                 "height":375.757575757576,
+                 "id":69,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":51.5151515151515,
+                 "x":-154.545454545455,
+                 "y":-257.575757575758
+                }, 
+                {
+                 "height":0,
+                 "id":70,
+                 "name":"Slime",
+                 "rotation":0,
+                 "type":"Monster",
+                 "visible":true,
+                 "width":0,
+                 "x":415.151515151515,
+                 "y":-966.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -260,7 +282,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":69,
+ "nextobjectid":71,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

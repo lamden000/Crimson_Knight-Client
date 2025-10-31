@@ -13,6 +13,8 @@ public class Pathfinder : MonoBehaviour
     private float tileSizeY = 1f;
     private Vector3 originWorldPos = Vector3.zero;
 
+    public float agentSizeMargin=0.7f;
+
     [Header("Debug Options")]
     [SerializeField] private bool debugLogs = false;
     [SerializeField] private bool drawGizmos = false;
@@ -221,7 +223,8 @@ public class Pathfinder : MonoBehaviour
             return node.walkable;
 
         // agent AABB when centered at node.worldPos
-        Vector3 agentHalf = new Vector3(agentSize.x / 2f, agentSize.y / 2f, 0f);
+        float margin = Mathf.Min(tileSizeX, tileSizeY) * agentSizeMargin;
+        Vector3 agentHalf = new Vector3(agentSize.x / 2f , agentSize.y / 2f - margin, 0f);
         Vector3 agentMin = node.worldPos - agentHalf;
         Vector3 agentMax = node.worldPos + agentHalf;
 

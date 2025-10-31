@@ -115,41 +115,18 @@ public class GridmapLoader : MonoBehaviour
 
             // 🔸 Nếu là folder "Objects" thì load sprite sheet multiple
             Sprite[] sprites;
-            if (folder == "Objects")
+            Sprite s = Resources.Load<Sprite>(resourcePath);
+            if (s == null)
             {
-                sprites = Resources.LoadAll<Sprite>(resourcePath);
-                if (sprites == null || sprites.Length == 0)
-                {
-                    continue;
-                }
+                continue;
             }
-            else
-            {
-                Sprite s = Resources.Load<Sprite>(resourcePath);
-                if (s == null)
-                {               
-                    continue;
-                }
-                sprites = new Sprite[] { s };
-            }
+            sprites = new Sprite[] { s };
 
             if (!gidToTile.ContainsKey(gid))
             {
-                // 🔹 Nếu là Objects → dùng MultiSpriteTile
-                if (folder == "Objects")
-                {
-                    MultiSpriteTile multi = ScriptableObject.CreateInstance<MultiSpriteTile>();
-                    multi.sprites = sprites;
-                    multi.sprite = sprites[0]; // đặt sprite đầu tiên làm đại diện
-                    gidToTile[gid] = multi;
-                }
-                else
-                {
-                    Tile tile = ScriptableObject.CreateInstance<Tile>();
-                    tile.sprite = sprites[0];
-                    gidToTile[gid] = tile;
-                }
-
+                Tile tile = ScriptableObject.CreateInstance<Tile>();
+                tile.sprite = sprites[0];
+                gidToTile[gid] = tile;
                 loadedCount++;
             }
         }
@@ -199,6 +176,63 @@ public class GridmapLoader : MonoBehaviour
         ApplyObjectCollidersToGrid(gridNodes);
 
         Pathfinder.Instance.Init(gridNodes);
+        // Ensure a child BoxCollider2D exists and matches the full map boundary
+        AdjustBoundaryCollider();
+    }
+
+    /// <summary>
+    /// Find (or create) a child BoxCollider2D intended as the map boundary and
+    /// scale/position it to cover the entire map in world units.
+    /// </summary>
+    private void AdjustBoundaryCollider()
+    {
+        if (map == null) return;
+
+        float mapWorldWidth = map.width * map.tilewidth;
+        float mapWorldHeight = map.height * map.tileheight;
+
+        // Find candidate child colliders (exclude colliders created for objects)
+        var colliders = GetComponentsInChildren<BoxCollider2D>(true);
+        BoxCollider2D boundary = null;
+
+        foreach (var c in colliders)
+        {
+            if (c.gameObject == this.gameObject) continue;
+            string n = c.gameObject.name;
+            // exclude runtime object colliders we create for tiles/objects
+            if (n.StartsWith("ColliderBox") || n.StartsWith("WaterBox")) continue;
+            // prefer explicit names containing "Bound" or "Map"
+            if (n.IndexOf("Bound", StringComparison.OrdinalIgnoreCase) >= 0 || n.IndexOf("Map", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                boundary = c;
+                break;
+            }
+        }
+
+        // fallback: pick the first child collider that isn't one of the object colliders
+        if (boundary == null)
+        {
+            foreach (var c in colliders)
+            {
+                if (c.gameObject == this.gameObject) continue;
+                string n = c.gameObject.name;
+                if (n.StartsWith("ColliderBox") || n.StartsWith("WaterBox")) continue;
+                boundary = c;
+                break;
+            }
+        }
+
+        // If still not found, create a new child specifically for boundary
+        if (boundary == null)
+        {
+            var go = new GameObject("MapBoundary");
+            go.transform.SetParent(transform, false);
+            boundary = go.AddComponent<BoxCollider2D>();
+            boundary.isTrigger = true;
+        }
+        boundary.size = new Vector2(mapWorldWidth, mapWorldHeight);
+
+        boundary.transform.localPosition = new Vector3(mapWorldWidth / 2f, mapWorldHeight / 2f, 0f);
     }
 
 
@@ -254,7 +288,7 @@ public class GridmapLoader : MonoBehaviour
         var npcCtrl = npc.GetComponent<NPC>();
         if (npcCtrl != null && System.Enum.TryParse(obj.name, out NPCName npcEnum))
         {
-            npcCtrl.npcName = npcEnum;
+            npcCtrl.Init(npcEnum);
         }
     }
 
@@ -283,46 +317,21 @@ public class GridmapLoader : MonoBehaviour
         float centerX = obj.x + obj.width / 2f;
         float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
 
-        float offsetY = 0;
+        var sr = parent.AddComponent<SpriteRenderer>();
+        sr.sprite = baseTile.sprite;
+        sr.sortingLayerName = "Default";
+        sr.sortingOrder = 0;
+        sr.spriteSortPoint = SpriteSortPoint.Pivot;
 
-        if (baseTile is MultiSpriteTile multi && multi.sprites.Length > 1)
-        {
-            var s0 = multi.sprites[0];
-            var s1 = multi.sprites[1];
+        float spriteHeight = sr.bounds.size.y;
 
-            float h0 = s0.bounds.size.y;
-            float h1 = s1.bounds.size.y;
+        Vector2 spriteSize = sr.sprite.rect.size;
+        Vector2 pivotPixel = sr.sprite.pivot;
 
-            float totalHeight = h0 + h1;
-            offsetY = totalHeight;
+        float pixelsPerUnit = sr.sprite.pixelsPerUnit;
+        Vector2 pivotDelta = (pivotPixel - spriteSize / 2f) / pixelsPerUnit;
 
-            float bottomEdge = -totalHeight / 2f;
-            float splitY = bottomEdge + h0;
-
-            for (int i = 0; i < multi.sprites.Length; i++)
-            {
-                Sprite s = multi.sprites[i];
-                GameObject child = new GameObject($"part_{i}");
-                child.transform.SetParent(parent.transform, false);
-
-                var sr = child.AddComponent<SpriteRenderer>();
-                sr.sprite = s;
-                sr.sortingLayerName = "Default";
-                sr.sortingOrder = (i == 0 ? 5 : -6);
-
-                child.transform.localPosition = new Vector3(0, -splitY, 0);
-            }
-        }
-        else
-        {
-            var sr = parent.AddComponent<SpriteRenderer>();
-            sr.sprite = baseTile.sprite;
-            sr.sortingLayerName = "Default";
-            sr.sortingOrder = 4;
-            offsetY = sr.bounds.size.y;
-        }
-
-        parent.transform.position = new Vector3(centerX, centerY + offsetY, 0);
+        parent.transform.position = new Vector3(centerX + pivotDelta.x, centerY + spriteHeight + pivotDelta.y, 0);
     }
 
     private Vector3 GetWorldPosition(TiledObject obj)
@@ -405,10 +414,9 @@ void CreateColliderBox(TiledObject obj, bool isWater)
     }
     private void OnDrawGizmos()
     {
-        if(!drawGizmo||!Application.isPlaying) return;
+        if (!drawGizmo||!Application.isPlaying) return;
         TileNode[,] gridNodes = pathfinder.grid;
-
-        if (gridNodes == null || !Application.isPlaying)
+        if (gridNodes == null)
             return;
 
         int gridHeight = gridNodes.GetLength(0);

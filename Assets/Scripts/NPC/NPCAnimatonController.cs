@@ -1,9 +1,7 @@
 using UnityEngine;
 
-public class NPCSpriteAnimatonController : MonoBehaviour
+public class NPCAnimatonController : MonoBehaviour
 {
-    private NPCName npcName;
-
     [Header("Animation Settings")]
     public float frameRate = 1f; // seconds per frame
     public bool playOnStart = true;
@@ -16,9 +14,7 @@ public class NPCSpriteAnimatonController : MonoBehaviour
 
     private void Awake()
     {
-        npcName= GetComponent<NPC>().npcName;
         spriteRenderer = GetComponent<SpriteRenderer>();
-        LoadIdleSprites();
     }
 
     private void Start()
@@ -44,7 +40,7 @@ public class NPCSpriteAnimatonController : MonoBehaviour
     /// <summary>
     /// Loads the Idle sprites from Resources/NPCs/Sprites/{index}.png
     /// </summary>
-    private void LoadIdleSprites()
+    public void LoadIdleSprites(NPCName npcName)
     {
         int index = (int)npcName;
         string path = $"NPCs/Sprites/{index}";

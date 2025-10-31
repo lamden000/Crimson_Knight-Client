@@ -8,7 +8,7 @@ public class MonsterAnimationController : MonoBehaviour
     private BoxCollider2D boxCollider;
     private MonsterName _name;
     private MonsterSpriteDatabase database;
-    private Monster enemy;
+    private Monster monster;
 
     private float frameRate = 0.2f;
     private float timer;
@@ -17,15 +17,14 @@ public class MonsterAnimationController : MonoBehaviour
 
     void Start()
     {
-        enemy = GetComponent<Monster>();
+        monster = GetComponent<Monster>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        _name = enemy.GetName();
+        _name = monster.GetName();
         boxCollider = GetComponent<BoxCollider2D>();
         database=MonsterSpriteDatabase.Instance;
 
         database.LoadSprites(_name);
 
-        spriteRenderer.sprite = database.GetSprites(_name,enemy.currentState)[0];
         AdjustColliderToSprite();
     }
 
@@ -36,19 +35,17 @@ public class MonsterAnimationController : MonoBehaviour
             Debug.LogWarning("Không có Sprite để điều chỉnh Collider.");
             return;
         }
-
-        Bounds spriteBounds = spriteRenderer.sprite.bounds;
+        Sprite idleSprite = database.GetSprites(_name, MonsterState.Idle)[0];
+        Bounds spriteBounds = idleSprite.bounds;
 
         boxCollider.size = spriteBounds.size;
 
         boxCollider.offset = spriteBounds.center;
-
-        Debug.Log($"Collider đã được điều chỉnh. Kích thước mới: {boxCollider.size}, Offset: {boxCollider.offset}");
     }
 
     void Update()
     {
-        PlayAnimation(enemy.currentState);
+        PlayAnimation(monster.currentState);
     }
 
 

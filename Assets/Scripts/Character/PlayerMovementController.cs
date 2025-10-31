@@ -29,7 +29,6 @@ public class PlayerMovementController : MovementControllerBase
     [Header("Interaction")]
     [SerializeField] private float npcInteractRange = 1.2f;
     private Coroutine npcTalkCoroutine;
-    private NPCDialogueController pendingNpcDialogue;
 
     protected override void Start()
     {
@@ -58,7 +57,6 @@ public class PlayerMovementController : MovementControllerBase
             {
                 StopCoroutine(npcTalkCoroutine);
                 npcTalkCoroutine = null;
-                pendingNpcDialogue = null;
             }
             anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
             return;
@@ -93,6 +91,17 @@ public class PlayerMovementController : MovementControllerBase
             return;
         }
 
+        if (npcTalkCoroutine != null)
+        {
+            if (moveAxisInput != Vector2.zero)
+            {
+                StopCoroutine(npcTalkCoroutine);
+                npcTalkCoroutine = null;
+                return;
+            }
+            return;
+        }
+
         var mouse = Mouse.current;
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
@@ -115,19 +124,24 @@ public class PlayerMovementController : MovementControllerBase
                     var npc = hit.collider.GetComponent<NPCDialogueController>();
                     if (npc == null) return;
 
-                    // cancel any existing movement/dialogue interaction
                     CancelAutoFollow();
                     if (npcTalkCoroutine != null)
                     {
                         StopCoroutine(npcTalkCoroutine);
                         npcTalkCoroutine = null;
-                        pendingNpcDialogue = null;
                     }
 
-                    // start moving toward NPC and speak when within range
-                    pendingNpcDialogue = npc;
+                    Vector3 dirToNpc = (npc.transform.position - transform.position).normalized;
+                    Direction dir;
+                    if (Mathf.Abs(dirToNpc.x) > Mathf.Abs(dirToNpc.y))
+                        dir = dirToNpc.x > 0 ? Direction.Right : Direction.Left;
+                    else
+                        dir = dirToNpc.y > 0 ? Direction.Up : Direction.Down;
+
+                    anim.SetAnimation(dir, State.Walk);
                     npcTalkCoroutine = StartCoroutine(MoveToNPCAndTalk(npc));
                 }
+                return;
             }
         }
 
@@ -245,13 +259,10 @@ public class PlayerMovementController : MovementControllerBase
         );
         rb.MovePosition(nextPos);
 
-        // Animation theo hướng di chuyển
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
-            anim.SetAnimation(Direction.Left, State.Walk);
-            transform.rotation = (dir.x > 0)
-                ? Quaternion.Euler(0, 180f, 0)
-                : Quaternion.identity;
+            Direction direction= dir.x>0? Direction.Right : Direction.Left;
+            anim.SetAnimation(direction, State.Walk);
         }
         else
         {
@@ -259,7 +270,6 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Up, State.Walk);
             else
                 anim.SetAnimation(Direction.Down, State.Walk);
-            transform.rotation = Quaternion.identity;
         }
     }
 
@@ -285,10 +295,10 @@ public class PlayerMovementController : MovementControllerBase
 
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
-            anim.SetAnimation(Direction.Left, State.Attack);
-            transform.rotation = (dir.x > 0)
-                ? Quaternion.Euler(0, 180f, 0)
-                : Quaternion.identity;
+            Direction direction = (dir.x > 0)
+                ? Direction.Right
+                : Direction.Left; ;
+            anim.SetAnimation(direction, State.Attack);
         }
         else
         {
@@ -296,7 +306,6 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Up, State.Attack);
             else
                 anim.SetAnimation(Direction.Down, State.Attack);
-            transform.rotation = Quaternion.identity;
         }
         targetEnemy.gameObject.GetComponent<Monster>().TakeDamage(100, gameObject);
         anim.SetAttackAnimation(true);
@@ -315,15 +324,12 @@ public class PlayerMovementController : MovementControllerBase
             {
                 StopCoroutine(npcTalkCoroutine);
                 npcTalkCoroutine = null;
-                pendingNpcDialogue = null;
             }
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
                 rb.linearVelocity = new Vector2(h * moveSpeed, 0);
-                anim.SetAnimation(Direction.Left, State.Walk);
-                transform.rotation = (h > 0)
-                    ? Quaternion.Euler(0, 180f, 0)
-                    : Quaternion.identity;
+                Direction direction = (h > 0) ? Direction.Right: Direction.Left; 
+                anim.SetAnimation(direction, State.Walk);
             }
             else
             {
@@ -332,7 +338,6 @@ public class PlayerMovementController : MovementControllerBase
                     anim.SetAnimation(Direction.Up, State.Walk);
                 else
                     anim.SetAnimation(Direction.Down, State.Walk);
-                transform.rotation = Quaternion.identity;
             }
 
             if (SystemUtil.CurrentTimeMillis() - timeStartSendMove > 2000)
@@ -363,7 +368,6 @@ public class PlayerMovementController : MovementControllerBase
         {
             StopCoroutine(npcTalkCoroutine);
             npcTalkCoroutine = null;
-            pendingNpcDialogue = null;
         }
         ClearPath();
     }
@@ -372,12 +376,10 @@ public class PlayerMovementController : MovementControllerBase
     {
         if (npc == null) yield break;
 
-        // if already in range, start immediately
         if (Vector3.Distance(transform.position, npc.transform.position) <= npcInteractRange)
         {
             npc.StartDialogue();
             npcTalkCoroutine = null;
-            pendingNpcDialogue = null;
             yield break;
         }
 
@@ -391,6 +393,5 @@ public class PlayerMovementController : MovementControllerBase
         }
 
         npcTalkCoroutine = null;
-        pendingNpcDialogue = null;
     }
 }

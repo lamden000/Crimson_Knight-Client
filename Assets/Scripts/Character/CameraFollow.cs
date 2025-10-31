@@ -12,6 +12,9 @@ public class CameraFollow : MonoBehaviour
     private Vector3 minBounds;
     private Vector3 maxBounds;
     private Camera cam;
+    private Vector3 lastBoundsCenter;
+    private Vector3 lastBoundsSize;
+
 
     public void InitializeBounds(float calculatedOrthographicSize)
     {
@@ -35,24 +38,26 @@ public class CameraFollow : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (target == null) return;
+        if (target == null || bounds == null) return;
 
-        if (bounds != null && halfWidth == 0)
+        // Check if the bounds moved or resized
+        if (bounds.bounds.center != lastBoundsCenter || bounds.bounds.size != lastBoundsSize)
         {
-            float calculatedOrthoSize = 540f / (1f * 2f);
-            InitializeBounds(calculatedOrthoSize);
+            minBounds = bounds.bounds.min;
+            maxBounds = bounds.bounds.max;
+            lastBoundsCenter = bounds.bounds.center;
+            lastBoundsSize = bounds.bounds.size;
         }
 
         Vector3 targetPos = Vector3.Lerp(transform.position, target.position, smoothSpeed * Time.deltaTime);
 
-        if (bounds != null)
-        {
-            float clampX = Mathf.Clamp(targetPos.x, minBounds.x + halfWidth, maxBounds.x - halfWidth);
-            float clampY = Mathf.Clamp(targetPos.y, minBounds.y + halfHeight, maxBounds.y - halfHeight);
-            targetPos.x = clampX;
-            targetPos.y = clampY;
-        }
+        float halfHeight = cam.orthographicSize;
+        float halfWidth = halfHeight * cam.aspect;
+
+        targetPos.x = Mathf.Clamp(targetPos.x, minBounds.x + halfWidth, maxBounds.x - halfWidth);
+        targetPos.y = Mathf.Clamp(targetPos.y, minBounds.y + halfHeight, maxBounds.y - halfHeight);
 
         transform.position = new Vector3(targetPos.x, targetPos.y, transform.position.z);
     }
+
 }
