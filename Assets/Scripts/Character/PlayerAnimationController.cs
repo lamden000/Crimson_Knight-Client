@@ -86,7 +86,7 @@ public class PlayerAnimationController : MonoBehaviour
         LoadSprites();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         PlayAnimation(currentDir, currentState,currentEyeState);
         Blink();
@@ -102,32 +102,24 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void SetAnimation(Direction dir, State state)
     {
+        // Always log entry to see how often/caller
+        var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+
         if (dir != currentDir || state != currentState)
         {
-            if (dir == Direction.Up)
-                SetDirectionUp(true);
-            else
-            {
-                SetDirectionUp(false);              
-            }
 
-            if (dir == Direction.Right)
-            {
-                transform.rotation = Quaternion.Euler(0, 180f, 0);
-            }
-            else
-            {
-                transform.rotation = Quaternion.identity;
-            }
+            if (dir == Direction.Up) SetDirectionUp(true);
+            else SetDirectionUp(false);
+
+            transform.rotation = (dir == Direction.Right) ? Quaternion.Euler(0, 180f, 0) : Quaternion.identity;
 
             currentDir = dir;
             currentState = state;
             currentFrame = 0;
             timer = 0;
-
         }
-
     }
+
 
     private void PlayAnimation(Direction dir, State state, EyeState eyeState)
     {

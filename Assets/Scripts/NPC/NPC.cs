@@ -10,6 +10,8 @@ public class NPC : MonoBehaviour
 
     private void Start()
     {
+        if(!loadedData) 
+            LoadData();
     }
 
     public void Init(NPCName name)

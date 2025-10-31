@@ -414,10 +414,9 @@ void CreateColliderBox(TiledObject obj, bool isWater)
     }
     private void OnDrawGizmos()
     {
-        if(!drawGizmo||!Application.isPlaying) return;
+        if (!drawGizmo||!Application.isPlaying) return;
         TileNode[,] gridNodes = pathfinder.grid;
-
-        if (gridNodes == null || !Application.isPlaying)
+        if (gridNodes == null)
             return;
 
         int gridHeight = gridNodes.GetLength(0);

@@ -92,7 +92,7 @@ public abstract class MovementControllerBase : MonoBehaviour
     // Generic coroutine that moves along currentPath until completion. If a dynamic stopTarget
     // and stopRange are provided, the coroutine will exit early when within stopRange of stopTarget.
     // Child classes must implement MoveAlongPath() to perform a single-step movement.
-    protected IEnumerator FollowPath(float arrivalDistance = 1f, Transform stopTarget = null, float stopRange = 0f)
+    protected IEnumerator FollowPath(float arrivalDistance = 1f, Transform stopTarget = null, float stopRange = 1f)
     {
         while (currentPath != null && pathIndex < currentPath.Count)
         {
@@ -118,7 +118,7 @@ public abstract class MovementControllerBase : MonoBehaviour
     }
 
     // Start (and cancel previous) follow coroutine. Optional dynamic stop target/range supported.
-    protected Coroutine StartFollow(float arrivalDistance = 1f, Transform stopTarget = null, float stopRange = 0f)
+    protected Coroutine StartFollow(float arrivalDistance = 10f, Transform stopTarget = null, float stopRange = 1f)
     {
         if (followCoroutine != null)
         {

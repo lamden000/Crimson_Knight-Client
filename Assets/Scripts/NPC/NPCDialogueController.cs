@@ -67,11 +67,10 @@ public class NPCDialogueController : MonoBehaviour
         int npcIndex = (int)npcName;
         string path = $"NPCs/Dialogue/{npcIndex}/NPC_{npcIndex}_Dialog";
         dialogueData = Resources.Load<NPCDialogue>(path);
+        dialogueData.npcPotrait= Resources.Load<Sprite>($"NPCs/Avatar/{npcIndex}");
 
         if (dialogueData == null)
             Debug.LogWarning($"Dialogue data not found for {npcName} at Resources/{path}");
-        else
-            Debug.Log($"Loaded dialogue for {npcName} from {path}");
     }
 
     private void PlayDialogue(string key)

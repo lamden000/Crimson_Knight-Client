@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 48258861971377704}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.6900024, y: 23.940002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 304122912147077850}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.01, y: 25.36, z: 0}
+  m_LocalPosition: {x: 2.7, y: 49.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -640,7 +640,7 @@ Transform:
   m_GameObject: {fileID: 8164850148056592042}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -15.5, z: 0}
+  m_LocalPosition: {x: 2.6900024, y: 8.440002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -716,6 +716,7 @@ GameObject:
   - component: {fileID: 5789496537744389210}
   - component: {fileID: 5755042020789630281}
   - component: {fileID: 2268284115112252076}
+  - component: {fileID: 9084923521688581085}
   m_Layer: 6
   m_Name: Character
   m_TagString: Player
@@ -756,7 +757,7 @@ MonoBehaviour:
   moveSpeed: 300
   attackRange: 80
   attackCooldown: 1
-  npcInteractRange: 80
+  npcInteractRange: 50
 --- !u!50 &9042967047990573357
 Rigidbody2D:
   serializedVersion: 5
@@ -907,7 +908,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 14.6}
+  m_Offset: {x: 1.9974365, y: 0.25382996}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -917,5 +918,17 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 32.64, y: 80}
+  m_Size: {x: 25.982056, y: 10.0278015}
   m_EdgeRadius: 0
+--- !u!210 &9084923521688581085
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8350450418846385827}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0

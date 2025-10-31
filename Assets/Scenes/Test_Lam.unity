@@ -198,11 +198,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &416615712 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-  m_PrefabInstance: {fileID: 822986125}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &812316887
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,11 +331,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 683
+      value: 1859
       objectReference: {fileID: 0}
     - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 416
+      value: 674
       objectReference: {fileID: 0}
     - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
       propertyPath: m_LocalPosition.z
@@ -381,28 +376,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 822986133}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
 --- !u!4 &822986126 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
   m_PrefabInstance: {fileID: 822986125}
   m_PrefabAsset: {fileID: 0}
---- !u!210 &822986133
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 416615712}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortAtRoot: 0
 --- !u!1 &1001723876
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,6 +448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b37adf44411034c8b553ddb2b362e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agentSizeMargin: 0.1
   debugLogs: 0
   drawGizmos: 0
 --- !u!1 &1052928413
