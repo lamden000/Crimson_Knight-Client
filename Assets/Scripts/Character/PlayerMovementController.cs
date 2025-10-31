@@ -97,6 +97,8 @@ public class PlayerMovementController : MovementControllerBase
             {
                 StopCoroutine(npcTalkCoroutine);
                 npcTalkCoroutine = null;
+                CancelAutoFollow();
+                ManualMove();
                 return;
             }
             return;
