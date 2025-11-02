@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 511b7828bd4f2074faa7c7b3c1446cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: 1000
+  monsterName: 1000
   currentState: 0
   isHostile: 0
 --- !u!114 &5798725132018956034
@@ -204,10 +204,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b46621436411e84b86f69307e394556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 200
+  moveSpeed: 150
   R: 5
   waitTime: 1
-  arrivalDistance: 0.1
+  arrivalDistance: 10
   attackRange: 100
   attackCooldown: 2
   animationDelay: 0.2

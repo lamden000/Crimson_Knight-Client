@@ -51,7 +51,7 @@ public class PlayerMovementController : MovementControllerBase
     {
         if (!GameManager.Instance.CanPlayerMove)
         {
-            rb.linearVelocity = Vector2.zero;
+            desiredVelocity = Vector2.zero;
             CancelAutoFollow();
             if (npcTalkCoroutine != null)
             {
@@ -64,7 +64,7 @@ public class PlayerMovementController : MovementControllerBase
 
         if (isGettingHit)
         {
-            rb.linearVelocity = Vector2.zero;
+            desiredVelocity = Vector2.zero;
             return;
         }
         moveAxisInput = new Vector2(moveInput.x, moveInput.y);
@@ -200,7 +200,7 @@ public class PlayerMovementController : MovementControllerBase
         // Nếu trong tầm đánh
         if (dir.magnitude <= attackRange)
         {
-            rb.linearVelocity = Vector2.zero;
+            desiredVelocity = Vector2.zero;
             TryAttack(dir);
             return;
         }
@@ -239,7 +239,7 @@ public class PlayerMovementController : MovementControllerBase
     {
         if (currentPath == null || pathIndex >= currentPath.Count)
         {
-            rb.linearVelocity = Vector2.zero;
+            desiredVelocity = Vector2.zero;
             return;
         }
 
@@ -254,12 +254,8 @@ public class PlayerMovementController : MovementControllerBase
         }
 
         dir.Normalize();
-        Vector2 nextPos = Vector2.MoveTowards(
-            rb.position,
-            targetPos,
-            moveSpeed * Time.fixedDeltaTime
-        );
-        rb.MovePosition(nextPos);
+        // only update desiredVelocity here; actual position change happens in FixedUpdate of base
+        desiredVelocity = new Vector2(dir.x, dir.y) * moveSpeed;
 
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
@@ -293,7 +289,7 @@ public class PlayerMovementController : MovementControllerBase
         isAttacking = true;
         attackTimer = 0f;
         attackCooldownTimer = attackCooldown;
-        rb.linearVelocity = Vector2.zero;
+        desiredVelocity = Vector2.zero;
 
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
@@ -329,13 +325,13 @@ public class PlayerMovementController : MovementControllerBase
             }
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
-                rb.linearVelocity = new Vector2(h * moveSpeed, 0);
+                desiredVelocity = new Vector2(h * moveSpeed, 0);
                 Direction direction = (h > 0) ? Direction.Right: Direction.Left; 
                 anim.SetAnimation(direction, State.Walk);
             }
             else
             {
-                rb.linearVelocity = new Vector2(0, v * moveSpeed);
+                desiredVelocity = new Vector2(0, v * moveSpeed);
                 if (v > 0)
                     anim.SetAnimation(Direction.Up, State.Walk);
                 else
@@ -351,7 +347,7 @@ public class PlayerMovementController : MovementControllerBase
         else
         {
             anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
-            rb.linearVelocity = Vector2.zero;
+            desiredVelocity = Vector2.zero;
         }
     }
 
