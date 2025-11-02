@@ -18,6 +18,7 @@ public class GridmapLoader : MonoBehaviour
     public float tileScale = 1f;
     public GameObject monsterPrefab;
     public GameObject npcPrefab;
+    public int subGridDivisions=2;
 
     private Dictionary<int, Tile> gidToTile = new Dictionary<int, Tile>();
     public bool loadInEditMode = false;
@@ -173,7 +174,7 @@ public class GridmapLoader : MonoBehaviour
         }
 
         // --- B2: tạo subgrid chi tiết từ collider thực tế ---
-        TileNode[,] subGrid = CreateSubGridFromColliders(gridNodes, subDivisions: 2);
+        TileNode[,] subGrid = CreateSubGridFromColliders(gridNodes, subGridDivisions);
 
         // --- B3: gửi subgrid cho Pathfinder ---
         Pathfinder.Instance.Init(subGrid);
@@ -252,8 +253,6 @@ public class GridmapLoader : MonoBehaviour
                 subGrid[y, x] = new TileNode(x, y, worldPos, walkable);
             }
         }
-
- //       Debug.Log($"✅ SubGrid created ({newWidth}x{newHeight}) - offset applied ({offsetX}, {offsetY})");
         return subGrid;
     }
 
@@ -303,6 +302,7 @@ public class GridmapLoader : MonoBehaviour
             go.transform.SetParent(transform, false);
             boundary = go.AddComponent<BoxCollider2D>();
             boundary.isTrigger = true;
+            boundary.offset = Vector2.zero;
         }
         boundary.size = new Vector2(mapWorldWidth, mapWorldHeight);
 

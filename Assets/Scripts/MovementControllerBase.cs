@@ -10,10 +10,34 @@ public abstract class MovementControllerBase : MonoBehaviour
     protected Pathfinder pathfinder;
     protected List<Vector3> currentPath = new List<Vector3>();
     protected int pathIndex = 0;
+    // desiredVelocity represents the movement velocity (units/sec) to be applied in FixedUpdate
+    protected Vector2 desiredVelocity = Vector2.zero;
+    // cached Rigidbody2D if present on the agent
+    protected Rigidbody2D physicsRigidbody;
 
     protected virtual void Start()
     {
         pathfinder = Pathfinder.Instance;
+        physicsRigidbody = GetComponent<Rigidbody2D>();
+    }
+
+    // Apply physics-based movement in fixed timestep so movement is framerate-independent.
+    protected virtual void FixedUpdate()
+    {
+        if (physicsRigidbody != null)
+        {
+            // Move by velocity * fixedDeltaTime to keep behavior consistent with previous MovePosition usage
+            Vector2 nextPos = physicsRigidbody.position + desiredVelocity * Time.fixedDeltaTime;
+            physicsRigidbody.MovePosition(nextPos);
+        }
+        else
+        {
+            if (desiredVelocity != Vector2.zero)
+            {
+                Vector3 delta = (Vector3)(desiredVelocity * Time.fixedDeltaTime);
+                transform.position = transform.position + delta;
+            }
+        }
     }
 
     protected Vector2 GetAgentSizeForPathfinding()
@@ -178,5 +202,6 @@ public abstract class MovementControllerBase : MonoBehaviour
     {
         currentPath?.Clear();
         pathIndex = 0;
+        desiredVelocity = Vector2.zero;
     }
 }

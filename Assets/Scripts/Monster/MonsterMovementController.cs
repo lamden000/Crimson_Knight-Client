@@ -6,7 +6,7 @@ public class MonsterMovementController : MovementControllerBase
     [Header("Patrol Area Settings")]
     public int R = 5;
     public float waitTime = 1f;
-    public float arrivalDistance = 0.1f;
+    public float arrivalDistance = 10f;
 
     [Header("Combat Settings")]
     public float attackRange = 100f;
@@ -282,11 +282,19 @@ public class MonsterMovementController : MovementControllerBase
 
     protected override void MoveAlongPath()
     {
-        if (currentPath == null || pathIndex >= currentPath.Count) return;
+        if (currentPath == null || pathIndex >= currentPath.Count)
+        {
+            desiredVelocity = Vector2.zero;
+            return;
+        }
 
         Vector3 targetWorldPos = GetCurrentTargetWorldPos();
         Vector3 direction = targetWorldPos - transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
+        // Update desiredVelocity; actual movement will be applied in FixedUpdate of base
+        if (direction.sqrMagnitude > 0.0001f)
+            desiredVelocity = new Vector2(direction.x, direction.y).normalized * moveSpeed;
+        else
+            desiredVelocity = Vector2.zero;
 
         if (Mathf.Abs(direction.x) > 0.01f)
         {
