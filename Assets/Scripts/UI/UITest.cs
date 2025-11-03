@@ -16,19 +16,19 @@ public class UITest : MonoBehaviour
 
 
         // Test Dropdown
-        // string[] options = { "Kiếm", "Khiên", "Cung", "Gậy phép", "Kiếm11", "Khiên12", "Cung12", "Gậy phép12" };
+        string[] options = { "Kiếm", "Khiên", "Cung", "Gậy phép", "Kiếm11", "Khiên12", "Cung12", "Gậy phép12" };
 
-        // UIManager.Instance.ShowDropdown("Chọn vũ khí:", options, index =>
-        // {
-        //     Debug.Log($"Bạn đã chọn: {index} - {options[index]}");
-        // });
+        UIManager.Instance.ShowDropdown("Chọn vũ khí:", options, index =>
+        {
+            Debug.Log($"Bạn đã chọn: {index} - {options[index]}");
+        });
 
         // Test OK Dialog
 
-        UIManager.Instance.ShowOK("Chúc mừng bạn đã chiến thắng!", () =>
-        {
-            Debug.Log("Đã nhấn OK");
-        });
+        //UIManager.Instance.ShowOK("Chúc mừng bạn đã chiến thắng!", () =>
+        //{
+        //    Debug.Log("Đã nhấn OK");
+        //});
 
     }
 }

@@ -2,14 +2,15 @@
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class DialogDropdown : DialogBase
 {
     [Header("References")]
     [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private Transform contentParent;  
-    [SerializeField] private Button itemPrefab;        
-    [SerializeField] private Button closeButton;      
+    [SerializeField] private RectTransform contentParent;   // Dùng RectTransform thay vì Transform
+    [SerializeField] private Button itemPrefab;
+    [SerializeField] private Button closeButton;
     private Action<int> onSelected;
 
     public void Setup(string title, string[] options, Action<int> callback)
@@ -17,11 +18,11 @@ public class DialogDropdown : DialogBase
         titleText.text = title;
         onSelected = callback;
 
-        // Xóa nút cũ
+        // 🔹 Xóa các nút cũ
         foreach (Transform child in contentParent)
             Destroy(child.gameObject);
 
-        // Tạo nút mới
+        // 🔹 Tạo các nút mới
         for (int i = 0; i < options.Length; i++)
         {
             int index = i;
@@ -38,11 +39,30 @@ public class DialogDropdown : DialogBase
                 Close();
             });
         }
+
+        // 🔹 Đặt lại sự kiện đóng
         closeButton.onClick.RemoveAllListeners();
         closeButton.onClick.AddListener(Close);
-        Canvas.ForceUpdateCanvases();
-        var rect = contentParent as RectTransform;
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+
+        // 🔹 Cập nhật layout ngay lập tức
+        RefreshLayout();
     }
 
+    private void RefreshLayout()
+    {
+        // Ép Unity cập nhật toàn bộ layout của ScrollView
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent);
+        contentParent.ForceUpdateRectTransforms();
+
+        // Đảm bảo hoạt động kể cả khi layout chưa cập nhật xong frame này
+        StartCoroutine(DelayRebuild());
+    }
+
+    private IEnumerator DelayRebuild()
+    {
+        yield return null; // Đợi 1 frame
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent);
+    }
 }
