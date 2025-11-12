@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,12 +11,14 @@ public class NPCDialogueController : MonoBehaviour
 {
     [Header("Dialogue Data")]
     public string currentQuest;
+    public Sprite defaultPotrait;
 
     private GameObject dialoguePanel;
     private TextMeshProUGUI dialogueText;
     private Image portraitImage;
     private Button questButton;
     private Button closeButton;
+    private Button menuButton;
 
     [Header("World-Space Chat Bubble")]
     public GameObject chatBubblePrefab;      
@@ -34,7 +36,6 @@ public class NPCDialogueController : MonoBehaviour
     private Canvas worldCanvas;
     private NPCDialogue dialogueData;
 
-
     private void Start()
     {     
         audioSource = GetComponent<AudioSource>();
@@ -44,6 +45,7 @@ public class NPCDialogueController : MonoBehaviour
         portraitImage = CharacterDialogManager.Instance.portraitImage;
         questButton = CharacterDialogManager.Instance.questButton;
         closeButton = CharacterDialogManager.Instance.closeButton;
+        menuButton=CharacterDialogManager.Instance.menuButton;
     }
 
     public void StartDialogue()
@@ -52,14 +54,20 @@ public class NPCDialogueController : MonoBehaviour
 
         if (currentQuest.Length == 0)
             questButton.gameObject.SetActive(false);
-
+        if (dialogueData.npcMenu == null)
+            menuButton.gameObject.SetActive(false);
         dialoguePanel.SetActive(true);
         questButton.onClick.AddListener(OnQuestButton);
         closeButton.onClick.AddListener(CloseDialogue);
-        isDialogueActive = true;
+        menuButton.onClick.AddListener(OpenMenu);
+        menuButton.gameObject.GetComponentInChildren<TMP_Text>().text = dialogueData.npcMenu.menuName;
+        isDialogueActive = true;        
         portraitImage.sprite = dialogueData.npcPotrait;
 
-        PlayDialogue("Idle");
+        if( GetDialogueEntry("Idle")==null)
+            OpenMenu();
+        else
+            PlayDialogue("Idle");
     }
 
     public void LoadDialogueData(NPCName npcName)
@@ -67,8 +75,8 @@ public class NPCDialogueController : MonoBehaviour
         int npcIndex = (int)npcName;
         string path = $"NPCs/Dialogue/{npcIndex}/NPC_{npcIndex}_Dialog";
         dialogueData = Resources.Load<NPCDialogue>(path);
-        dialogueData.npcPotrait= Resources.Load<Sprite>($"NPCs/Avatar/{npcIndex}");
-
+        var sprite = Resources.Load<Sprite>($"NPCs/Avatar/{npcIndex}")?? Resources.Load<Sprite>($"NPCs/Avatar/DefaultPotrait");
+        dialogueData.npcPotrait = sprite;
         if (dialogueData == null)
             Debug.LogWarning($"Dialogue data not found for {npcName} at Resources/{path}");
     }
@@ -186,6 +194,7 @@ public class NPCDialogueController : MonoBehaviour
         dialoguePanel.SetActive(false);
         closeButton.onClick.RemoveAllListeners();
         questButton.onClick.RemoveAllListeners();
+        menuButton.onClick.RemoveAllListeners();
         isDialogueActive = false;
     }
 
@@ -225,4 +234,11 @@ public class NPCDialogueController : MonoBehaviour
         text.text = line;
         Destroy(bubble, bubbleDuration);
     }
+
+    private void OpenMenu()
+    {
+        CloseDialogue();
+        CharacterDialogManager.Instance.OpenMenuForNPC(dialogueData);
+    }
+
 }

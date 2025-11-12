@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using static UnityEditor.UIElements.ToolbarMenu;
 
 public class CharacterSpriteDatabase : MonoBehaviour
 {
