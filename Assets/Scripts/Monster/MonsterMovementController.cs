@@ -6,7 +6,6 @@ public class MonsterMovementController : MovementControllerBase
     [Header("Patrol Area Settings")]
     public int R = 5;
     public float waitTime = 1f;
-    public float arrivalDistance = 10f;
 
     [Header("Combat Settings")]
     public float attackRange = 100f;
@@ -65,17 +64,15 @@ public class MonsterMovementController : MovementControllerBase
     {
         if (isDebugging) Debug.Log($"[GetHitDelay] Bắt đầu chờ animation GetHit ({animationDelay}s).");
         yield return new WaitForSeconds(animationDelay);
-
+        StopMoving();
         if (attacker != null)
         {
             if (isDebugging) Debug.Log("[GetHitDelay] Animation GetHit kết thúc. Bắt đầu CHASE.");
-            enemy.SetState(MonsterState.Idle);
             StartChase(attacker);
         }
         else
         {
             if (isDebugging) Debug.Log("[GetHitDelay] Không có Attacker. Quay lại Patrol.");
-            enemy.SetState(MonsterState.Idle);
             patrolCoroutine = StartCoroutine(PatrolRoutine());
         }
     }
@@ -99,12 +96,12 @@ public class MonsterMovementController : MovementControllerBase
                 // set walking state so animation updates, then use base MoveToTarget (uses agent size)
                 enemy.SetState(MonsterState.Walk);
                 yield return StartCoroutine(MoveToTarget(playerTarget, attackRange, arrivalDistance));
-                enemy.SetState(MonsterState.Idle);
+                StopMoving();
             }
             else
             {
                 if (isDebugging) Debug.Log("[ChaseRoutine] Đang chờ Cooldown. Trạng thái Idle.");
-                enemy.SetState(MonsterState.Idle);
+                StopMoving();
                 yield return null;
             }
             yield return null;
@@ -126,12 +123,10 @@ public class MonsterMovementController : MovementControllerBase
 
         playerTarget.gameObject.GetComponent<PlayerMovementController>().HandleGetHit();
 
-        enemy.SetState(MonsterState.Idle);
+        StopMoving();
 
-        if (isDebugging) Debug.Log($"[AttackAction] Bắt đầu Cooldown: {attackCooldown}s.");
         yield return new WaitForSeconds(attackCooldown - animationDelay);
         isAttackOnCooldown = false;
-        if (isDebugging) Debug.Log("[AttackAction] Cooldown KẾT THÚC.");
     }
 
     // NOTE: Uses MovementControllerBase.MoveToTarget coroutine now.
@@ -225,17 +220,20 @@ public class MonsterMovementController : MovementControllerBase
         return targetNode;
     }
 
-    IEnumerator PatrolRoutine()
+    private TileNode debugEndNote;
+     IEnumerator PatrolRoutine()
     {
         isPatrolling = true;
+        int failCount = 0; // số lần liên tiếp không tìm được đường
 
         while (isPatrolling)
         {
             TileNode endNode = GetRandomPatrolNode();
+                debugEndNote = endNode;
 
             if (endNode == null)
             {
-                enemy.SetState(MonsterState.Idle);
+                StopMoving();
                 yield return new WaitForSeconds(waitTime);
                 continue;
             }
@@ -244,41 +242,54 @@ public class MonsterMovementController : MovementControllerBase
 
             if (startNode == null || startNode == endNode)
             {
-                enemy.SetState(MonsterState.Idle);
+                StopMoving();
                 yield return new WaitForSeconds(waitTime);
                 continue;
             }
 
-            var nodePath = pathfinder.FindPath(startNode, endNode);
+            var nodePath = pathfinder.FindPath(startNode, endNode, GetAgentSizeFromCollider(boxCollider));
             SetCurrentPathFromNodes(nodePath);
             pathIndex = 0;
 
             if (currentPath == null || currentPath.Count <= 1)
             {
+                failCount++;
                 if (isDebugging)
-                    Debug.LogWarning($"Không tìm thấy đường đi từ {startNode.gridPos} đến {endNode.gridPos}.");
+                {
+                    Debug.LogWarning($"[PatrolRoutine] Không tìm thấy đường ({failCount} lần liên tiếp) tới node {endNode.gridPos}.Start node walkable: {startNode.walkable}");
+                }
 
-                enemy.SetState(MonsterState.Idle);
+                if (failCount >= 3)
+                {
+                    if (isDebugging)
+                        Debug.LogWarning("[PatrolRoutine] Thất bại nhiều lần. Random lại node mới ngay lập tức.");
+
+                    failCount = 0; 
+                    yield return null; 
+                    continue;
+                }
+
+                desiredVelocity = Vector3.zero;
+                StopMoving();
+                yield return new WaitForSeconds(waitTime);
+                continue;
             }
-            else
-            {
-                if (isDebugging)
-                    Debug.Log($"Bắt đầu di chuyển ngẫu nhiên đến node: {endNode.gridPos}");
 
-                enemy.SetState(MonsterState.Walk);
-                // run follow with reference so Update() knows a coroutine is active
-                followCoroutine = StartCoroutine(FollowPath(arrivalDistance));
-                yield return followCoroutine;
-                followCoroutine = null;
+        
+            failCount = 0;
+            if (isDebugging)
+                Debug.Log($"Bắt đầu di chuyển ngẫu nhiên đến node: {endNode.gridPos}");
 
-                enemy.SetState(MonsterState.Idle);
-            }
+            enemy.SetState(MonsterState.Walk);
 
+            followCoroutine = StartCoroutine(FollowPath(arrivalDistance,0));
+            yield return followCoroutine;
+            followCoroutine = null;
+
+            StopMoving();
             yield return new WaitForSeconds(waitTime);
         }
     }
-
-    // FollowPath coroutine is implemented in MovementControllerBase; use that instead.
 
     protected override void MoveAlongPath()
     {
@@ -290,8 +301,8 @@ public class MonsterMovementController : MovementControllerBase
 
         Vector3 targetWorldPos = GetCurrentTargetWorldPos();
         Vector3 direction = targetWorldPos - transform.position;
-        // Update desiredVelocity; actual movement will be applied in FixedUpdate of base
-        if (direction.sqrMagnitude > 0.0001f)
+
+        if (direction.sqrMagnitude > 0.01f)
             desiredVelocity = new Vector2(direction.x, direction.y).normalized * moveSpeed;
         else
             desiredVelocity = Vector2.zero;
@@ -300,6 +311,12 @@ public class MonsterMovementController : MovementControllerBase
         {
             FlipSprite(direction.x > 0);
         }
+    }
+
+    public void StopMoving()
+    {
+        desiredVelocity= Vector2.zero;
+        enemy.SetState(MonsterState.Idle);
     }
 
     private void FlipSprite(bool flip)
@@ -311,5 +328,30 @@ public class MonsterMovementController : MovementControllerBase
             scale.x = targetScaleX;
             transform.localScale = scale;
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (!Application.isPlaying || !isDebugging)
+            return;
+        // Chỉ vẽ khi đang có đường đi hợp lệ
+        if (currentPath != null && currentPath.Count > 0)
+        {
+            // Vẽ toàn bộ đường đi (màu vàng)
+            Gizmos.color = Color.yellow;
+            for (int i = 0; i < currentPath.Count - 1; i++)
+            {
+                Vector3 from = currentPath[i];
+                Vector3 to = currentPath[i+1];
+                Gizmos.DrawLine(from, to);
+            }
+
+        }
+        if(debugEndNote!=null)
+        {
+            Vector3 targetPos = debugEndNote.worldPos;
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(targetPos, 5f);
+        }    
     }
 }

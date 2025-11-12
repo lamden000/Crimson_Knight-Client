@@ -1,9 +1,11 @@
 ﻿using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
+using NavMeshPlus.Components;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerAnimationController))]
@@ -33,7 +35,6 @@ public class PlayerMovementController : MovementControllerBase
     protected override void Start()
     {
         base.Start();
-        // moveSpeed có thể được set trong inspector; nếu cần khác có thể set ở đây.
     }
 
     private void Awake()
@@ -103,12 +104,22 @@ public class PlayerMovementController : MovementControllerBase
             }
             return;
         }
-
         var mouse = Mouse.current;
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        var touchScreen=Touchscreen.current;
+
+        if (mouse != null && mouse.leftButton.wasPressedThisFrame ||
+                    touchScreen != null && touchScreen.primaryTouch.press.wasPressedThisFrame)
         {
             Camera cam=Camera.main;
-            Vector2 screenPos = Mouse.current.position.ReadValue();
+            Vector2 screenPos=Vector2.zero;
+            if (touchScreen == null)
+            {
+                screenPos = Mouse.current.position.ReadValue();
+            }
+            else
+            {
+                screenPos= touchScreen.position.ReadValue();
+            }
             Vector3 screenToWorld = cam.ScreenToWorldPoint(screenPos);
             Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
@@ -218,7 +229,7 @@ public class PlayerMovementController : MovementControllerBase
             }
 
             // pass the agent's BoxCollider2D size to pathfinder so obstacles are considered with agent's size
-            var agentSize = GetAgentSizeForPathfinding();
+            var agentSize = GetAgentSizeFromCollider(boxCollider);
             var path = pathfinder.FindPath(startNode, endNode, agentSize);
             if (path == null || path.Count == 0)
             {
@@ -229,7 +240,7 @@ public class PlayerMovementController : MovementControllerBase
             pathIndex = 0;
 
             // start base follow coroutine, but stop early when within attackRange of the enemy
-            StartFollow(1f, targetEnemy, attackRange);
+            StartFollow(1f, attackRange, targetEnemy);
             return;
         }
     }
@@ -382,7 +393,7 @@ public class PlayerMovementController : MovementControllerBase
         }
 
         // use base MoveToTarget that stops when within npcInteractRange
-        yield return StartCoroutine(MoveToTarget(npc.transform, npcInteractRange));
+        yield return StartCoroutine(MoveToTarget(npc.transform, npcInteractRange,arrivalDistance));
 
         // after arriving, ensure npc still exists then start dialogue
         if (npc != null)

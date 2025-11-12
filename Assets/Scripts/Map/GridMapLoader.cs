@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NavMeshPlus.Components;
+using NavMeshPlus.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Tilemaps;
@@ -25,11 +25,15 @@ public class GridmapLoader : MonoBehaviour
     private Pathfinder pathfinder;
     private TiledMap map;
     public bool drawGizmo=false;
+
     private void Start()
     {
         pathfinder=Pathfinder.Instance;
+        transform.position = Vector3.zero;
         if (Application.isPlaying)
+        {
             StartCoroutine(LoadJsonFile(jsonFileName));
+        }
     }
 
     private void Update()
@@ -94,6 +98,7 @@ public class GridmapLoader : MonoBehaviour
             LoadTileLayers();
 
             LoadObjectLayers();
+
         }
     }
 
@@ -189,13 +194,17 @@ public class GridmapLoader : MonoBehaviour
         float tileW = map.tilewidth;
         float tileH = map.tileheight;
 
-        // Subgrid có kích thước gấp subDivisions lần
         int newWidth = baseWidth * subDivisions;
         int newHeight = baseHeight * subDivisions;
         float subW = tileW / subDivisions;
         float subH = tileH / subDivisions;
 
         TileNode[,] subGrid = new TileNode[newHeight, newWidth];
+
+        // ✅ Offset để dịch collider box về đúng tile (lệch sang phải + lên trên 1 tile)
+        // Nếu nó đang lệch *sang phải và lên trên*, ta trừ bớt:
+        float colliderOffsetX =- subW/2;
+        float colliderOffsetY = -subH/2;
 
         for (int y = 0; y < newHeight; y++)
         {
@@ -227,15 +236,21 @@ public class GridmapLoader : MonoBehaviour
                         float worldYBottom = (map.height * tileH) - (obj.y + obj.height);
                         float worldYTop = (map.height * tileH) - obj.y;
 
-                        // --- AABB của subcell (có offset trừ) ---
-                        float subMinX = (x * subW);
+                        // --- Áp dụng offset cho collider ---
+                        float objMinX = obj.x + colliderOffsetX;
+                        float objMaxX = objMinX + obj.width;
+                        float objMinY = worldYBottom + colliderOffsetY;
+                        float objMaxY = worldYTop + colliderOffsetY;
+
+                        // --- AABB của subcell ---
+                        float subMinX = x * subW;
                         float subMaxX = subMinX + subW;
-                        float subMinY = (y * subH);
+                        float subMinY = y * subH;
                         float subMaxY = subMinY + subH;
 
                         // --- Overlap ---
-                        float overlapX = Mathf.Max(0, Mathf.Min(subMaxX, obj.x + obj.width) - Mathf.Max(subMinX, obj.x));
-                        float overlapY = Mathf.Max(0, Mathf.Min(subMaxY, worldYTop) - Mathf.Max(subMinY, worldYBottom));
+                        float overlapX = Mathf.Max(0, Mathf.Min(subMaxX, objMaxX) - Mathf.Max(subMinX, objMinX));
+                        float overlapY = Mathf.Max(0, Mathf.Min(subMaxY, objMaxY) - Mathf.Max(subMinY, objMinY));
 
                         float overlapArea = overlapX * overlapY;
                         float subArea = subW * subH;
@@ -253,8 +268,11 @@ public class GridmapLoader : MonoBehaviour
                 subGrid[y, x] = new TileNode(x, y, worldPos, walkable);
             }
         }
+
+        Debug.Log("✅ Collider offset (-tileW, -tileH) applied to fix overlap alignment.");
         return subGrid;
     }
+
 
 
     private void AdjustBoundaryCollider()
@@ -312,6 +330,15 @@ public class GridmapLoader : MonoBehaviour
 
     void LoadObjectLayers()
     {
+        GameObject colliderParent = new GameObject("Colliders");
+        GameObject npcParent = new GameObject("NPCs");
+        GameObject monsterParent = new GameObject("Monsters");
+        GameObject objectParent = new GameObject("Objects");
+
+        colliderParent.transform.SetParent(transform);
+        npcParent.transform.SetParent(transform);
+        monsterParent.transform.SetParent(transform);
+        objectParent.transform.SetParent(transform);
         foreach (var layer in map.layers)
         {
             if (layer.type != "objectgroup" || layer.objects == null)
@@ -322,31 +349,31 @@ public class GridmapLoader : MonoBehaviour
                 switch (obj.type)
                 {
                     case "Collider":
-                        CreateColliderBox(obj, false);
+                        CreateColliderBox(obj, false, colliderParent.transform);
                         break;
 
                     case "Water":
-                        CreateColliderBox(obj, true);
+                        CreateColliderBox(obj, true,colliderParent.transform);
                         break;
 
                     case "NPC":
-                        SpawnNPC(obj);
+                        SpawnNPC(obj,npcParent.transform);
                         break;
 
                     case "Monster":
-                        SpawnMonster(obj);
+                        SpawnMonster(obj,monsterParent.transform);
                         break;
 
                     default:
                         if (obj.gid > 0 && gidToTile.TryGetValue(obj.gid, out Tile baseTile))
-                            CreateStaticObject(obj, baseTile);
+                            CreateStaticObject(obj, baseTile,objectParent.transform);
                         break;
                 }
             }
         }
     }
 
-    private void SpawnNPC(TiledObject obj)
+    private void SpawnNPC(TiledObject obj,Transform npcParent)
     {
         if (npcPrefab == null)
         {
@@ -357,6 +384,7 @@ public class GridmapLoader : MonoBehaviour
         Vector3 pos = GetWorldPosition(obj);
         GameObject npc = Instantiate(npcPrefab, pos, Quaternion.identity);
         npc.name = $"NPC_{obj.name}_{obj.id}";
+        npc.transform.SetParent(npcParent);
 
         // Auto-assign NPCName enum if it matches
         var npcCtrl = npc.GetComponent<NPC>();
@@ -366,7 +394,7 @@ public class GridmapLoader : MonoBehaviour
         }
     }
 
-    private void SpawnMonster(TiledObject obj)
+    private void SpawnMonster(TiledObject obj, Transform monsterParent)
     {
         if (monsterPrefab == null)
         {
@@ -377,6 +405,7 @@ public class GridmapLoader : MonoBehaviour
         Vector3 pos = GetWorldPosition(obj);
         GameObject monster = Instantiate(monsterPrefab, pos, Quaternion.identity);
         monster.name = $"Monster_{obj.name}_{obj.id}";
+        monster.transform.SetParent(monsterParent);
         var monsterCtrl = monster.GetComponent<Monster>();
         if (monsterCtrl != null && System.Enum.TryParse(obj.name, out MonsterName npcEnum))
         {
@@ -384,14 +413,15 @@ public class GridmapLoader : MonoBehaviour
         }
     }
 
-    private void CreateStaticObject(TiledObject obj, Tile baseTile)
+    private void CreateStaticObject(TiledObject obj, Tile baseTile, Transform objectParent)
     {
-        GameObject parent = new GameObject($"Object_{obj.id}");
+        GameObject go = new GameObject($"Object_{obj.id}");
+        go.transform.SetParent(objectParent);
         float mapHeightInWorldUnits = map.height * map.tileheight;
         float centerX = obj.x + obj.width / 2f;
         float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
 
-        var sr = parent.AddComponent<SpriteRenderer>();
+        var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = baseTile.sprite;
         sr.sortingLayerName = "Default";
         sr.sortingOrder = 0;
@@ -405,7 +435,7 @@ public class GridmapLoader : MonoBehaviour
         float pixelsPerUnit = sr.sprite.pixelsPerUnit;
         Vector2 pivotDelta = (pivotPixel - spriteSize / 2f) / pixelsPerUnit;
 
-        parent.transform.position = new Vector3(centerX + pivotDelta.x, centerY + spriteHeight + pivotDelta.y, 0);
+        go.transform.position = new Vector3(centerX + pivotDelta.x, centerY + spriteHeight + pivotDelta.y, 0);
     }
 
     private Vector3 GetWorldPosition(TiledObject obj)
@@ -415,7 +445,7 @@ public class GridmapLoader : MonoBehaviour
         float y = (mapHeight - obj.y) - obj.height / 2f;
         return new Vector3(x, y, 0);
     }
-void CreateColliderBox(TiledObject obj, bool isWater)
+void CreateColliderBox(TiledObject obj, bool isWater,Transform colliderParent)
     {
         string name = isWater? "WaterBox":"ColliderBox";
         GameObject go = new GameObject(name);
@@ -433,7 +463,7 @@ void CreateColliderBox(TiledObject obj, bool isWater)
 
         col.offset = Vector2.zero;
 
-        go.transform.SetParent(transform);
+        go.transform.SetParent(colliderParent);
     }
 
     private void OnDrawGizmos()

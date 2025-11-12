@@ -1,1 +1,1 @@
-﻿public enum NPCName {Mom=34,Guard_1=32 }
+﻿public enum NPCName {Commander=4,Mom=34,Guard_1=32,Waypoint=47 }

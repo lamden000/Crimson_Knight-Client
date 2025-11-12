@@ -1091,7 +1091,7 @@
                  "type":"NPC",
                  "visible":true,
                  "width":48,
-                 "x":2344.66666666667,
+                 "x":2304.66666666667,
                  "y":461.333333333333
                 }, 
                 {
@@ -1102,8 +1102,8 @@
                  "type":"NPC",
                  "visible":true,
                  "width":48,
-                 "x":2347.33333333333,
-                 "y":583.333333333333
+                 "x":2305.33333333333,
+                 "y":587.333333333333
                 }, 
                 {
                  "height":118.666666666667,
@@ -1344,7 +1344,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":186,
+ "nextobjectid":188,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
