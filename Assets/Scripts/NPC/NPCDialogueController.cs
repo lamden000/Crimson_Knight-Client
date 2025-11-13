@@ -19,6 +19,7 @@ public class NPCDialogueController : MonoBehaviour
     private Button questButton;
     private Button closeButton;
     private Button menuButton;
+    private TMP_Text npcNameText;
 
     [Header("World-Space Chat Bubble")]
     public GameObject chatBubblePrefab;      
@@ -46,25 +47,29 @@ public class NPCDialogueController : MonoBehaviour
         questButton = CharacterDialogManager.Instance.questButton;
         closeButton = CharacterDialogManager.Instance.closeButton;
         menuButton=CharacterDialogManager.Instance.menuButton;
+        npcNameText = CharacterDialogManager.Instance.npcNameText;
     }
 
     public void StartDialogue()
     {
-        if (isDialogueActive) return;
+        if (isDialogueActive||dialogueData == null) return;
 
         if (currentQuest.Length == 0)
             questButton.gameObject.SetActive(false);
         if (dialogueData.npcMenu == null)
             menuButton.gameObject.SetActive(false);
+        else {
+            menuButton.onClick.AddListener(OpenMenu);
+            menuButton.gameObject.GetComponentInChildren<TMP_Text>().text = dialogueData.npcMenu.menuName;
+        }
         dialoguePanel.SetActive(true);
         questButton.onClick.AddListener(OnQuestButton);
         closeButton.onClick.AddListener(CloseDialogue);
-        menuButton.onClick.AddListener(OpenMenu);
-        menuButton.gameObject.GetComponentInChildren<TMP_Text>().text = dialogueData.npcMenu.menuName;
-        isDialogueActive = true;        
+        npcNameText.text = dialogueData.npcName;
         portraitImage.sprite = dialogueData.npcPotrait;
 
-        if( GetDialogueEntry("Idle")==null)
+        isDialogueActive = true;
+        if ( GetDialogueEntry("Idle")==null)
             OpenMenu();
         else
             PlayDialogue("Idle");
@@ -75,10 +80,13 @@ public class NPCDialogueController : MonoBehaviour
         int npcIndex = (int)npcName;
         string path = $"NPCs/Dialogue/{npcIndex}/NPC_{npcIndex}_Dialog";
         dialogueData = Resources.Load<NPCDialogue>(path);
+        if(dialogueData == null)
+        {
+            Debug.LogWarning($"Dialogue data not found for {npcName} at Resources/{path}");
+            return;
+        }
         var sprite = Resources.Load<Sprite>($"NPCs/Avatar/{npcIndex}")?? Resources.Load<Sprite>($"NPCs/Avatar/DefaultPotrait");
         dialogueData.npcPotrait = sprite;
-        if (dialogueData == null)
-            Debug.LogWarning($"Dialogue data not found for {npcName} at Resources/{path}");
     }
 
     private void PlayDialogue(string key)

@@ -24,7 +24,9 @@ public class GridmapLoader : MonoBehaviour
     public bool loadInEditMode = false;
     private Pathfinder pathfinder;
     private TiledMap map;
+    private string currentOrigin = "Default";
     public bool drawGizmo=false;
+    public List<GameObject> spawnPoints = new List<GameObject>();
 
     private void Start()
     {
@@ -32,7 +34,7 @@ public class GridmapLoader : MonoBehaviour
         transform.position = Vector3.zero;
         if (Application.isPlaying)
         {
-            StartCoroutine(LoadJsonFile(jsonFileName));
+            LoadMapByName(jsonFileName,currentOrigin);
         }
     }
 
@@ -42,6 +44,7 @@ public class GridmapLoader : MonoBehaviour
         if (!Application.isPlaying && loadInEditMode)
         {
             loadInEditMode = false;
+            LoadMapByName(jsonFileName, currentOrigin);
             StartCoroutine(LoadJsonFile(jsonFileName));
         }
 #endif
@@ -98,7 +101,9 @@ public class GridmapLoader : MonoBehaviour
             LoadTileLayers();
 
             LoadObjectLayers();
-
+            // After objects (including spawn points) are created, resolve origin -> player spawn position
+            ResolveSpawnOrigin(currentOrigin);
+            this.jsonFileName = jsonFileName;
         }
     }
 
@@ -203,8 +208,8 @@ public class GridmapLoader : MonoBehaviour
 
         // ✅ Offset để dịch collider box về đúng tile (lệch sang phải + lên trên 1 tile)
         // Nếu nó đang lệch *sang phải và lên trên*, ta trừ bớt:
-        float colliderOffsetX =- subW/2;
-        float colliderOffsetY = -subH/2;
+        float colliderOffsetX = 0;
+        float colliderOffsetY = 0;
 
         for (int y = 0; y < newHeight; y++)
         {
@@ -256,7 +261,7 @@ public class GridmapLoader : MonoBehaviour
                         float subArea = subW * subH;
                         float overlapRatio = overlapArea / subArea;
 
-                        if (overlapRatio >= 0.3f)
+                        if (overlapRatio >= 0.2f)
                         {
                             walkable = false;
                             goto SkipRemaining;
@@ -281,52 +286,69 @@ public class GridmapLoader : MonoBehaviour
 
         float mapWorldWidth = map.width * map.tilewidth;
         float mapWorldHeight = map.height * map.tileheight;
+        BoxCollider2D boundaryCollider;
+        var go = new GameObject("MapBoundary");
+        go.transform.SetParent(transform, false);
+        go.tag = "Map Boundary";
+        go.layer = LayerMask.NameToLayer("Ignore Raycast");
+        boundaryCollider = go.AddComponent<BoxCollider2D>();
+        boundaryCollider.isTrigger = true;
+        boundaryCollider.offset = Vector2.zero;
+        boundaryCollider.size = new Vector2(mapWorldWidth, mapWorldHeight);
 
-        // Find candidate child colliders (exclude colliders created for objects)
-        var colliders = GetComponentsInChildren<BoxCollider2D>(true);
-        BoxCollider2D boundary = null;
+        boundaryCollider.transform.localPosition = new Vector3(mapWorldWidth / 2f, mapWorldHeight / 2f, 0f);
+        Camera.main.GetComponent<CameraFollow>().InitializeBounds();
+    }
+    
+    // Unload currently loaded map: clear tilemap, destroy spawned parents and clear caches.
+    public void UnloadCurrentMap()
+    {
+        // stop any running loader coroutines
+        StopAllCoroutines();
 
-        foreach (var c in colliders)
+        // clear tilemap visuals
+        if (tilemap != null)
+            tilemap.ClearAllTiles();
+
+        // destroy known parent containers created during LoadObjectLayers
+        string[] parentNames = new string[] { "Colliders", "NPCs", "Monsters", "Objects", "SpawnPoints", "DepartPoints", "MapBoundary" };
+        foreach (var name in parentNames)
         {
-            if (c.gameObject == this.gameObject) continue;
-            string n = c.gameObject.name;
-            // exclude runtime object colliders we create for tiles/objects
-            if (n.StartsWith("ColliderBox") || n.StartsWith("WaterBox")) continue;
-            // prefer explicit names containing "Bound" or "Map"
-            if (n.IndexOf("Bound", StringComparison.OrdinalIgnoreCase) >= 0 || n.IndexOf("Map", StringComparison.OrdinalIgnoreCase) >= 0)
+            var child = transform.Find(name);
+            if (child != null)
             {
-                boundary = c;
-                break;
+                if (Application.isPlaying)
+                    Destroy(child.gameObject);
+                else
+                    DestroyImmediate(child.gameObject);
             }
         }
 
-        // fallback: pick the first child collider that isn't one of the object colliders
-        if (boundary == null)
-        {
-            foreach (var c in colliders)
-            {
-                if (c.gameObject == this.gameObject) continue;
-                string n = c.gameObject.name;
-                if (n.StartsWith("ColliderBox") || n.StartsWith("WaterBox")) continue;
-                boundary = c;
-                break;
-            }
-        }
+        // clear loaded tile cache
+        gidToTile.Clear();
 
-        // If still not found, create a new child specifically for boundary
-        if (boundary == null)
-        {
-            var go = new GameObject("MapBoundary");
-            go.transform.SetParent(transform, false);
-            boundary = go.AddComponent<BoxCollider2D>();
-            boundary.isTrigger = true;
-            boundary.offset = Vector2.zero;
-        }
-        boundary.size = new Vector2(mapWorldWidth, mapWorldHeight);
+        // clear spawn points list
+        spawnPoints.Clear();
 
-        boundary.transform.localPosition = new Vector3(mapWorldWidth / 2f, mapWorldHeight / 2f, 0f);
+        // drop loaded map reference
+        map = null;
+
+        // Note: Pathfinder grid will be replaced when a new map is loaded.
+        Debug.Log("GridmapLoader: Unloaded current map.");
     }
 
+    // Public helper to unload current map then load a different map by json filename (e.g. \"Map01.json\").
+    public void LoadMapByName(String newJsonFileName, string origin)
+    {
+        currentOrigin = origin; 
+        if (!newJsonFileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            newJsonFileName = newJsonFileName + ".json";
+
+        UnloadCurrentMap();
+
+        if (Application.isPlaying || loadInEditMode)
+            StartCoroutine(LoadJsonFile(newJsonFileName));
+    }
 
     void LoadObjectLayers()
     {
@@ -334,11 +356,15 @@ public class GridmapLoader : MonoBehaviour
         GameObject npcParent = new GameObject("NPCs");
         GameObject monsterParent = new GameObject("Monsters");
         GameObject objectParent = new GameObject("Objects");
+		GameObject spawnParent = new GameObject("SpawnPoints");
+		GameObject departParent = new GameObject("DepartPoints");
 
         colliderParent.transform.SetParent(transform);
         npcParent.transform.SetParent(transform);
         monsterParent.transform.SetParent(transform);
         objectParent.transform.SetParent(transform);
+        spawnParent.transform.SetParent(transform);
+		departParent.transform.SetParent(transform);
         foreach (var layer in map.layers)
         {
             if (layer.type != "objectgroup" || layer.objects == null)
@@ -362,6 +388,12 @@ public class GridmapLoader : MonoBehaviour
 
                     case "Monster":
                         SpawnMonster(obj,monsterParent.transform);
+                        break;
+                    case "Spawn Point":
+                        CreateSpawnPoint(obj, spawnParent.transform);
+                        break;
+                    case "Depart Point":
+                        CreateDepartPoint(obj, departParent.transform);
                         break;
 
                     default:
@@ -444,6 +476,65 @@ public class GridmapLoader : MonoBehaviour
         float x = obj.x + obj.width / 2f;
         float y = (mapHeight - obj.y) - obj.height / 2f;
         return new Vector3(x, y, 0);
+    }
+    private void CreateSpawnPoint(TiledObject obj, Transform spawnParent)
+    {
+        Vector3 pos = GetWorldPosition(obj);
+        // Use the object's name as the spawn point GameObject name so callers can find by place name
+        GameObject sp = new GameObject(obj.name);
+        sp.transform.position = pos;
+        sp.transform.SetParent(spawnParent);
+        // record for later use
+        spawnPoints.Add(sp);
+    }
+    private void CreateDepartPoint(TiledObject obj, Transform departParent)
+    {
+        // Create a depart point GameObject with a BoxCollider2D trigger and a DepartPoint component.
+        Vector3 pos = GetWorldPosition(obj);
+        GameObject dp = new GameObject($"DepartPoint_{obj.name}_{obj.id}");
+        dp.transform.position = pos;
+        dp.transform.SetParent(departParent);
+
+        var col = dp.AddComponent<BoxCollider2D>();
+        col.isTrigger = true;
+        col.size = new Vector2(obj.width, obj.height);
+        col.offset = Vector2.zero;
+
+        var departComp = dp.AddComponent<DepartPoint>();
+        // store destination map name in the component; use object name as destination identifier
+        departComp.destinationMapName = obj.name;
+    }
+
+    private void ResolveSpawnOrigin(string origin)
+    {
+        // If no origin provided, default to "Default" spawn point
+        string originToFind = string.IsNullOrEmpty(origin) ? "Default" : origin;
+
+        GameObject found = spawnPoints.Find(s => s != null && s.name == originToFind);
+        if (found != null)
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                player.transform.position = found.transform.position;
+                // snap camera to player immediately if CameraFollow exists
+                if (Camera.main != null)
+                {
+                    var camFollow = Camera.main.GetComponent<CameraFollow>();
+                    if (camFollow != null)
+                        camFollow.SnapToTargetImmediate();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("ResolveSpawnOrigin: Player GameObject with tag 'Player' not found.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Spawn origin '{originToFind}' not found in map spawn points.");
+        }
+        Debug.Log($"DepartPoint: {origin}");
     }
 void CreateColliderBox(TiledObject obj, bool isWater,Transform colliderParent)
     {

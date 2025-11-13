@@ -13,6 +13,14 @@ public class Character : MonoBehaviour
     public Clazz GetClass()
     { return m_Class; }
 
+    private PlayerMovementController m_Controller;
+    public GameObject hitEffect;
+
+    private void Start()
+    {
+        m_Controller = GetComponent<PlayerMovementController>();
+    }
+
     public CharacterPart getWeaponType()
     {
         CharacterPart weapon = CharacterPart.Gun;
@@ -35,9 +43,11 @@ public class Character : MonoBehaviour
         return weapon;
     }
 
-    public void TakeDamage(int damage, GameObject attacker)
+    public void TakeDamage(float damage, GameObject attacker)
     {
-
+        m_Controller.HandleGetHit();        
+        GameObject hit= Instantiate(hitEffect,transform.position+new Vector3(0,50,0),Quaternion.identity);
+        Destroy(hit,0.5f);
     }
 
     void Update()

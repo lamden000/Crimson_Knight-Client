@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 2
+  spritePixelsToUnits: 1
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -142,12 +142,12 @@ TextureImporter:
       name: 47_0
       rect:
         serializedVersion: 2
-        x: 25
-        y: 492
-        width: 94
-        height: 165
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 289
+        width: 50
+        height: 95
+      alignment: 9
+      pivot: {x: 0.46422097, y: 0.09983809}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -164,19 +164,19 @@ TextureImporter:
       name: 47_1
       rect:
         serializedVersion: 2
-        x: 25
-        y: 329
-        width: 93
-        height: 163
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 193
+        width: 50
+        height: 95
+      alignment: 9
+      pivot: {x: 0.49999997, y: 0.09983809}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a9a0f247338580a4188918e27f6890f6
+      spriteID: 299e9bffb7613884792ffadf6a702f3f
       internalID: 1794373003
       vertices: []
       indices: 
@@ -186,19 +186,19 @@ TextureImporter:
       name: 47_2
       rect:
         serializedVersion: 2
-        x: 25
-        y: 165
-        width: 94
-        height: 163
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 97
+        width: 50
+        height: 95
+      alignment: 9
+      pivot: {x: 0.44633132, y: 0.09983809}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cbf83c1768eae5a4ba1bb4f4b1e81fc3
+      spriteID: 5734c38e67eb4a64ba37951285e45d36
       internalID: -834993266
       vertices: []
       indices: 
@@ -208,19 +208,19 @@ TextureImporter:
       name: 47_3
       rect:
         serializedVersion: 2
-        x: 25
-        y: 0
-        width: 94
-        height: 165
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 1
+        width: 50
+        height: 95
+      alignment: 9
+      pivot: {x: 0.45527598, y: 0.09983809}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 88cc70d1e91b9e54385a98069b975035
+      spriteID: f6f26ec2409c76649aaf2c236fc265ad
       internalID: 1828897888
       vertices: []
       indices: 

@@ -7,6 +7,7 @@ public class Monster : MonoBehaviour
 {
     private MonsterMovementController movementController;
     public MonsterName monsterName=MonsterName.Slime;
+    public float damage { private set; get; } = 10f;
 
     public MonsterState currentState;
     private bool isDead=false;

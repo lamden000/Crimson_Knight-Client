@@ -1279,8 +1279,8 @@
                  "type":"Collider",
                  "visible":true,
                  "width":20,
-                 "x":2397.33333333333,
-                 "y":-12
+                 "x":2404,
+                 "y":-10.6666666666666
                 }, 
                 {
                  "height":26.6666666666667,
@@ -1336,6 +1336,39 @@
                  "width":28,
                  "x":318.666666666667,
                  "y":174.666666666667
+                }, 
+                {
+                 "height":76,
+                 "id":188,
+                 "name":"Default",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":52,
+                 "x":1082,
+                 "y":476
+                }, 
+                {
+                 "height":77,
+                 "id":189,
+                 "name":"City",
+                 "rotation":0,
+                 "type":"Depart Point",
+                 "visible":true,
+                 "width":26.5,
+                 "x":2390.5,
+                 "y":489.5
+                }, 
+                {
+                 "height":52.5,
+                 "id":190,
+                 "name":"City",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":27,
+                 "x":2354,
+                 "y":505.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1344,7 +1377,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":188,
+ "nextobjectid":191,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

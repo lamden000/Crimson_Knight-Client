@@ -32,7 +32,7 @@ public class Main : MonoBehaviour
         if (cameraFollow != null)
         {
             float calculatedOrthoSize = (float)REFERENCE_HEIGHT / (PPU * 2f);
-            cameraFollow.InitializeBounds(calculatedOrthoSize);
+            cameraFollow.SetOrthographicSize(calculatedOrthoSize);
         }
         else
         {

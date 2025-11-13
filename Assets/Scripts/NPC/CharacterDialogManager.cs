@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,7 +19,9 @@ public class CharacterDialogManager : MonoBehaviour
     public Button questButton;
     public Button closeButton;
     public Button menuButton;
+    public TMP_Text npcNameText;
     [SerializeField] private NPCMenuUI menuUI;
+    private GridmapLoader mapLoader;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -33,6 +36,7 @@ public class CharacterDialogManager : MonoBehaviour
         yield return null;
         dialoguePanel.SetActive(false);
         menuUI.OnOptionSelected += HandleOption;
+        mapLoader = FindAnyObjectByType<GridmapLoader>();
     }
 
     public void OpenMenuForNPC(NPCDialogue npc)
@@ -77,6 +81,8 @@ public class CharacterDialogManager : MonoBehaviour
             Debug.LogWarning("Teleport destination is missing!");
             return;
         }
+        mapLoader.LoadMapByName(destination, "Default");
+
     }
 
     private void OpenShop(string shopName)
