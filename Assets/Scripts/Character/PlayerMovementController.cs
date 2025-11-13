@@ -136,7 +136,6 @@ public class PlayerMovementController : MovementControllerBase
                 {
                     var npc = hit.collider.GetComponent<NPCDialogueController>();
                     if (npc == null) return;
-
                     CancelAutoFollow();
                     if (npcTalkCoroutine != null)
                     {

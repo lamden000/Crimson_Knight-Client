@@ -5,24 +5,32 @@ public class CameraFollow : MonoBehaviour
 {
     public Transform target;
     public float smoothSpeed = 5f;
-    public BoxCollider2D bounds;
 
+    private BoxCollider2D bounds;
     private float halfHeight;
     private float halfWidth;
+    private float orthographicSize;
     private Vector3 minBounds;
     private Vector3 maxBounds;
     private Camera cam;
     private Vector3 lastBoundsCenter;
     private Vector3 lastBoundsSize;
+    private bool immediateSnap = false;
 
+    public void SetOrthographicSize(float orthographicSize)
+    {
+        this.orthographicSize = orthographicSize;
+    }
 
-    public void InitializeBounds(float calculatedOrthographicSize)
+    public void InitializeBounds()
     {
         if (cam == null)
         {
             cam = GetComponent<Camera>();
         }
-        halfHeight = calculatedOrthographicSize;
+
+        bounds= GameObject.FindGameObjectWithTag("Map Boundary")?.GetComponent<BoxCollider2D>();
+        halfHeight =orthographicSize;
 
         halfWidth = halfHeight * cam.aspect;
 
@@ -35,12 +43,39 @@ public class CameraFollow : MonoBehaviour
         {
             Debug.LogWarning("CameraFollow: Bounds collider is not set!");
         }
+        SnapToTarget();
     }
+
+    private void Awake()
+    {
+        if (cam == null) cam = GetComponent<Camera>();
+    }
+
+    public void SnapToTarget()
+    {
+        if (target == null) return;
+        transform.position = new Vector3(target.position.x , target.position.y, transform.position.z);
+    }
+
+    // Snap once and tell LateUpdate to skip lerp for the upcoming frame
+    public void SnapToTargetImmediate()
+    {
+        SnapToTarget();
+        immediateSnap = true;
+    }
+
     private void LateUpdate()
     {
         if (target == null || bounds == null) return;
 
-        // Check if the bounds moved or resized
+        if (immediateSnap)
+        {
+            // perform one-frame immediate snap and skip lerp
+            immediateSnap = false;
+            transform.position = new Vector3(target.position.x , target.position.y, transform.position.z);
+            return;
+        }
+
         if (bounds.bounds.center != lastBoundsCenter || bounds.bounds.size != lastBoundsSize)
         {
             minBounds = bounds.bounds.min;

@@ -15,6 +15,8 @@ public class MonsterMovementController : MovementControllerBase
     private Transform playerTarget;
     private bool isAttackOnCooldown = false;
     private Coroutine chaseCoroutine;
+    private int chaseFailCount = 0;
+    private int maxChaseFail = 3;
 
     private TileNode centerNode;
     private Monster enemy;
@@ -43,6 +45,7 @@ public class MonsterMovementController : MovementControllerBase
     {
         StopPatrol();
         playerTarget = target;
+        chaseFailCount = 0;
         if (isDebugging) Debug.Log($"[Chase] Bắt đầu truy đuổi mục tiêu: {target.name}");
         if (chaseCoroutine != null) StopCoroutine(chaseCoroutine);
         chaseCoroutine = StartCoroutine(ChaseRoutine());
@@ -93,7 +96,26 @@ public class MonsterMovementController : MovementControllerBase
             else if (distance > attackRange)
             {
                 if (isDebugging) Debug.Log($"[ChaseRoutine] Khoảng cách {distance:F2} > AttackRange. Bắt đầu DI CHUYỂN.");
-                // set walking state so animation updates, then use base MoveToTarget (uses agent size)
+
+                // Check whether a path to the dynamic target exists before attempting to move.
+                var testPath = BuildPathToWorld(playerTarget.position);
+                if (testPath == null || testPath.Count == 0)
+                {
+                    chaseFailCount++;
+                    if (isDebugging) Debug.Log($"[ChaseRoutine] Không thể tìm đường tới mục tiêu (thất bại {chaseFailCount}/{maxChaseFail}).");
+                    if (chaseFailCount >= maxChaseFail)
+                    {
+                        // Return to center and resume patrol
+                        yield return StartCoroutine(ReturnToCenterAndResumePatrol());
+                        yield break;
+                    }
+                    // wait a bit before retrying
+                    yield return new WaitForSeconds(waitTime);
+                    continue;
+                }
+
+                // valid path found — reset fail counter and proceed with movement
+                chaseFailCount = 0;
                 enemy.SetState(MonsterState.Walk);
                 yield return StartCoroutine(MoveToTarget(playerTarget, attackRange, arrivalDistance));
                 StopMoving();
@@ -121,7 +143,7 @@ public class MonsterMovementController : MovementControllerBase
 
         yield return new WaitForSeconds(animationDelay);
 
-        playerTarget.gameObject.GetComponent<PlayerMovementController>().HandleGetHit();
+        playerTarget.gameObject.GetComponent<Character>().TakeDamage(enemy.damage,gameObject);
 
         StopMoving();
 
@@ -147,6 +169,30 @@ public class MonsterMovementController : MovementControllerBase
         }
 
         CalculatePatrolBounds();
+        patrolCoroutine = StartCoroutine(PatrolRoutine());
+    }
+
+    private IEnumerator ReturnToCenterAndResumePatrol()
+    {
+        if (isDebugging) Debug.Log("[Chase] Quá nhiều lần không tìm thấy đường. Quay trở lại tâm để tuần tra.");
+
+        if (chaseCoroutine != null)
+        {
+            StopCoroutine(chaseCoroutine);
+            chaseCoroutine = null;
+        }
+
+        playerTarget = null;
+        ClearPath();
+        StopMoving();
+
+        if (centerNode != null)
+        {
+            // Move back to the spawn/center node, then resume patrol
+            yield return StartCoroutine(MoveToTarget(centerNode.worldPos, arrivalDistance, 0f));
+        }
+
+        isPatrolling = true;
         patrolCoroutine = StartCoroutine(PatrolRoutine());
     }
 
