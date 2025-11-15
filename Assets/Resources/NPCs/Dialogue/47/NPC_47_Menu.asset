@@ -16,5 +16,7 @@ MonoBehaviour:
   options:
   - label: "D\u1ECBch chuy\u1EC3n \u0111\u1EBFn nh\xE0"
     actionKey: teleport_to_Town
+  - label: "D\u1ECBch chuy\u1EC3n r\u1EEBng"
+    actionKey: teleport_to_Forest
   - label: "D\u1ECBch chuy\u1EC3n \u0111\u1EBFn n\xFAi"
     actionKey: teleport_to_Some Where You Want To Go

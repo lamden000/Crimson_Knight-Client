@@ -18,6 +18,7 @@ public class GridmapLoader : MonoBehaviour
     public float tileScale = 1f;
     public GameObject monsterPrefab;
     public GameObject npcPrefab;
+    public GameObject departPointPrefab;
     public int subGridDivisions=2;
 
     private Dictionary<int, Tile> gidToTile = new Dictionary<int, Tile>();
@@ -489,20 +490,41 @@ public class GridmapLoader : MonoBehaviour
     }
     private void CreateDepartPoint(TiledObject obj, Transform departParent)
     {
-        // Create a depart point GameObject with a BoxCollider2D trigger and a DepartPoint component.
+        // Instantiate the depart point prefab if provided; otherwise create a fallback GameObject.
         Vector3 pos = GetWorldPosition(obj);
-        GameObject dp = new GameObject($"DepartPoint_{obj.name}_{obj.id}");
-        dp.transform.position = pos;
-        dp.transform.SetParent(departParent);
+        GameObject dp;
+        if (departPointPrefab == null)
+        {
+           Debug.LogWarning("Depart Point prefab is not set") ;
+           return;
+        }
+        dp = Instantiate(departPointPrefab, pos, Quaternion.identity, departParent);
+        // Parse object name like "city_left" => baseName="city", direction="left"
+        string rawName = obj.name ?? string.Empty;
+        string baseName = rawName;
+        string direction = "right";
+        int idx = rawName.LastIndexOf('_');
+        if (idx > 0 && idx < rawName.Length - 1)
+        {
+            baseName = rawName.Substring(0, idx);
+            direction = rawName.Substring(idx + 1);
+        }
 
-        var col = dp.AddComponent<BoxCollider2D>();
+        // Rename depart point GameObject to base name
+        dp.name = baseName;
+
+        // Ensure BoxCollider2D exists and matches object size
+        var col = dp.GetComponent<BoxCollider2D>();
+        if (col == null) col = dp.AddComponent<BoxCollider2D>();
         col.isTrigger = true;
         col.size = new Vector2(obj.width, obj.height);
         col.offset = Vector2.zero;
 
-        var departComp = dp.AddComponent<DepartPoint>();
-        // store destination map name in the component; use object name as destination identifier
-        departComp.destinationMapName = obj.name;
+        // Ensure DepartPoint component exists and set metadata
+        var departComp = dp.GetComponent<DepartPoint>();
+        if (departComp == null) departComp = dp.AddComponent<DepartPoint>();
+        departComp.destinationMapName = baseName;
+        departComp.direction = direction.ToLowerInvariant();
     }
 
     private void ResolveSpawnOrigin(string origin)
@@ -534,7 +556,6 @@ public class GridmapLoader : MonoBehaviour
         {
             Debug.LogWarning($"Spawn origin '{originToFind}' not found in map spawn points.");
         }
-        Debug.Log($"DepartPoint: {origin}");
     }
 void CreateColliderBox(TiledObject obj, bool isWater,Transform colliderParent)
     {
