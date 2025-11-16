@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 [ExecuteAlways]
 [RequireComponent(typeof(Pathfinder))]
@@ -20,6 +21,9 @@ public class GridmapLoader : MonoBehaviour
     public GameObject npcPrefab;
     public GameObject departPointPrefab;
     public int subGridDivisions=2;
+    // UI overlay used for map loading transition (set in inspector)
+    public Image loadingOverlay;
+    public float overlayFadeDuration = 0.25f;
 
     private Dictionary<int, Tile> gidToTile = new Dictionary<int, Tile>();
     public bool loadInEditMode = false;
@@ -45,8 +49,8 @@ public class GridmapLoader : MonoBehaviour
         if (!Application.isPlaying && loadInEditMode)
         {
             loadInEditMode = false;
+            // Use LoadMapByName which now wraps the loader with the overlay coroutine.
             LoadMapByName(jsonFileName, currentOrigin);
-            StartCoroutine(LoadJsonFile(jsonFileName));
         }
 #endif
     }
@@ -304,8 +308,11 @@ public class GridmapLoader : MonoBehaviour
     // Unload currently loaded map: clear tilemap, destroy spawned parents and clear caches.
     public void UnloadCurrentMap()
     {
-        // stop any running loader coroutines
-        StopAllCoroutines();
+        // Do not stop all coroutines here because UnloadCurrentMap may be called
+        // from inside the overlay coroutine (LoadMapWithOverlay). Stopping all
+        // coroutines would cancel the overlay fade-out. If specific loader
+        // coroutines need cancelling in the future, track their Coroutine handles
+        // and stop them selectively.
 
         // clear tilemap visuals
         if (tilemap != null)
@@ -345,10 +352,57 @@ public class GridmapLoader : MonoBehaviour
         if (!newJsonFileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             newJsonFileName = newJsonFileName + ".json";
 
+        // NOTE: UnloadCurrentMap is deferred until the overlay has fully faded in
+        // to prevent showing unload/load artifacts to the player.
+        // Start a coroutine that fades the overlay in, unloads+loads the map, then fades out.
+        if (Application.isPlaying || loadInEditMode)
+            StartCoroutine(LoadMapWithOverlay(newJsonFileName));
+    }
+
+    IEnumerator LoadMapWithOverlay(string newJsonFileName)
+    {
+        // Show overlay and fade to 1
+        if (loadingOverlay != null)
+        {
+            loadingOverlay.gameObject.SetActive(true);
+            Color c = loadingOverlay.color;
+            c.a = 0f;
+            loadingOverlay.color = c;
+            yield return StartCoroutine(FadeImageAlpha(0f, 1f, overlayFadeDuration));
+        }
+
+        // Only after overlay reached alpha=1 do we unload the current map so the player
+        // never sees intermediate unload artifacts.
         UnloadCurrentMap();
 
-        if (Application.isPlaying || loadInEditMode)
-            StartCoroutine(LoadJsonFile(newJsonFileName));
+        // Now load the map JSON (this will recreate tiles, objects, etc.)
+        yield return StartCoroutine(LoadJsonFile(newJsonFileName));
+
+        // Fade overlay out and hide
+        if (loadingOverlay != null)
+        {
+            yield return StartCoroutine(FadeImageAlpha(1f, 0f, overlayFadeDuration));
+            loadingOverlay.gameObject.SetActive(false);
+        }
+    }
+
+    IEnumerator FadeImageAlpha(float from, float to, float duration)
+    {
+        if (loadingOverlay == null)
+            yield break;
+
+        float elapsed = 0f;
+        Color c = loadingOverlay.color;
+        while (elapsed < duration)
+        {
+            float t = duration <= 0f ? 1f : (elapsed / duration);
+            c.a = Mathf.Lerp(from, to, t);
+            loadingOverlay.color = c;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        c.a = to;
+        loadingOverlay.color = c;
     }
 
     void LoadObjectLayers()
