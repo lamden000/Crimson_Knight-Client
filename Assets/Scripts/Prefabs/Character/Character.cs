@@ -52,10 +52,7 @@ public class Character : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Session.Connect();
-        }
+      
 
         if (Input.touchCount > 0)
         {

@@ -22,6 +22,28 @@ public class CameraFollow : MonoBehaviour
         this.orthographicSize = orthographicSize;
     }
 
+   
+
+    private static CameraFollow ins;
+    public static CameraFollow GI()
+    {
+        return ins;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            // Session.Connect();
+            GameHandler.Player.AutoMoveToXY(500, 500);
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Player.SetUp();
+        }
+    }
+
     public void InitializeBounds()
     {
         if (cam == null)
@@ -48,6 +70,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Awake()
     {
+        ins = this;
         if (cam == null) cam = GetComponent<Camera>();
     }
 
