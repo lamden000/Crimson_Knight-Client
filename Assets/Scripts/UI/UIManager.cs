@@ -1,5 +1,6 @@
 using Assets.Scripts;
 using Assets.Scripts.Map;
+using Assets.Scripts.Networking;
 using System;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private DialogFactory dialogFactory;
+    public Canvas LoginScreenCanvas;
 
     void Awake()
     {
@@ -56,12 +58,11 @@ public class UIManager : MonoBehaviour
     public Button btnLogin;
 
 
-    private void onClickLogin()
+    private async void onClickLogin()
     {
         string username = inputUsername.text;
         string password = inputPassword.text;
-        Debug.Log($"username: {username}, password: {password}");
-        MapManager.LoadMapById(int.Parse(username));
+        await LoginService.SendLoginRequest(username,password);
     }
     #endregion
 }

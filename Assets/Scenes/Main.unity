@@ -609,7 +609,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &281408673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2084,6 +2084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogFactory: {fileID: 2031388209}
+  LoginScreenCanvas: {fileID: 809532412}
   inputUsername: {fileID: 1056035589}
   inputPassword: {fileID: 509172939}
   btnLogin: {fileID: 183948249}
@@ -3099,7 +3100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c21819ff89fe7a74caa447a532a654eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCanvas: {fileID: 0}
+  mainCanvas: {fileID: 281408675}
   dialogYesNoPrefab: {fileID: 1020887785706558633, guid: 73d215193d042444ab4f106a3b502e5f, type: 3}
   dialogOKPrefab: {fileID: 6184649968681583061, guid: 77a70c2033b31744e8b64b7efac897ad, type: 3}
   dialogDropdownPrefab: {fileID: 83819759212372311, guid: 3c43c963da7d8f14ea8581e5c9f3695a, type: 3}

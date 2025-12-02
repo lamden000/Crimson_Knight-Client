@@ -28,7 +28,7 @@ namespace Assets.Scripts.Networking
         private static readonly ConcurrentQueue<Message> receiveQueue = new ConcurrentQueue<Message>();
         private static readonly ConcurrentQueue<Message> sendQueue = new ConcurrentQueue<Message>();
 
-        public static void Connect()
+        public static void Connect(string token)
         {
             if (isRunning)
             {
@@ -50,8 +50,8 @@ namespace Assets.Scripts.Networking
                     stream = tcpClient.GetStream();
                     reader = new BinaryReader(stream, Encoding.UTF8, true);
                     writer = new BinaryWriter(stream, Encoding.UTF8, true);
-
                     Debug.Log("Kết nối thành công.");
+                    SendTokenHandshake(token);
 
                     receiveThread = new Thread(ReceiveLoop);
                     receiveThread.IsBackground = true;
@@ -70,7 +70,12 @@ namespace Assets.Scripts.Networking
             connectThread.IsBackground = true;
             connectThread.Start();
         }
-
+        private static void SendTokenHandshake(string token)
+        {
+            Message msg = new Message(MessageId.LOGIN);
+            msg.WriteString(token);
+            SendMessage(msg);
+        }
         public static void AddMessage(Message msg)
         {
             if (!isRunning)

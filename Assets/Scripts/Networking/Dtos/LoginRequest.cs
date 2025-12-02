@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Networking
+namespace Assets.Scripts.Networking.Dtos
 {
-    public enum MessageId : short
+    public class LoginRequest
     {
-        LOGIN,
-        PLAYER_MOVE
+        public string Username;
+        public string Password;
     }
 }

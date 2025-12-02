@@ -13,8 +13,7 @@ namespace Assets.Scripts.Networking
         {
             switch (msg.Id)
             {
-                case MessageId.OK:
-                    Debug.Log("Server gửi: OK");
+                case MessageId.LOGIN:
                     break;
                 default:
                     break;
