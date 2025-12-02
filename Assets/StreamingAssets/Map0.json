@@ -353,8 +353,8 @@
                  "rotation":0,
                  "type":"Collider",
                  "visible":true,
-                 "width":18.6666666666667,
-                 "x":6.66666666666667,
+                 "width":46.6666666666667,
+                 "x":-3.33333333333333,
                  "y":584
                 }, 
                 {
@@ -1091,7 +1091,7 @@
                  "type":"NPC",
                  "visible":true,
                  "width":48,
-                 "x":2344.66666666667,
+                 "x":2304.66666666667,
                  "y":461.333333333333
                 }, 
                 {
@@ -1102,8 +1102,8 @@
                  "type":"NPC",
                  "visible":true,
                  "width":48,
-                 "x":2347.33333333333,
-                 "y":583.333333333333
+                 "x":2305.33333333333,
+                 "y":587.333333333333
                 }, 
                 {
                  "height":118.666666666667,
@@ -1248,6 +1248,127 @@
                  "width":152,
                  "x":706.666666666667,
                  "y":293.333333333333
+                }, 
+                {
+                 "height":17.3333333333333,
+                 "id":170,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":710.666666666667,
+                 "x":1692,
+                 "y":-5.3333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":171,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":0,
+                 "x":2238.66666666667,
+                 "y":-290.666666666667
+                }, 
+                {
+                 "height":974.666666666667,
+                 "id":174,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":20,
+                 "x":2404,
+                 "y":-10.6666666666666
+                }, 
+                {
+                 "height":26.6666666666667,
+                 "id":180,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":50.6666666666666,
+                 "x":818.666666666667,
+                 "y":442.666666666667
+                }, 
+                {
+                 "height":29,
+                 "id":182,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":17,
+                 "x":1113,
+                 "y":400
+                }, 
+                {
+                 "height":22,
+                 "id":183,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":16,
+                 "x":547,
+                 "y":293
+                }, 
+                {
+                 "height":18,
+                 "id":184,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":22,
+                 "x":658,
+                 "y":310
+                }, 
+                {
+                 "height":32,
+                 "id":185,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Collider",
+                 "visible":true,
+                 "width":28,
+                 "x":318.666666666667,
+                 "y":174.666666666667
+                }, 
+                {
+                 "height":76,
+                 "id":188,
+                 "name":"Default",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":52,
+                 "x":1082,
+                 "y":476
+                }, 
+                {
+                 "height":77,
+                 "id":189,
+                 "name":"City_Right",
+                 "rotation":0,
+                 "type":"Depart Point",
+                 "visible":true,
+                 "width":26.5,
+                 "x":2390.5,
+                 "y":489.5
+                }, 
+                {
+                 "height":52.5,
+                 "id":190,
+                 "name":"City",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":27,
+                 "x":2354,
+                 "y":505.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1256,7 +1377,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":170,
+ "nextobjectid":191,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

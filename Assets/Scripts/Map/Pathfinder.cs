@@ -48,7 +48,6 @@ public class Pathfinder : MonoBehaviour
             if (tileSizeY <= 0f) tileSizeY = 1f;
         }
 
-        Debug.Log(height * width);
         IsInitialized = true;
     }
 
@@ -94,7 +93,7 @@ public class Pathfinder : MonoBehaviour
         return closest;
     }
 
-    public List<TileNode> FindPath(TileNode startNode, TileNode endNode, Vector2 agentSize = default)
+    public List<TileNode> FindPath(TileNode startNode, TileNode endNode, Vector2 agentSize)
     {
         if (startNode == null || endNode == null)
         {
@@ -233,8 +232,8 @@ public class Pathfinder : MonoBehaviour
         int col = node.gridPos.x;
         int row = node.gridPos.y;
 
-        int colRadius = Mathf.CeilToInt((agentSize.x / 2f) / tileSizeX) + 1;
-        int rowRadius = Mathf.CeilToInt((agentSize.y / 2f) / tileSizeY) + 1;
+        int colRadius = Mathf.CeilToInt((agentSize.x / 2f) / tileSizeX) ;
+        int rowRadius = Mathf.CeilToInt((agentSize.y / 2f) / tileSizeY) ;
 
         int colMin = col - colRadius;
         int colMax = col + colRadius;

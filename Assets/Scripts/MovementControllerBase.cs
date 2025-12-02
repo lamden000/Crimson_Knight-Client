@@ -10,20 +10,37 @@ public abstract class MovementControllerBase : MonoBehaviour
     protected Pathfinder pathfinder;
     protected List<Vector3> currentPath = new List<Vector3>();
     protected int pathIndex = 0;
+    // desiredVelocity represents the movement velocity (units/sec) to be applied in FixedUpdate
+    protected Vector2 desiredVelocity = Vector2.zero;
+    // cached Rigidbody2D if present on the agent
+    protected Rigidbody2D physicsRigidbody;
+    public float arrivalDistance = 10f;
+    protected BoxCollider2D boxCollider;
 
     protected virtual void Start()
     {
+        boxCollider = GetComponent<BoxCollider2D>();
         pathfinder = Pathfinder.Instance;
+        physicsRigidbody = GetComponent<Rigidbody2D>();
     }
 
-    protected Vector2 GetAgentSizeForPathfinding()
+    // Apply physics-based movement in fixed timestep so movement is framerate-independent.
+    protected virtual void FixedUpdate()
     {
-        var box = GetComponent<BoxCollider2D>();
-        if (box == null) return Vector2.zero;
-
-        // collider size in local units scaled by transform.lossyScale to get world units
-        Vector2 size = new Vector2(box.size.x * transform.lossyScale.x, box.size.y * transform.lossyScale.y);
-        return size;
+        if (physicsRigidbody != null)
+        {
+            // Move by velocity * fixedDeltaTime to keep behavior consistent with previous MovePosition usage
+            Vector2 nextPos = physicsRigidbody.position + desiredVelocity * Time.fixedDeltaTime;
+            physicsRigidbody.MovePosition(nextPos);
+        }
+        else
+        {
+            if (desiredVelocity != Vector2.zero)
+            {
+                Vector3 delta = (Vector3)(desiredVelocity * Time.fixedDeltaTime);
+                transform.position = transform.position + delta;
+            }
+        }
     }
 
     protected bool EnsurePathfinder()
@@ -40,7 +57,7 @@ public abstract class MovementControllerBase : MonoBehaviour
         var startNode = pathfinder.GetTileFromWorld(transform.position);
         var endNode = pathfinder.GetTileFromWorld(targetWorldPos);
         if (startNode == null || endNode == null) return null;
-        var agentSize = GetAgentSizeForPathfinding();
+        var agentSize = GetAgentSizeFromCollider(boxCollider);
         var nodePath = pathfinder.FindPath(startNode, endNode, agentSize);
         if (nodePath == null || nodePath.Count == 0) return null;
         return nodePath.Select(n => n.worldPos).ToList();
@@ -68,12 +85,12 @@ public abstract class MovementControllerBase : MonoBehaviour
         return currentPath[pathIndex];
     }
 
-    protected bool AtCurrentNode(float threshold = 1f)
+    protected bool AtCurrentNode(float threshold = 10f)
     {
         return Vector3.Distance(transform.position, GetCurrentTargetWorldPos()) < threshold;
     }
 
-    protected void AdvanceNodeIfNeeded(float threshold = 1f)
+    protected void AdvanceNodeIfNeeded(float threshold = 10f)
     {
         if (currentPath == null) return;
         if (AtCurrentNode(threshold))
@@ -86,13 +103,29 @@ public abstract class MovementControllerBase : MonoBehaviour
         // default no-op; child should override
     }
 
+    protected Vector2 GetAgentSizeFromCollider(BoxCollider2D collider)
+    {
+        if (collider == null)
+        {
+            Debug.LogWarning("Agent collider is null, defaulting to (1,1)");
+            return Vector2.one;
+        }
+
+        // Collider.size là kích thước local, nên cần nhân với scale để ra kích thước thật
+        Vector3 lossyScale = collider.transform.lossyScale;
+        float width = collider.size.x * Mathf.Abs(lossyScale.x);
+        float height = collider.size.y * Mathf.Abs(lossyScale.y);
+
+        return new Vector2(width, height);
+    }
+
     // Reference to running follow coroutine so children can cancel if needed.
     protected Coroutine followCoroutine;
 
     // Generic coroutine that moves along currentPath until completion. If a dynamic stopTarget
     // and stopRange are provided, the coroutine will exit early when within stopRange of stopTarget.
     // Child classes must implement MoveAlongPath() to perform a single-step movement.
-    protected IEnumerator FollowPath(float arrivalDistance = 1f, Transform stopTarget = null, float stopRange = 1f)
+    protected IEnumerator FollowPath(float arrivalDistance, float stopRange, Transform stopTarget = null)
     {
         while (currentPath != null && pathIndex < currentPath.Count)
         {
@@ -118,19 +151,19 @@ public abstract class MovementControllerBase : MonoBehaviour
     }
 
     // Start (and cancel previous) follow coroutine. Optional dynamic stop target/range supported.
-    protected Coroutine StartFollow(float arrivalDistance = 10f, Transform stopTarget = null, float stopRange = 1f)
+    protected Coroutine StartFollow(float arrivalDistance, float stopRange, Transform stopTarget = null)
     {
         if (followCoroutine != null)
         {
             StopCoroutine(followCoroutine);
             followCoroutine = null;
         }
-        followCoroutine = StartCoroutine(FollowPath(arrivalDistance, stopTarget, stopRange));
+        followCoroutine = StartCoroutine(FollowPath(arrivalDistance, stopRange, stopTarget));
         return followCoroutine;
     }
 
     // Build path to a static world position and follow it until arrival.
-    protected IEnumerator MoveToTarget(Vector3 targetWorldPos, float arrivalDistance = 1f)
+    protected IEnumerator MoveToTarget(Vector3 targetWorldPos, float arrivalDistance, float stopRange)
     {
         if (!EnsurePathfinder()) yield break;
 
@@ -138,7 +171,7 @@ public abstract class MovementControllerBase : MonoBehaviour
         var endNode = pathfinder.GetTileFromWorld(targetWorldPos);
         if (startNode == null || endNode == null) yield break;
 
-        var nodePath = pathfinder.FindPath(startNode, endNode);
+        var nodePath = pathfinder.FindPath(startNode, endNode,GetAgentSizeFromCollider(boxCollider));
         if (nodePath == null || nodePath.Count == 0) yield break;
 
         // set current path and start following
@@ -146,13 +179,13 @@ public abstract class MovementControllerBase : MonoBehaviour
         pathIndex = 0;
 
         // run follow coroutine and keep reference so callers can cancel/check it
-        followCoroutine = StartCoroutine(FollowPath(arrivalDistance));
+        followCoroutine = StartCoroutine(FollowPath(arrivalDistance,stopRange));
         yield return followCoroutine;
         followCoroutine = null;
     }
 
     // Build path to a dynamic target (Transform) and follow it until within stopRange of the target.
-    protected IEnumerator MoveToTarget(Transform target, float stopRange, float arrivalDistance = 1f)
+    protected IEnumerator MoveToTarget(Transform target, float stopRange, float arrivalDistance = 10f)
     {
         if (target == null) yield break;
         if (!EnsurePathfinder()) yield break;
@@ -161,7 +194,7 @@ public abstract class MovementControllerBase : MonoBehaviour
         var endNode = pathfinder.GetTileFromWorld(target.position);
         if (startNode == null || endNode == null) yield break;
 
-        var agentSize = GetAgentSizeForPathfinding();
+        var agentSize = GetAgentSizeFromCollider(boxCollider);
         var nodePath = pathfinder.FindPath(startNode, endNode, agentSize);
         if (nodePath == null || nodePath.Count == 0) yield break;
 
@@ -169,7 +202,7 @@ public abstract class MovementControllerBase : MonoBehaviour
         pathIndex = 0;
 
         // run follow coroutine and keep reference so callers can cancel/check it
-        followCoroutine = StartCoroutine(FollowPath(arrivalDistance, target, stopRange));
+        followCoroutine = StartCoroutine(FollowPath(arrivalDistance, stopRange, target));
         yield return followCoroutine;
         followCoroutine = null;
     }
@@ -178,5 +211,6 @@ public abstract class MovementControllerBase : MonoBehaviour
     {
         currentPath?.Clear();
         pathIndex = 0;
+        desiredVelocity = Vector2.zero;
     }
 }

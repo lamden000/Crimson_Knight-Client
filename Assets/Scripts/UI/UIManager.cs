@@ -1,10 +1,20 @@
+using Assets.Scripts;
+using Assets.Scripts.Map;
+using Assets.Scripts.Networking;
+using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static ScreenType CurrentScreenType = ScreenType.LoginScreen;
+
+
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private DialogFactory dialogFactory;
+    public Canvas LoginScreenCanvas;
 
     void Awake()
     {
@@ -14,6 +24,8 @@ public class UIManager : MonoBehaviour
             return;
         }
         Instance = this;
+        btnLogin.onClick.AddListener(onClickLogin);
+
     }
 
     public void ShowYesNo(string message, int idDialog, System.Action<bool, int> callback)
@@ -37,4 +49,20 @@ public class UIManager : MonoBehaviour
         dialog.Show();
     }
 
+
+
+
+    #region login
+    public TMP_InputField inputUsername;
+    public TMP_InputField inputPassword;
+    public Button btnLogin;
+
+
+    private async void onClickLogin()
+    {
+        string username = inputUsername.text;
+        string password = inputPassword.text;
+        await LoginService.SendLoginRequest(username,password);
+    }
+    #endregion
 }

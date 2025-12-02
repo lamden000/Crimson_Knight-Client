@@ -755,6 +755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 300
+  arrivalDistance: 10
   attackRange: 80
   attackCooldown: 1
   npcInteractRange: 50
@@ -798,6 +799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Class: 2
+  hitEffect: {fileID: 0}
 --- !u!114 &5789496537744389210
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,12 @@ namespace Assets.Scripts.Networking
 {
     public enum MessageId : short
     {
-        OK,
-        PLAYER_MOVE
+        LOGIN,
+        PLAYER_MOVE,
+        PLAYER_ENTER_MAP,
+
+        //send other
+        OTHER_PLAYER_MOVE,
+        OTHER_PLAYER_ENTER_MAP
     }
 }

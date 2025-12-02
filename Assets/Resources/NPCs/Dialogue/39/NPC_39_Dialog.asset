@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a10ed2e8fdd0364d8088909bb220711, type: 3}
+  m_Name: NPC_39_Dialog
+  m_EditorClassIdentifier: 
+  npcName: "Lily (Ti\xEAn n\u1EEF)"
+  npcPotrait: {fileID: -3180619178420385107, guid: f394c748350413f429f0f78beffe7114, type: 3}
+  typingSpeed: 0.05
+  voicePitch: 1
+  autoProgressLines: 
+  autoProgressDelay: 1.5
+  npcMenu: {fileID: 11400000, guid: 4a47cd776ae4ad443aaa4edad7817c4f, type: 2}
+  dialogueList:
+  - key: Idle
+    lines:
+    - "\u0110\u1EBFn c\u1ED1ng n\u1EA1p cho ta sao k\u1EBB ph\xE0m nh\xE2n?"
+    audioClips: []

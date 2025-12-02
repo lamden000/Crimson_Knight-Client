@@ -10,6 +10,7 @@ public class NPCDialogue : ScriptableObject
     public float voicePitch=1f;
     public bool[] autoProgressLines;
     public float autoProgressDelay = 1.5f;
+    public NPCMenu npcMenu;
     [SerializeField]
     private List<DialogueEntry> dialogueList = new List<DialogueEntry>();
 

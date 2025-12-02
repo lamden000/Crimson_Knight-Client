@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a10ed2e8fdd0364d8088909bb220711, type: 3}
+  m_Name: NPC_43_Dialog
+  m_EditorClassIdentifier: 
+  npcName: "Gian th\u01B0\u01A1ng"
+  npcPotrait: {fileID: 0}
+  typingSpeed: 0.05
+  voicePitch: 1
+  autoProgressLines: 01
+  autoProgressDelay: 1
+  npcMenu: {fileID: 11400000, guid: b4a5fef41e7687946b897758a257f155, type: 2}
+  dialogueList:
+  - key: Idle
+    lines:
+    - "Mu\u1ED1n g\xEC ta c\u0169ng c\xF3."
+    - "Mi\u1EC5n l\xE0 b\u1EA1n c\xF3 ti\u1EC1n."
+    audioClips: []
