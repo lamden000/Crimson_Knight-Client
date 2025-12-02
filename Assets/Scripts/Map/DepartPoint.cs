@@ -63,25 +63,25 @@ public class DepartPoint : MonoBehaviour
         arrowStartLocalPos = arrowTransform.localPosition + (-arrowDirVector) * arrowOffsetDistance;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // Only respond to player collisions (expects the Player GameObject to have tag "Player")
-        if (!other.CompareTag("Player"))
-            return;
+    //private void OnTriggerEnter2D(Collider2D other)
+    //{
+    //    // Only respond to player collisions (expects the Player GameObject to have tag "Player")
+    //    if (!other.CompareTag("Player"))
+    //        return;
 
-        var loader = FindAnyObjectByType<GridmapLoader>();
-        if (loader == null)
-        {
-            Debug.LogError("DepartPoint: No GridmapLoader found in scene to handle map transition.");
-            return;
-        }
+    //    var loader = FindAnyObjectByType<GridmapLoader>();
+    //    if (loader == null)
+    //    {
+    //        Debug.LogError("DepartPoint: No GridmapLoader found in scene to handle map transition.");
+    //        return;
+    //    }
 
-        // Use current loader jsonFileName (strip extension) as origin
-        string current = loader.jsonFileName ?? string.Empty;
-        string originBase = Path.GetFileNameWithoutExtension(current);
+    //    // Use current loader jsonFileName (strip extension) as origin
+    //    string current = loader.jsonFileName ?? string.Empty;
+    //    string originBase = Path.GetFileNameWithoutExtension(current);
 
-        loader.LoadMapByName(destinationMapName, originBase);
-    }
+    //    loader.LoadMapByName(destinationMapName, originBase);
+    //}
 
     private void Update()
     {

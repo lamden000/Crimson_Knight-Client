@@ -14,7 +14,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Pathfinder))]
 public class GridmapLoader : MonoBehaviour
 {
-    public string jsonFileName = "map1.json";
+    public string jsonFileName = "map0.json";
     public Tilemap tilemap;
     public float tileScale = 1f;
     public GameObject monsterPrefab;
@@ -39,20 +39,20 @@ public class GridmapLoader : MonoBehaviour
         transform.position = Vector3.zero;
         if (Application.isPlaying)
         {
-            LoadMapByName(jsonFileName,currentOrigin);
+            //LoadMapByName(jsonFileName,currentOrigin);
         }
     }
 
     private void Update()
     {
-#if UNITY_EDITOR
-        if (!Application.isPlaying && loadInEditMode)
-        {
-            loadInEditMode = false;
-            // Use LoadMapByName which now wraps the loader with the overlay coroutine.
-            LoadMapByName(jsonFileName, currentOrigin);
-        }
-#endif
+//#if UNITY_EDITOR
+//        if (!Application.isPlaying && loadInEditMode)
+//        {
+//            loadInEditMode = false;
+//            // Use LoadMapByName which now wraps the loader with the overlay coroutine.
+//            LoadMapByName(jsonFileName, currentOrigin);
+//        }
+//#endif
     }
 
     IEnumerator LoadJsonFile(string jsonFileName)

@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts;
+using Assets.Scripts.Networking;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Camera))]
 public class CameraFollow : MonoBehaviour
@@ -22,7 +26,7 @@ public class CameraFollow : MonoBehaviour
         this.orthographicSize = orthographicSize;
     }
 
-   
+
 
     private static CameraFollow ins;
     public static CameraFollow GI()
@@ -34,8 +38,8 @@ public class CameraFollow : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            // Session.Connect();
-            GameHandler.Player.AutoMoveToXY(500, 500);
+            //Session.Connect();
+            // GameHandler.Player.AutoMoveToXY(500, 500);
         }
 
         if (Input.GetKeyDown(KeyCode.X))
@@ -51,8 +55,8 @@ public class CameraFollow : MonoBehaviour
             cam = GetComponent<Camera>();
         }
 
-        bounds= GameObject.FindGameObjectWithTag("Map Boundary")?.GetComponent<BoxCollider2D>();
-        halfHeight =orthographicSize;
+        bounds = GameObject.FindGameObjectWithTag("Map Boundary")?.GetComponent<BoxCollider2D>();
+        halfHeight = orthographicSize;
 
         halfWidth = halfHeight * cam.aspect;
 
@@ -77,7 +81,7 @@ public class CameraFollow : MonoBehaviour
     public void SnapToTarget()
     {
         if (target == null) return;
-        transform.position = new Vector3(target.position.x , target.position.y, transform.position.z);
+        transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
     }
 
     // Snap once and tell LateUpdate to skip lerp for the upcoming frame
@@ -87,15 +91,34 @@ public class CameraFollow : MonoBehaviour
         immediateSnap = true;
     }
 
+
+    private Vector2 loginCenterPos = new Vector2(744, 486); // Vị trí tâm
+    private float moveRange = 50f;
+    private float moveSpeed = 0.5f;
+
     private void LateUpdate()
     {
+        if (UIManager.CurrentScreenType == ScreenType.LoginScreen)
+        {
+            float offsetX = Mathf.Sin(Time.time * moveSpeed) * moveRange * 4;
+            float offsetY = Mathf.Cos(Time.time * moveSpeed * 0.5f) * (moveRange * 0.5f) * 2;
+
+            transform.position = new Vector3(
+                loginCenterPos.x + offsetX,
+                loginCenterPos.y + offsetY,
+                transform.position.z
+            );
+
+            return;
+        }
+
         if (target == null || bounds == null) return;
 
         if (immediateSnap)
         {
             // perform one-frame immediate snap and skip lerp
             immediateSnap = false;
-            transform.position = new Vector3(target.position.x , target.position.y, transform.position.z);
+            transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
             return;
         }
 

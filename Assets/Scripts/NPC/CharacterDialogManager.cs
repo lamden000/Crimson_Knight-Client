@@ -76,13 +76,12 @@ public class CharacterDialogManager : MonoBehaviour
 
     private void TeleportPlayer(string destination)
     {
-        if (string.IsNullOrEmpty(destination))
-        {
-            Debug.LogWarning("Teleport destination is missing!");
-            return;
-        }
-        mapLoader.LoadMapByName(destination, "Default");
-
+        //if (string.IsNullOrEmpty(destination))
+        //{
+        //    Debug.LogWarning("Teleport destination is missing!");
+        //    return;
+        //}
+        //mapLoader.LoadMapByName(destination, "Default");
     }
 
     private void OpenShop(string shopName)
