@@ -10,6 +10,10 @@ public abstract class BaseObject : MonoBehaviour
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public int CurrentHp { get; set; }
+    public int MaxHp { get; set; }
+    public int CurrentMp { get; set; }
+    public int MaxMp { get; set; }
 
     public abstract void AutoMoveToXY(int x, int y);
     public abstract void DestroyObject();
