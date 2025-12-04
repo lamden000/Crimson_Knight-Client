@@ -15,18 +15,18 @@ namespace Assets.Scripts.Networking
             switch (msg.Id)
             {
                 case MessageId.LOGIN:
+                    int playerId = msg.ReadInt();
+                    string name = msg.ReadString();
+                    GameHandler.Player.Id = playerId;
+                    GameHandler.Player.Name = name;
                     break;
                 case MessageId.PLAYER_ENTER_MAP:
-                    //map
-                    short mapId = msg.ReadShort();
-                    string mapName = msg.ReadString();
-
-                    //player
-                    short x = msg.ReadShort();
-                    short y = msg.ReadShort();
-                    GameHandler.PlayerEnterMap(mapId, mapName, x, y);
+                    
+                    GameHandler.PlayerEnterMap(msg);
                     break;
-
+                case MessageId.OTHER_PLAYER_MOVE:
+                    GameHandler.OtherPlayerMove(msg);
+                    break;
 
                 //OTHER PLAYER MESSAGES
                 case MessageId.OTHER_PLAYER_ENTER_MAP:

@@ -8,13 +8,12 @@ using UnityEngine;
 
 public class OtherPlayer : BaseObject
 {
-    public static OtherPlayer SetUp()
+    public static OtherPlayer SetUp(int id, string name, short x, short y)
     {
-        GameObject gameObject = SpawnManager.GI().SpawnCharacter(492, 492);
+        GameObject gameObject = SpawnManager.GI().SpawnCharacter(x, y);
         OtherPlayer otherPlayer = gameObject.AddComponent<OtherPlayer>();
         otherPlayer.PlayerMovementController = otherPlayer.gameObject.GetComponent<PlayerMovementController>();
         otherPlayer.PlayerMovementController.IsMainPlayer = false;
-        GameHandler.OtherPlayers.Add(otherPlayer);
         return otherPlayer;
     }
 
