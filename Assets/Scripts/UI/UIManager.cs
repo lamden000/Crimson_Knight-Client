@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private DialogFactory dialogFactory;
     public Canvas LoginScreenCanvas;
+    public Canvas LoadScreenCanvas;
 
     void Awake()
     {
@@ -26,6 +27,12 @@ public class UIManager : MonoBehaviour
         Instance = this;
         btnLogin.onClick.AddListener(onClickLogin);
 
+    }
+
+    public static void Init()
+    {
+        UIManager.Instance.DisableLoadScreen();
+        UIManager.Instance.EnableLoginScreen();
     }
 
     public void ShowYesNo(string message, int idDialog, System.Action<bool, int> callback)
@@ -62,7 +69,41 @@ public class UIManager : MonoBehaviour
     {
         string username = inputUsername.text;
         string password = inputPassword.text;
+
         await LoginService.SendLoginRequest(username,password);
     }
     #endregion
+
+
+    public void EnableGameScreen()
+    {
+        UIManager.CurrentScreenType = ScreenType.GameScreen;
+    }
+
+    public void EnableLoginScreen()
+    {
+        UIManager.CurrentScreenType = ScreenType.LoginScreen;
+        this.LoginScreenCanvas.gameObject.SetActive(true);
+    }
+    public void DisableLoginScreen()
+    {
+        UIManager.CurrentScreenType = ScreenType.LoginScreen;
+        this.LoginScreenCanvas.gameObject.SetActive(false);
+    }
+
+    public void EnableLoadScreen()
+    {
+        UIManager.CurrentScreenType = ScreenType.LoadScreen;
+        this.LoadScreenCanvas.gameObject.SetActive(true);
+    }
+
+
+    public void DisableLoadScreen()
+    {
+        UIManager.CurrentScreenType = ScreenType.LoadScreen;
+        this.LoadScreenCanvas.gameObject.SetActive(false);
+    }
+
+
+
 }

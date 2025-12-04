@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class Player : BaseObject
 {
-
     public static Player SetUp()
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacter(492, 492);

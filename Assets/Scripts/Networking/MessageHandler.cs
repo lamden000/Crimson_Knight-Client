@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Map;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,14 @@ namespace Assets.Scripts.Networking
                 case MessageId.LOGIN:
                     break;
                 case MessageId.PLAYER_ENTER_MAP:
-                    int playerId = msg.ReadInt();
-                    string playerName = msg.ReadString();
+                    //map
+                    short mapId = msg.ReadShort();
+                    string mapName = msg.ReadString();
+
+                    //player
                     short x = msg.ReadShort();
                     short y = msg.ReadShort();
-
-                    short idMap = msg.ReadShort();
-
-                  //  Debug.Log($"Người chơi {playerName} (ID: {playerId}) đã vào bản đồ {idMap} tại vị trí ({x}, {y})");
+                    GameHandler.PlayerEnterMap(mapId, mapName, x, y);
                     break;
 
 
