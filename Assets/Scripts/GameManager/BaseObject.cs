@@ -11,6 +11,20 @@ public abstract class BaseObject : MonoBehaviour
     public int Id { get; set; }
     public string Name { get; set; }
 
-
     public abstract void AutoMoveToXY(int x, int y);
+    public abstract void DestroyObject();
+
+    public void SetPosition(short x, short y)
+    {
+        this.transform.position = new Vector3(x, y, this.transform.position.z);
+    }
+    public short GetX()
+    {
+        return (short)this.transform.position.x;
+    }
+    public short GetY()
+    {
+        return (short)this.transform.position.y;
+    }
+
 }

@@ -9,6 +9,9 @@ namespace Assets.Scripts.Map
 {
     public static class MapManager
     {
+        public static short MapId;
+        public static string MapName;
+
         private static GridmapLoader _gridmapLoader;
         public static void Initialize()
         {

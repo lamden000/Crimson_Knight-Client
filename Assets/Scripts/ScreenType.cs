@@ -9,6 +9,7 @@ namespace Assets.Scripts
     public enum ScreenType
     {
         LoginScreen,
-        GameScreen
+        GameScreen,
+        LoadScreen
     }
 }

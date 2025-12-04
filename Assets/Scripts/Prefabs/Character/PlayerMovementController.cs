@@ -354,6 +354,9 @@ public class PlayerMovementController : MovementControllerBase
         anim.SetAttackAnimation(true);
     }
 
+
+
+    bool flag = false;
     private void ManualMove()
     {
         float h = moveAxisInput.x;
@@ -362,6 +365,7 @@ public class PlayerMovementController : MovementControllerBase
 
         if (moving)
         {
+            flag = true;
             // manual input cancels any pending NPC interaction
             if (npcTalkCoroutine != null)
             {
@@ -393,6 +397,11 @@ public class PlayerMovementController : MovementControllerBase
         {
             anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
             desiredVelocity = Vector2.zero;
+            if (flag)
+            {
+                RequestManager.PlayerMove((int)this.transform.position.x, (int)this.transform.position.y);
+                flag = false;
+            }
         }
     }
 
@@ -436,5 +445,12 @@ public class PlayerMovementController : MovementControllerBase
         }
 
         npcTalkCoroutine = null;
+    }
+
+
+
+    protected override void OnPathFinished()
+    {
+        anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
     }
 }

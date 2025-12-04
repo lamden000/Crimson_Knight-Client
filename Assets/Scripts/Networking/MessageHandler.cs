@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Map;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,18 +15,17 @@ namespace Assets.Scripts.Networking
             switch (msg.Id)
             {
                 case MessageId.LOGIN:
+                    int playerId = msg.ReadInt();
+                    string name = msg.ReadString();
+                    GameHandler.Player = Player.Create(playerId,name);
                     break;
                 case MessageId.PLAYER_ENTER_MAP:
-                    int playerId = msg.ReadInt();
-                    string playerName = msg.ReadString();
-                    short x = msg.ReadShort();
-                    short y = msg.ReadShort();
-
-                    short idMap = msg.ReadShort();
-
-                  //  Debug.Log($"Người chơi {playerName} (ID: {playerId}) đã vào bản đồ {idMap} tại vị trí ({x}, {y})");
+                    
+                    GameHandler.PlayerEnterMap(msg);
                     break;
-
+                case MessageId.OTHER_PLAYER_MOVE:
+                    GameHandler.OtherPlayerMove(msg);
+                    break;
 
                 //OTHER PLAYER MESSAGES
                 case MessageId.OTHER_PLAYER_ENTER_MAP:
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Networking
                     string otherPlayerName = msg.ReadString();
                     short otherX = msg.ReadShort();
                     short otherY = msg.ReadShort();
-                    Debug.Log($"Người chơi khác {otherPlayerName} (ID: {otherPlayerId}) đã vào bản đồ tại vị trí ({otherX}, {otherY})");
+                    GameHandler.OtherPlayerEnterMap(otherPlayerId, otherPlayerName, otherX, otherY);
                     break;
                 default:
                     break;

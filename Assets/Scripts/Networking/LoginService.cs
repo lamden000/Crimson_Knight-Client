@@ -15,6 +15,10 @@ namespace Assets.Scripts.Networking
         private const string LOGIN_API_URL = "http://localhost:7678/login";
         public static async Task SendLoginRequest(string username, string password)
         {
+            UIManager.Instance.DisableLoginScreen();
+            UIManager.Instance.EnableLoadScreen();
+
+
             LoginRequest req = new LoginRequest { Username = username, Password = password };
             string jsonBody = JsonUtility.ToJson(req);
 
@@ -37,11 +41,15 @@ namespace Assets.Scripts.Networking
                     }
                     else
                     {
+                        UIManager.Instance.DisableLoadScreen();
+                        UIManager.Instance.EnableLoginScreen();
                         UIManager.Instance.ShowOK(res.Message);
                     }
                 }
                 catch (System.Exception ex)
                 {
+                    UIManager.Instance.DisableLoadScreen();
+                    UIManager.Instance.EnableLoginScreen();
                     UIManager.Instance.ShowOK(ex.Message);
                 }
 

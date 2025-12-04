@@ -4,25 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class OtherPlayer : BaseObject
 {
-    public static OtherPlayer SetUp()
+    public PlayerMovementController PlayerMovementController;
+
+    public Queue<Tuple<int,int>> Moves = new Queue<Tuple<int,int>>();
+
+    public static OtherPlayer Create(int id, string name, short x, short y)
     {
-        GameObject gameObject = SpawnManager.GI().SpawnCharacter(492, 492);
+        GameObject gameObject = SpawnManager.GI().SpawnOtherCharacter(x, y);
         OtherPlayer otherPlayer = gameObject.AddComponent<OtherPlayer>();
         otherPlayer.PlayerMovementController = otherPlayer.gameObject.GetComponent<PlayerMovementController>();
         otherPlayer.PlayerMovementController.IsMainPlayer = false;
-        GameHandler.OtherPlayers.Add(otherPlayer);
+
+        //
+        otherPlayer.Id = id;
+        otherPlayer.Name = name;
+        otherPlayer.SetPosition(x, y);
         return otherPlayer;
     }
 
 
-    public PlayerMovementController PlayerMovementController;
 
     public override void AutoMoveToXY(int x, int y)
     {
-        PlayerMovementController.MoveToXY(x, y);
     }
+    private void FixedUpdate()
+    {
+        if(Moves.TryDequeue(out Tuple<int,int> move))
+        {
+            PlayerMovementController.MoveToXY(move.Item1, move.Item2);
+        }
+    }
+    public override void DestroyObject()
+    {
+        Destroy(this.gameObject);
+    }
+
+
+
 }
