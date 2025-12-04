@@ -17,8 +17,7 @@ namespace Assets.Scripts.Networking
                 case MessageId.LOGIN:
                     int playerId = msg.ReadInt();
                     string name = msg.ReadString();
-                    GameHandler.Player.Id = playerId;
-                    GameHandler.Player.Name = name;
+                    GameHandler.Player = Player.Create(playerId,name);
                     break;
                 case MessageId.PLAYER_ENTER_MAP:
                     
@@ -34,7 +33,7 @@ namespace Assets.Scripts.Networking
                     string otherPlayerName = msg.ReadString();
                     short otherX = msg.ReadShort();
                     short otherY = msg.ReadShort();
-                    Debug.Log($"Người chơi khác {otherPlayerName} (ID: {otherPlayerId}) đã vào bản đồ tại vị trí ({otherX}, {otherY})");
+                    GameHandler.OtherPlayerEnterMap(otherPlayerId, otherPlayerName, otherX, otherY);
                     break;
                 default:
                     break;

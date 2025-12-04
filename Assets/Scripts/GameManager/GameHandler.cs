@@ -25,7 +25,6 @@ public class GameHandler : MonoBehaviour
         MapManager.LoadMapForLoginScreen();
 
         //
-        Player = Player.SetUp();
     }
 
 
@@ -42,7 +41,12 @@ public class GameHandler : MonoBehaviour
         //map
         MapManager.MapId = msg.ReadShort();
         MapManager.MapName = msg.ReadString();
+        foreach(var obj in OtherPlayers)
+        {
+            obj.Value.DestroyObject();
+        }
         OtherPlayers.Clear();
+
         int size = msg.ReadShort();
         for(int i = 0;i< size; i++)
         {
@@ -54,15 +58,17 @@ public class GameHandler : MonoBehaviour
             {
                 continue;
             }
-            OtherPlayer player = OtherPlayer.SetUp(id,name,xO,yO);
-            OtherPlayers.TryAdd(id,player);
+            OtherPlayer player = OtherPlayer.Create(id,name,xO,yO);
+            if (!OtherPlayers.TryAdd(id, player))
+            {
+                player.DestroyObject();
+            }
         }
 
         //player
         short x = msg.ReadShort();
         short y = msg.ReadShort();
 
-        Player.gameObject.SetActive(true);
         Player.SetPosition(x, y);
 
 
@@ -78,11 +84,20 @@ public class GameHandler : MonoBehaviour
         int y = msg.ReadShort();
         if (OtherPlayers.TryGetValue(id,out OtherPlayer other))
         {
-            other.AutoMoveToXY(x,y);
+            other.Moves.Enqueue(new Tuple<int, int>(x, y));
         }
         else
         {
             Debug.LogWarning("Khong tim thay other player co id la " + id);
+        }
+    }
+
+    public static void OtherPlayerEnterMap(int otherPlayerId, string otherPlayerName, short otherX, short otherY)
+    {
+        OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY);
+        if (!OtherPlayers.TryAdd(otherPlayerId, player))
+        {
+            player.DestroyObject();
         }
     }
 }

@@ -36,16 +36,11 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            //Session.Connect();
-            // GameHandler.Player.AutoMoveToXY(500, 500);
-        }
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            Player.SetUp();
-        }
+       
+    }
+    private void FixedUpdate()
+    {
+       
     }
 
     public void InitializeBounds()

@@ -148,8 +148,11 @@ public abstract class MovementControllerBase : MonoBehaviour
             MoveAlongPath();
             yield return null;
         }
-    }
 
+        desiredVelocity = Vector2.zero;
+        OnPathFinished();
+    }
+    protected virtual void OnPathFinished() { }
     // Start (and cancel previous) follow coroutine. Optional dynamic stop target/range supported.
     protected Coroutine StartFollow(float arrivalDistance, float stopRange, Transform stopTarget = null)
     {

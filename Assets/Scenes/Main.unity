@@ -2213,6 +2213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterPrefab: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
+  OtherCharacterPrefab: {fileID: 8350450418846385827, guid: e364a4c37b3079148956f70ddb4f990d, type: 3}
 --- !u!114 &1572721657
 MonoBehaviour:
   m_ObjectHideFlags: 0

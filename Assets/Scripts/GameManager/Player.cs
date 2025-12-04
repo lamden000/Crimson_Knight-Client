@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Networking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,32 +10,28 @@ using UnityEngine;
 
 public class Player : BaseObject
 {
-
-    public static Player SetUp()
+    public PlayerMovementController PlayerMovementController;
+    public static Player Create(int id,string name)
     {
-        Player player = null;
-        if (GameHandler.Player == null)
-        {
-            GameObject gameObject = SpawnManager.GI().SpawnCharacter(492, 492);
-            gameObject.SetActive(false);
-            player = gameObject.AddComponent<Player>();
-            player.PlayerMovementController = player.gameObject.GetComponent<PlayerMovementController>();
-            player.PlayerMovementController.IsMainPlayer = true;
-            CameraFollow.GI().target = gameObject.transform;
-            GameHandler.Player = player;
-        }
-        else
-        {
-            player = GameHandler.Player;
-        }
+        GameObject gameObject = SpawnManager.GI().SpawnCharacter(0, 0);
+        Player player = gameObject.AddComponent<Player>();
+        player.PlayerMovementController = player.gameObject.GetComponent<PlayerMovementController>();
+        player.PlayerMovementController.IsMainPlayer = true;
+        CameraFollow.GI().target = player.transform;
+        //
+        player.Id = id;
+        player.Name = name;
         return player;
     }
 
-
-    public PlayerMovementController PlayerMovementController;
-
     public override void AutoMoveToXY(int x, int y)
     {
+
         PlayerMovementController.MoveToXY(x, y);
+    }
+
+    public override void DestroyObject()
+    {
+
     }
 }
