@@ -40,7 +40,7 @@ public class CameraFollow : MonoBehaviour
         {
             for(int i = 0; i < 5; i++)
             {
-                Monster.Create(i, (short)(GameHandler.Player.GetX() + 5 * i), (short)(GameHandler.Player.GetY() + 5 * i), i);
+                GameHandler.Monsters.TryAdd(i,Monster.Create(i, (short)(GameHandler.Player.GetX() + 5 * i), (short)(GameHandler.Player.GetY() + 5 * i), i));
             }
         }
     }

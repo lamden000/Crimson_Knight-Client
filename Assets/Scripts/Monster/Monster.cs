@@ -23,4 +23,9 @@ public class Monster : BaseObject
     public override void DestroyObject()
     {
     }
+
+    public override ObjectType GetObjectType()
+    {
+        return ObjectType.Monster;
+    }
 }
