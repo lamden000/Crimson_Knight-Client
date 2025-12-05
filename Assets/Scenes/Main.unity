@@ -1814,7 +1814,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &809532410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4286,6 +4286,7 @@ MonoBehaviour:
   dialogFactory: {fileID: 2031388209}
   LoginScreenCanvas: {fileID: 809532412}
   LoadScreenCanvas: {fileID: 2092328529}
+  GameScreenCanvas: {fileID: 1909708305}
   inputUsername: {fileID: 1056035589}
   inputPassword: {fileID: 509172939}
   btnLogin: {fileID: 183948249}
@@ -5495,7 +5496,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1909708306
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5727,7 +5728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!223 &2092328529
 Canvas:
   m_ObjectHideFlags: 0

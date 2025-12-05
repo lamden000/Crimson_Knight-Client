@@ -27,7 +27,7 @@ public class HUDManager : MonoBehaviour
     void Update()
     {
         Player player = GameHandler.Player;
-        if (player == null) return;
+        if (player == null || player.MaxHp <= 0 || player.MaxMp <= 0) return;
         // Cập nhật HP
         float hpRatio = player.CurrentHp / player.MaxHp;
         hpBar.sizeDelta = new Vector2(maxHPWidth * hpRatio, hpBar.sizeDelta.y);

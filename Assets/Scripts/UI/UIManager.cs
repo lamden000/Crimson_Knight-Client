@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private DialogFactory dialogFactory;
     public Canvas LoginScreenCanvas;
     public Canvas LoadScreenCanvas;
+    public GameObject GameScreenCanvas;
 
     void Awake()
     {
@@ -78,6 +79,7 @@ public class UIManager : MonoBehaviour
     public void EnableGameScreen()
     {
         UIManager.CurrentScreenType = ScreenType.GameScreen;
+        this.GameScreenCanvas.SetActive(true);
     }
 
     public void EnableLoginScreen()
@@ -87,7 +89,6 @@ public class UIManager : MonoBehaviour
     }
     public void DisableLoginScreen()
     {
-        UIManager.CurrentScreenType = ScreenType.LoginScreen;
         this.LoginScreenCanvas.gameObject.SetActive(false);
     }
 
@@ -100,10 +101,10 @@ public class UIManager : MonoBehaviour
 
     public void DisableLoadScreen()
     {
-        UIManager.CurrentScreenType = ScreenType.LoadScreen;
         this.LoadScreenCanvas.gameObject.SetActive(false);
     }
-
-
-
+    public void DisableGameScreen()
+    {
+        this.GameScreenCanvas.SetActive(false);
+    }
 }
