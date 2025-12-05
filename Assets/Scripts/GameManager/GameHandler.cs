@@ -30,25 +30,25 @@ public class GameHandler : MonoBehaviour
 
 
     public static Player Player;
-    public static Dictionary<int, OtherPlayer> OtherPlayers = new Dictionary<int,OtherPlayer>();
+    public static Dictionary<int, OtherPlayer> OtherPlayers = new Dictionary<int, OtherPlayer>();
 
 
 
- 
+
     public static void PlayerEnterMap(Message msg)
     {
         UIManager.Instance.EnableLoadScreen();
         //map
         MapManager.MapId = msg.ReadShort();
         MapManager.MapName = msg.ReadString();
-        foreach(var obj in OtherPlayers)
+        foreach (var obj in OtherPlayers)
         {
             obj.Value.DestroyObject();
         }
         OtherPlayers.Clear();
 
         int size = msg.ReadShort();
-        for(int i = 0;i< size; i++)
+        for (int i = 0; i < size; i++)
         {
             int id = msg.ReadInt();
             string name = msg.ReadString();
@@ -58,7 +58,7 @@ public class GameHandler : MonoBehaviour
             {
                 continue;
             }
-            OtherPlayer player = OtherPlayer.Create(id,name,xO,yO);
+            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO);
             if (!OtherPlayers.TryAdd(id, player))
             {
                 player.DestroyObject();
@@ -82,7 +82,7 @@ public class GameHandler : MonoBehaviour
         int id = msg.ReadInt();
         int x = msg.ReadShort();
         int y = msg.ReadShort();
-        if (OtherPlayers.TryGetValue(id,out OtherPlayer other))
+        if (OtherPlayers.TryGetValue(id, out OtherPlayer other))
         {
             other.Moves.Enqueue(new Tuple<int, int>(x, y));
         }
@@ -98,6 +98,16 @@ public class GameHandler : MonoBehaviour
         if (!OtherPlayers.TryAdd(otherPlayerId, player))
         {
             player.DestroyObject();
+        }
+    }
+
+    public static void OtherPlayerExitMap(int otherPlayerId)
+    {
+        OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer other);
+        if (other != null)
+        {
+            other.DestroyObject();
+            OtherPlayers.Remove(otherPlayerId);
         }
     }
 }

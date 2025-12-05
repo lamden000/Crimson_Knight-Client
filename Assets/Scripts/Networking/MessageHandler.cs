@@ -35,6 +35,10 @@ namespace Assets.Scripts.Networking
                     short otherY = msg.ReadShort();
                     GameHandler.OtherPlayerEnterMap(otherPlayerId, otherPlayerName, otherX, otherY);
                     break;
+                case MessageId.OTHER_PLAYER_EXIT_MAP:
+                    otherPlayerId = msg.ReadInt();
+                    GameHandler.OtherPlayerExitMap(otherPlayerId);
+                    break;  
                 default:
                     break;
             }
