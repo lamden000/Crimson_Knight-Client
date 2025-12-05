@@ -8,6 +8,10 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject OtherCharacterPrefab;
 
+    [SerializeField]
+    private GameObject monsterPrefab;
+
+
     private void Awake()
     {
         Instance = this;
@@ -38,5 +42,11 @@ public class SpawnManager : MonoBehaviour
             return null;
         }
         return Instantiate(OtherCharacterPrefab, new Vector3(x, y, 0), Quaternion.identity);
+    }
+
+
+    public GameObject SpawnMonster(int x, int y)
+    {
+        return null;
     }
 }

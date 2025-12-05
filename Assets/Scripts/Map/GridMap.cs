@@ -442,7 +442,7 @@ public class GridmapLoader : MonoBehaviour
                         break;
 
                     case "Monster":
-                        SpawnMonster(obj,monsterParent.transform);
+                        SpawnMonster(obj, monsterParent.transform);
                         break;
                     case "Spawn Point":
                         CreateSpawnPoint(obj, spawnParent.transform);
@@ -493,7 +493,7 @@ public class GridmapLoader : MonoBehaviour
         GameObject monster = Instantiate(monsterPrefab, pos, Quaternion.identity);
         monster.name = $"Monster_{obj.name}_{obj.id}";
         monster.transform.SetParent(monsterParent);
-        var monsterCtrl = monster.GetComponent<Monster>();
+        var monsterCtrl = monster.GetComponent<MonsterPrefab>();
         if (monsterCtrl != null && System.Enum.TryParse(obj.name, out MonsterName npcEnum))
         {
             monsterCtrl.monsterName = npcEnum;

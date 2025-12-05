@@ -1,2 +1,16 @@
 fileFormatVersion: 2
 guid: b69c36e8436c5db468ba569e98a420e4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - tilemap: {instanceID: 0}
+  - monsterPrefab: {instanceID: 0}
+  - npcPrefab: {instanceID: 0}
+  - departPointPrefab: {instanceID: 0}
+  - loadingOverlay: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

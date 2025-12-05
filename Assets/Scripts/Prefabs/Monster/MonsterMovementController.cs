@@ -19,7 +19,7 @@ public class MonsterMovementController : MovementControllerBase
     private int maxChaseFail = 3;
 
     private TileNode centerNode;
-    private Monster enemy;
+    private MonsterPrefab enemy;
     private int minX, maxX, minZ, maxZ;
 
     // dùng currentPath (List<Vector3>) và pathIndex từ base
@@ -31,7 +31,7 @@ public class MonsterMovementController : MovementControllerBase
     override protected void Start()
     {
         base.Start();
-        enemy = GetComponent<Monster>();
+        enemy = GetComponent<MonsterPrefab>();
         if (!EnsurePathfinder())
         {
             Debug.LogError("Pathfinder Instance chưa có. Kẻ địch không thể tuần tra.");
@@ -206,7 +206,7 @@ public class MonsterMovementController : MovementControllerBase
             StopCoroutine(patrolCoroutine);
             patrolCoroutine = null;
         }
-        GetComponent<Monster>().SetState(MonsterState.Idle);
+        GetComponent<MonsterPrefab>().SetState(MonsterState.Idle);
         ClearPath();
         if (isDebugging) Debug.Log("[Patrol] Tuần tra đã bị ngắt.");
     }

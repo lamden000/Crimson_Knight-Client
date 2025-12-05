@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Monster))]
+[RequireComponent(typeof(MonsterPrefab))]
 public class MonsterAnimationController : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
     private MonsterName _name;
     private MonsterSpriteDatabase database;
-    private Monster monster;
+    private MonsterPrefab monster;
 
     private float frameRate = 0.2f;
     private float timer;
@@ -17,7 +17,7 @@ public class MonsterAnimationController : MonoBehaviour
 
     void Start()
     {
-        monster = GetComponent<Monster>();
+        monster = GetComponent<MonsterPrefab>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         _name = monster.GetName();
         boxCollider = GetComponent<BoxCollider2D>();
