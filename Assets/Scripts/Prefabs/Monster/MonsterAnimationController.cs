@@ -6,7 +6,6 @@ public class MonsterAnimationController : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
-    private MonsterName _name;
     private MonsterSpriteDatabase database;
     private MonsterPrefab monster;
 
@@ -19,11 +18,10 @@ public class MonsterAnimationController : MonoBehaviour
     {
         monster = GetComponent<MonsterPrefab>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        _name = monster.GetName();
         boxCollider = GetComponent<BoxCollider2D>();
         database=MonsterSpriteDatabase.Instance;
 
-        database.LoadSprites(_name);
+        database.LoadSprites(monster.ImageId);
 
         AdjustColliderToSprite();
     }
@@ -35,7 +33,7 @@ public class MonsterAnimationController : MonoBehaviour
             Debug.LogWarning("Không có Sprite để điều chỉnh Collider.");
             return;
         }
-        Sprite idleSprite = database.GetSprites(_name, MonsterState.Idle)[0];
+        Sprite idleSprite = database.GetSprites(monster.ImageId, MonsterState.Idle)[0];
         Bounds spriteBounds = idleSprite.bounds;
 
         boxCollider.size = spriteBounds.size;
@@ -62,11 +60,11 @@ public class MonsterAnimationController : MonoBehaviour
 
         List<Sprite> frames = null;
 
-        frames = database.GetSprites(_name,state);
+        frames = database.GetSprites(monster.ImageId, state);
 
         if ((frames == null || frames.Count == 0))
         {
-            frames = database.GetSprites(_name, MonsterState.Idle);
+            frames = database.GetSprites(monster.ImageId, MonsterState.Idle);
         }
         else
         {

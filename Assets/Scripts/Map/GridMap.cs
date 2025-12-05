@@ -17,7 +17,7 @@ public class GridmapLoader : MonoBehaviour
     public string jsonFileName = "map0.json";
     public Tilemap tilemap;
     public float tileScale = 1f;
-    public GameObject monsterPrefab;
+    //public GameObject monsterPrefab;
     public GameObject npcPrefab;
     public GameObject departPointPrefab;
     public int subGridDivisions=2;
@@ -441,9 +441,9 @@ public class GridmapLoader : MonoBehaviour
                         SpawnNPC(obj,npcParent.transform);
                         break;
 
-                    case "Monster":
-                        SpawnMonster(obj, monsterParent.transform);
-                        break;
+                    //case "Monster":
+                    //    SpawnMonster(obj, monsterParent.transform);
+                    //    break;
                     case "Spawn Point":
                         CreateSpawnPoint(obj, spawnParent.transform);
                         break;
@@ -481,24 +481,24 @@ public class GridmapLoader : MonoBehaviour
         }
     }
 
-    private void SpawnMonster(TiledObject obj, Transform monsterParent)
-    {
-        if (monsterPrefab == null)
-        {
-            Debug.LogError("Monster prefab not assigned!");
-            return;
-        }
+    //private void SpawnMonster(TiledObject obj, Transform monsterParent)
+    //{
+    //    if (monsterPrefab == null)
+    //    {
+    //        Debug.LogError("Monster prefab not assigned!");
+    //        return;
+    //    }
 
-        Vector3 pos = GetWorldPosition(obj);
-        GameObject monster = Instantiate(monsterPrefab, pos, Quaternion.identity);
-        monster.name = $"Monster_{obj.name}_{obj.id}";
-        monster.transform.SetParent(monsterParent);
-        var monsterCtrl = monster.GetComponent<MonsterPrefab>();
-        if (monsterCtrl != null && System.Enum.TryParse(obj.name, out MonsterName npcEnum))
-        {
-            monsterCtrl.monsterName = npcEnum;
-        }
-    }
+    //    Vector3 pos = GetWorldPosition(obj);
+    //    GameObject monster = Instantiate(monsterPrefab, pos, Quaternion.identity);
+    //    monster.name = $"Monster_{obj.name}_{obj.id}";
+    //    monster.transform.SetParent(monsterParent);
+    //    var monsterCtrl = monster.GetComponent<MonsterPrefab>();
+    //    if (monsterCtrl != null && System.Enum.TryParse(obj.name, out MonsterName npcEnum))
+    //    {
+    //        monsterCtrl.monsterName = npcEnum;
+    //    }
+    //}
 
     private void CreateStaticObject(TiledObject obj, Tile baseTile, Transform objectParent)
     {

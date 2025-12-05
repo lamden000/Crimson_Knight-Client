@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 public enum MonsterState { Idle, Walk, Attack, GetHit }
-public enum MonsterName {Slime=1000,Snail=1001,Scorpion=1103,Bunny=1173,Frog=1215 }
+//public enum MonsterName {Slime=1000,Snail=1001,Scorpion=1103,Bunny=1173,Frog=1215 }
 
 public class MonsterPrefab : MonoBehaviour
 {
     private MonsterMovementController movementController;
-    public MonsterName monsterName=MonsterName.Slime;
+    //private MonsterName monsterName=MonsterName.Slime;
     public float damage { private set; get; } = 10f;
 
     public MonsterState currentState;
@@ -15,6 +15,7 @@ public class MonsterPrefab : MonoBehaviour
     public bool isHostile = false;
 
     public bool IsDead { get { return isDead; } }
+    public int ImageId;
     void Start()
     {
         movementController = GetComponent<MonsterMovementController>();
@@ -27,8 +28,12 @@ public class MonsterPrefab : MonoBehaviour
         
     }
 
-    public MonsterName GetName()
-    { return monsterName; }
+    //public MonsterName GetName()
+    //{ return monsterName; }
+    //public void SetName(MonsterName name)
+    //{
+    //    monsterName = name;
+    //}
 
     public void SetState(MonsterState state)
     {

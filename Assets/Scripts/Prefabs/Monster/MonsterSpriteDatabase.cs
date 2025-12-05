@@ -7,13 +7,13 @@ public class MonsterSpriteDatabase : MonoBehaviour
 
     enum EnemySprite { Idle_1 = 0, Walk_1 = 1, Walk_2 = 2, Attack = 3, GetHit = 4, Idle_2 = 5 }
 
-    private Dictionary<MonsterName,Dictionary<MonsterState,List<Sprite>>> database
-      = new Dictionary<MonsterName, Dictionary<MonsterState, List<Sprite>>>();
+    private Dictionary<int,Dictionary<MonsterState,List<Sprite>>> database
+      = new Dictionary<int, Dictionary<MonsterState, List<Sprite>>>();
 
     public string folderPath = "Enemies";
     public static MonsterSpriteDatabase Instance { get; private set; }
 
-    private List<MonsterName> loadedEnemy = new List<MonsterName>();
+    private List<int> loadedEnemy = new List<int>();
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -27,7 +27,7 @@ public class MonsterSpriteDatabase : MonoBehaviour
     }
 
 
-    public void LoadSprites(MonsterName enemyName)
+    public void LoadSprites(int enemyName)
     {
         if (loadedEnemy.Contains(enemyName))
             return;
@@ -44,7 +44,7 @@ public class MonsterSpriteDatabase : MonoBehaviour
         loadedEnemy.Add(enemyName);
     }
 
-    private void AddSprite(MonsterName enemyName,EnemySprite stateCode, MonsterState state)
+    private void AddSprite(int enemyName,EnemySprite stateCode, MonsterState state)
     {
         if (!database.ContainsKey(enemyName))
             database[enemyName] = new Dictionary<MonsterState, List<Sprite>>();
@@ -65,7 +65,7 @@ public class MonsterSpriteDatabase : MonoBehaviour
             Debug.LogWarning($"Sprite not found: {spriteName}");
     }
 
-    public List<Sprite> GetSprites(MonsterName name,MonsterState state)
+    public List<Sprite> GetSprites(int name,MonsterState state)
     {
         if (database.TryGetValue(name, out var enemyDict))
         {

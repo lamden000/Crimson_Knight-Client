@@ -24,7 +24,7 @@ public class SpawnManager : MonoBehaviour
     }
 
 
-    public  GameObject SpawnCharacter(int x, int y)
+    public GameObject SpawnCharacterPrefab(int x, int y)
     {
         if (CharacterPrefab == null)
         {
@@ -34,7 +34,7 @@ public class SpawnManager : MonoBehaviour
         return Instantiate(CharacterPrefab, new Vector3(x, y, 0), Quaternion.identity);
     }
 
-    public GameObject SpawnOtherCharacter(int x, int y)
+    public GameObject SpawnOtherCharacterPrefab(int x, int y)
     {
         if (OtherCharacterPrefab == null)
         {
@@ -45,8 +45,18 @@ public class SpawnManager : MonoBehaviour
     }
 
 
-    public GameObject SpawnMonster(int x, int y)
+    public GameObject SpawnMonsterPrefab(int x, int y, int templateId)
     {
-        return null;
+        if (monsterPrefab == null)
+        {
+            Debug.LogError("Monster prefab not assigned!");
+            return null;
+        }
+
+        GameObject monster = Instantiate(monsterPrefab, new Vector2(x, y), Quaternion.identity);
+        var monsterCtrl = monster.GetComponent<MonsterPrefab>();
+        monsterCtrl.ImageId = TemplateManager.MonsterTemplates[templateId].ImageId;
+        return monster;
     }
+
 }

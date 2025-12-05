@@ -13,7 +13,7 @@ public class Player : BaseObject
     public PlayerMovementController PlayerMovementController;
     public static Player Create(int id,string name)
     {
-        GameObject gameObject = SpawnManager.GI().SpawnCharacter(0, 0);
+        GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
         Player player = gameObject.AddComponent<Player>();
         player.PlayerMovementController = player.gameObject.GetComponent<PlayerMovementController>();
         player.PlayerMovementController.IsMainPlayer = true;

@@ -36,11 +36,17 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-       
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                Monster.Create(i, (short)(GameHandler.Player.GetX() + 5 * i), (short)(GameHandler.Player.GetY() + 5 * i), i);
+            }
+        }
     }
     private void FixedUpdate()
     {
-       
+
     }
 
     public void InitializeBounds()

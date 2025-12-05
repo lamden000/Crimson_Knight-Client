@@ -15,7 +15,7 @@ public class OtherPlayer : BaseObject
 
     public static OtherPlayer Create(int id, string name, short x, short y)
     {
-        GameObject gameObject = SpawnManager.GI().SpawnOtherCharacter(x, y);
+        GameObject gameObject = SpawnManager.GI().SpawnOtherCharacterPrefab(x, y);
         OtherPlayer otherPlayer = gameObject.AddComponent<OtherPlayer>();
         otherPlayer.PlayerMovementController = otherPlayer.gameObject.GetComponent<PlayerMovementController>();
         otherPlayer.PlayerMovementController.IsMainPlayer = false;
