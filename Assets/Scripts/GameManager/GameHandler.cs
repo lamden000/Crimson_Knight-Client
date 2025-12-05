@@ -37,6 +37,7 @@ public class GameHandler : MonoBehaviour
 
     public static void PlayerEnterMap(Message msg)
     {
+        UIManager.Instance.DisableGameScreen();
         UIManager.Instance.EnableLoadScreen();
         //map
         MapManager.MapId = msg.ReadShort();
@@ -75,6 +76,7 @@ public class GameHandler : MonoBehaviour
 
 
         UIManager.Instance.DisableLoadScreen();
+        UIManager.Instance.EnableGameScreen();
     }
 
     public static void OtherPlayerMove(Message msg)

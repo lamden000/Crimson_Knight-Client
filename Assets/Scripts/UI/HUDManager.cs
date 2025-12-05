@@ -31,7 +31,7 @@ public class HUDManager : MonoBehaviour
     {
         Player player = GameHandler.Player;
         if (player == null) return;
-
+        if(player.MaxHp<=0 || player.MaxMp<=0) return;
         float hpRatio = player.CurrentHp / player.MaxHp;
         hpBar.sizeDelta = new Vector2(maxHPWidth * hpRatio, hpBar.sizeDelta.y);
 

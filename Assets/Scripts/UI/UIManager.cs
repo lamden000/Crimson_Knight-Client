@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour
     public static void Init()
     {
         UIManager.Instance.DisableLoadScreen();
+        UIManager.Instance.DisableGameScreen();
         UIManager.Instance.EnableLoginScreen();
     }
 
@@ -78,7 +79,6 @@ public class UIManager : MonoBehaviour
 
     public void EnableGameScreen()
     {
-        UIManager.CurrentScreenType = ScreenType.GameScreen;
         this.GameScreenCanvas.SetActive(true);
     }
 
