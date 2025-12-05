@@ -1,24 +1,44 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-[System.Serializable]
-public class SkillSlot : MonoBehaviour
+public class SkillSlot : MonoBehaviour, IPointerClickHandler
 {
-    public int skillIndex;                
-    public string skillName = "Skill";
-    public float cooldownTime = 3f;
+    [Header("Skill Data")]
+    public int slotIndex;         
+    public int skillId = -1;      
+    public Sprite skillIcon;
 
+    [Header("UI")]
     public Image icon;
     public Image cooldownOverlay;
 
-    float cooldownRemaining = 0;
-
-    public void Init()
+    [Header("Cooldown")]
+    public float cooldownTime = 3f;
+    private float cooldownRemaining = 0;
+    public void Init(int index)
     {
-        Sprite s = Resources.Load<Sprite>($"UI/Skills/skill{skillIndex}");
-        if (s != null) icon.sprite = s;
+        slotIndex = index;
 
+        if (skillId < 0)
+        {
+            icon.sprite = null;
+            cooldownOverlay.fillAmount = 0;
+            return;
+        }
+
+        icon.sprite = skillIcon;
         cooldownOverlay.fillAmount = 0;
+    }
+
+    // Gán skill
+    public void AssignSkill(int newSkillId, Sprite newIcon)
+    {
+        skillId = newSkillId;
+        skillIcon = newIcon;
+        icon.sprite = newIcon;
+
+        Debug.Log($"[HUD] Đã gán skill {skillId} vào ô {slotIndex}");
     }
 
     void Update()
@@ -28,24 +48,31 @@ public class SkillSlot : MonoBehaviour
             cooldownRemaining -= Time.deltaTime;
             cooldownOverlay.fillAmount = cooldownRemaining / cooldownTime;
         }
-        KeyCode key = KeyCode.Alpha1 + (skillIndex - 1);
-        if (Input.GetKeyDown(key))
-        {
-            TryUseSkill();
-        }
     }
 
     public void TryUseSkill()
     {
-        if (cooldownRemaining > 0)
+        if (skillId < 0)
         {
-            Debug.Log($"{skillName}{skillIndex} is on cooldown ({cooldownRemaining:F1}s)");
+            Debug.Log($"Ô skill {slotIndex} chưa gán skill!");
             return;
         }
 
-        Debug.Log($"Using skill: {skillName}{skillIndex}");
+        if (cooldownRemaining > 0)
+        {
+            Debug.Log($"Skill {skillId} (slot {slotIndex}) đang hồi ({cooldownRemaining:F1}s)");
+            return;
+        }
+
+        Debug.Log($"DÙNG skill id {skillId} từ ô {slotIndex}");
 
         cooldownRemaining = cooldownTime;
         cooldownOverlay.fillAmount = 1;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log($"🖱 Click vào ô {slotIndex}");
+        TryUseSkill();
     }
 }
