@@ -50,6 +50,7 @@ public class PlayerAnimationController : MonoBehaviour
     private State currentState;
 
     private CharacterSpriteDatabase database;
+    public AttackAnimationController attackAnimation;
     Character character;
 
     public Direction GetCurrentDirection()
@@ -79,9 +80,10 @@ public class PlayerAnimationController : MonoBehaviour
         currentState = State.Idle;
 
         weaponType = character.getWeaponType();
+        attackAnimation.SetWeaponType(weaponType);
+
         partVariants[weaponType]=weaponVariant;
         spriteRenderers[weaponType]=weaponSpriteRenderer;
-
 
         LoadSprites();
     }
@@ -102,18 +104,23 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void SetAnimation(Direction dir, State state)
     {
-        // Always log entry to see how often/caller
-        var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-
         if (dir != currentDir || state != currentState)
         {
 
             if (dir == Direction.Up) SetDirectionUp(true);
+
             else SetDirectionUp(false);
 
             transform.rotation = (dir == Direction.Right) ? Quaternion.Euler(0, 180f, 0) : Quaternion.identity;
 
             currentDir = dir;
+
+            if (state == State.Attack)
+                SetAttackAnimation(true);
+            else if (currentState==State.Attack)
+            {
+                SetAttackAnimation(false);
+            }
             currentState = state;
             currentFrame = 0;
             timer = 0;
@@ -206,16 +213,21 @@ public class PlayerAnimationController : MonoBehaviour
 
     }
 
-    public void SetAttackAnimation(bool isAttacking)
+    private void SetAttackAnimation(bool isAttacking)
     {
         if(isAttacking)
         {
             spriteRenderers[weaponType].gameObject.SetActive(false);
             currentEyeState=EyeState.Attack;
-            StartCoroutine(ResetAttackAnimation(0.3f));
+
+            attackAnimation.gameObject.SetActive(true);
+            attackAnimation.PlayAttackAnimation(currentDir);
+
+            StartCoroutine(ResetAttackAnimation(0.5f));
         } 
         else
         {
+            attackAnimation.gameObject.SetActive(false);
             spriteRenderers[weaponType].gameObject.SetActive(true);
             currentEyeState = EyeState.Idle;
         }
@@ -239,9 +251,6 @@ public class PlayerAnimationController : MonoBehaviour
         yield return new WaitForSeconds(delay);
         SetAttackAnimation(false);
     }
-
-
-
 
     public void LoadPart(CharacterPart part, int variant)
     {
