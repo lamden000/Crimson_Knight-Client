@@ -11,6 +11,9 @@ using UnityEngine;
 public class Player : BaseObject
 {
     public PlayerMovementController PlayerMovementController;
+    public float maxTargetDistance = 500f;
+    public LayerMask targetMask;
+    private Transform arrowIndicator;
     public static Player Create(int id,string name)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
@@ -24,6 +27,13 @@ public class Player : BaseObject
         return player;
     }
 
+    void Start()
+    {
+        if (arrowIndicator == null)
+            arrowIndicator = GameObject.FindGameObjectWithTag("Target Arrow").transform;
+        targetMask = LayerMask.GetMask("Player","Monster", "NPC");
+    }
+
     public override void AutoMoveToXY(int x, int y)
     {
 
@@ -33,5 +43,81 @@ public class Player : BaseObject
     public override void DestroyObject()
     {
 
+    }
+
+    void Update()
+    {
+       UpdateTargetLogic();
+    }
+
+    void UpdateTargetLogic()
+    {
+        // 1️⃣ CHƯA CÓ TARGET -> TÌM LUÔN
+        if (currentTarget == null)
+        {
+            BaseObject newTarget = FindNearestTarget();
+            if (newTarget != null)
+                UpdateTarget(newTarget);
+            return;
+        }
+
+        // 2️⃣ CÓ TARGET -> CHECK KHOẢNG CÁCH
+        float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
+
+        if (dist > maxTargetDistance)
+        {
+            BaseObject newTarget = FindNearestTarget();
+
+            if (newTarget != null)
+                UpdateTarget(newTarget);
+            else
+                LoseTarget();
+        }
+        else
+        {
+            int characterArrowOffsetY = 100;
+            
+            if(currentTarget.tag=="Enemy")
+            {
+                characterArrowOffsetY = 30;
+            }
+
+            arrowIndicator.position = currentTarget.transform.position + Vector3.up * characterArrowOffsetY;
+        }
+    }
+
+    public void UpdateTarget(BaseObject target)
+    {
+        SetTarget(target);
+        arrowIndicator.gameObject.SetActive(true);
+    }
+
+    BaseObject FindNearestTarget()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, maxTargetDistance, targetMask);
+
+        BaseObject nearest = null;
+        float bestDist = Mathf.Infinity;
+
+        foreach (var hit in hits)
+        {
+            BaseObject bo = hit.GetComponent<BaseObject>();
+            if (bo == null|| bo == this.GetComponent<BaseObject>()) continue;
+            float d = Vector3.Distance(transform.position, bo.transform.position);
+
+            if (d < bestDist)
+            {
+                bestDist = d;
+                nearest = bo;
+            }
+        }
+
+        return nearest;
+    }
+
+    void LoseTarget()
+    {
+        SetTarget(null);
+        arrowIndicator.gameObject.SetActive(false);
     }
 }

@@ -53,101 +53,99 @@ public class PlayerMovementController : MovementControllerBase
 
     private void Update()
     {
+        if (isGettingHit)
+        {
+            desiredVelocity = Vector2.zero;
+            return;
+        }
+        moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
+        UpdateAttackTimers();
 
-        //if (isGettingHit)
-        //{
-        //    desiredVelocity = Vector2.zero;
-        //    return;
-        //}
-        //moveAxisInput = new Vector2(moveInput.x, moveInput.y);
+        if (isMovingToEnemy && targetEnemy != null)
+        {
+            if (moveAxisInput != Vector2.zero)
+            {
+                CancelAutoFollow();
+                ManualMove();
+                return;
+            }
 
-        //UpdateAttackTimers();
+            Monster enemy = targetEnemy.GetComponent<Monster>();
+            if (enemy == null)
+            {
+                CancelAutoFollow();
+                return;
+            }
 
-        //if (isMovingToEnemy && targetEnemy != null)
-        //{
-        //    if (moveAxisInput != Vector2.zero)
-        //    {
-        //        CancelAutoFollow();
-        //        ManualMove();
-        //        return;
-        //    }
+            AutoMoveToEnemyPath();
+            return;
+        }
 
-        //    Monster enemy = targetEnemy.GetComponent<Monster>();
-        //    if (enemy == null || enemy.IsDead)
-        //    {
-        //        CancelAutoFollow();
-        //        return;
-        //    }
+        if (npcTalkCoroutine != null)
+        {
+            if (moveAxisInput != Vector2.zero)
+            {
+                StopCoroutine(npcTalkCoroutine);
+                npcTalkCoroutine = null;
+                CancelAutoFollow();
+                ManualMove();
+                return;
+            }
+            return;
+        }
+        var mouse = Mouse.current;
+        var touchScreen = Touchscreen.current;
 
-        //    AutoMoveToEnemyPath();
-        //    return;
-        //}
+        if (mouse != null && mouse.leftButton.wasPressedThisFrame ||
+                    touchScreen != null && touchScreen.primaryTouch.press.wasPressedThisFrame)
+        {
+            Camera cam = Camera.main;
+            Vector2 screenPos = Vector2.zero;
+            if (touchScreen == null)
+            {
+                screenPos = Mouse.current.position.ReadValue();
+            }
+            else
+            {
+                screenPos = touchScreen.position.ReadValue();
+            }
+            Vector3 screenToWorld = cam.ScreenToWorldPoint(screenPos);
+            Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
 
-        //if (npcTalkCoroutine != null)
-        //{
-        //    if (moveAxisInput != Vector2.zero)
-        //    {
-        //        StopCoroutine(npcTalkCoroutine);
-        //        npcTalkCoroutine = null;
-        //        CancelAutoFollow();
-        //        ManualMove();
-        //        return;
-        //    }
-        //    return;
-        //}
-        //var mouse = Mouse.current;
-        //var touchScreen=Touchscreen.current;
+            if (hit.collider != null)
+            {
+                if (hit.collider.CompareTag("Enemy"))
+                {
+                    ClearPath();
+                    targetEnemy = hit.transform;
+                    isMovingToEnemy = true;
+                }
+                else if (hit.collider.CompareTag("NPC"))
+                {
+                    var npc = hit.collider.GetComponent<NPCDialogueController>();
+                    if (npc == null) return;
+                    CancelAutoFollow();
+                    if (npcTalkCoroutine != null)
+                    {
+                        StopCoroutine(npcTalkCoroutine);
+                        npcTalkCoroutine = null;
+                    }
 
-        //if (mouse != null && mouse.leftButton.wasPressedThisFrame ||
-        //            touchScreen != null && touchScreen.primaryTouch.press.wasPressedThisFrame)
-        //{
-        //    Camera cam=Camera.main;
-        //    Vector2 screenPos=Vector2.zero;
-        //    if (touchScreen == null)
-        //    {
-        //        screenPos = Mouse.current.position.ReadValue();
-        //    }
-        //    else
-        //    {
-        //        screenPos= touchScreen.position.ReadValue();
-        //    }
-        //    Vector3 screenToWorld = cam.ScreenToWorldPoint(screenPos);
-        //    Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
-        //    RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+                    Vector3 dirToNpc = (npc.transform.position - transform.position).normalized;
+                    Direction dir;
+                    if (Mathf.Abs(dirToNpc.x) > Mathf.Abs(dirToNpc.y))
+                        dir = dirToNpc.x > 0 ? Direction.Right : Direction.Left;
+                    else
+                        dir = dirToNpc.y > 0 ? Direction.Up : Direction.Down;
 
-        //    if (hit.collider != null)
-        //    {
-        //        if (hit.collider.CompareTag("Enemy"))
-        //        {
-        //            ClearPath();
-        //            targetEnemy = hit.transform;
-        //            isMovingToEnemy = true;
-        //        }
-        //        else if (hit.collider.CompareTag("NPC"))
-        //        {
-        //            var npc = hit.collider.GetComponent<NPCDialogueController>();
-        //            if (npc == null) return;
-        //            CancelAutoFollow();
-        //            if (npcTalkCoroutine != null)
-        //            {
-        //                StopCoroutine(npcTalkCoroutine);
-        //                npcTalkCoroutine = null;
-        //            }
-
-        //            Vector3 dirToNpc = (npc.transform.position - transform.position).normalized;
-        //            Direction dir;
-        //            if (Mathf.Abs(dirToNpc.x) > Mathf.Abs(dirToNpc.y))
-        //                dir = dirToNpc.x > 0 ? Direction.Right : Direction.Left;
-        //            else
-        //                dir = dirToNpc.y > 0 ? Direction.Up : Direction.Down;
-
-        //            anim.SetAnimation(dir, State.Walk);
-        //            npcTalkCoroutine = StartCoroutine(MoveToNPCAndTalk(npc));
-        //        }
-        //        return;
-        //    }
-        //}
+                    anim.SetAnimation(dir, State.Walk);
+                    npcTalkCoroutine = StartCoroutine(MoveToNPCAndTalk(npc));
+                }
+                return;
+            }
+        }
 
         if (IsMainPlayer)
         {
@@ -223,7 +221,6 @@ public class PlayerMovementController : MovementControllerBase
             {
                 isAttacking = false;
                 anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
-                anim.SetAttackAnimation(false);
             }
         }
 
@@ -351,7 +348,6 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Down, State.Attack);
         }
         targetEnemy.gameObject.GetComponent<MonsterPrefab>().TakeDamage(100, gameObject);
-        anim.SetAttackAnimation(true);
     }
 
 
