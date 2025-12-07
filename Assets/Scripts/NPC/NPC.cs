@@ -44,4 +44,9 @@ public class NPC : BaseObject
     {
 
     }
+
+    public override ObjectType GetObjectType()
+    {
+        return ObjectType.NPC;
+    }
 }

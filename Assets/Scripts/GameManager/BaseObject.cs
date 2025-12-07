@@ -15,7 +15,7 @@ public abstract class BaseObject : MonoBehaviour
     public int CurrentMp { get; set; }
     public int MaxMp { get; set; }
 
-    protected BaseObject currentTarget;
+    public BaseObject objFocus;
 
     public abstract void AutoMoveToXY(int x, int y);
     public abstract void DestroyObject();
@@ -32,9 +32,15 @@ public abstract class BaseObject : MonoBehaviour
     {
         return (short)this.transform.position.y;
     }
-
-    public void SetTarget(BaseObject target)
+    public void SetFocus(BaseObject objFocus)
     {
-        currentTarget = target;
+      this.objFocus = objFocus;
     }
+
+    public void SetEffect(int effectId, int duration)
+    {
+    }
+
+
+    public abstract ObjectType GetObjectType();
 }

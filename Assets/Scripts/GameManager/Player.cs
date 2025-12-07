@@ -14,6 +14,7 @@ public class Player : BaseObject
     public float maxTargetDistance = 500f;
     public LayerMask targetMask;
     private Transform arrowIndicator;
+
     public static Player Create(int id,string name)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
@@ -53,7 +54,7 @@ public class Player : BaseObject
     void UpdateTargetLogic()
     {
         // 1️⃣ CHƯA CÓ TARGET -> TÌM LUÔN
-        if (currentTarget == null)
+        if (objFocus == null)
         {
             BaseObject newTarget = FindNearestTarget();
             if (newTarget != null)
@@ -62,7 +63,7 @@ public class Player : BaseObject
         }
 
         // 2️⃣ CÓ TARGET -> CHECK KHOẢNG CÁCH
-        float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
+        float dist = Vector3.Distance(transform.position, objFocus.transform.position);
 
         if (dist > maxTargetDistance)
         {
@@ -77,18 +78,18 @@ public class Player : BaseObject
         {
             int characterArrowOffsetY = 100;
             
-            if(currentTarget.tag=="Enemy")
+            if(objFocus.GetObjectType()==ObjectType.Monster)
             {
                 characterArrowOffsetY = 30;
             }
 
-            arrowIndicator.position = currentTarget.transform.position + Vector3.up * characterArrowOffsetY;
+            arrowIndicator.position = objFocus.transform.position + Vector3.up * characterArrowOffsetY;
         }
     }
 
     public void UpdateTarget(BaseObject target)
     {
-        SetTarget(target);
+        SetFocus(target);
         arrowIndicator.gameObject.SetActive(true);
     }
 
@@ -117,7 +118,16 @@ public class Player : BaseObject
 
     void LoseTarget()
     {
-        SetTarget(null);
+        SetFocus(null);
         arrowIndicator.gameObject.SetActive(false);
+    }
+    public override ObjectType GetObjectType()
+    {
+        return ObjectType.Player;
+    }
+
+    public void Attack(int skillId, BaseObject target)
+    {
+        //
     }
 }
