@@ -32,7 +32,7 @@ public abstract class BaseObject : MonoBehaviour
     {
         return (short)this.transform.position.y;
     }
-    public void SetFocus(BaseObject objFocus)
+    public virtual void SetFocus(BaseObject objFocus)
     {
       this.objFocus = objFocus;
     }
