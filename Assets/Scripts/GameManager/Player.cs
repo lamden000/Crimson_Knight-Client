@@ -87,6 +87,15 @@ public class Player : BaseObject
         }
     }
 
+    public override void SetFocus(BaseObject objFocus)
+    {
+        if(!arrowIndicator.gameObject.activeInHierarchy)
+        {
+            arrowIndicator.gameObject.SetActive(true);
+        }
+        base.SetFocus(objFocus);
+    }
+
     public void UpdateTarget(BaseObject target)
     {
         SetFocus(target);

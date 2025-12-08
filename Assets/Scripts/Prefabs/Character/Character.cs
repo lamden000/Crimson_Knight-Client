@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public enum Clazz { Knight, Assassin, Markman, Wizard }
+    public enum Clazz { Knight, Assassin, Marksman, Wizard }
 
     [SerializeField]
     private Clazz m_Class;
@@ -34,7 +34,7 @@ public class Character : MonoBehaviour
             case Clazz.Wizard:
                 weapon = CharacterPart.Staff;
                 break;
-            case Clazz.Markman:
+            case Clazz.Marksman:
                 weapon = CharacterPart.Gun;
                 break;
         }
