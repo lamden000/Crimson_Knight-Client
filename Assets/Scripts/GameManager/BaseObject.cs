@@ -31,4 +31,15 @@ public abstract class BaseObject : MonoBehaviour
         return (short)this.transform.position.y;
     }
 
+    public void SetFocus(BaseObject objFocus)
+    {
+
+    }
+
+    public void SetEffect(int effectId, int duration)
+    {
+    }
+
+
+    public abstract ObjectType GetObjectType();
 }

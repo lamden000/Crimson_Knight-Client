@@ -31,8 +31,7 @@ public class GameHandler : MonoBehaviour
 
     public static Player Player;
     public static Dictionary<int, OtherPlayer> OtherPlayers = new Dictionary<int, OtherPlayer>();
-
-
+    public static Dictionary<int, Monster> Monsters = new Dictionary<int, Monster>();
 
 
     public static void PlayerEnterMap(Message msg)
@@ -110,6 +109,33 @@ public class GameHandler : MonoBehaviour
         {
             other.DestroyObject();
             OtherPlayers.Remove(otherPlayerId);
+        }
+    }
+
+
+    public static void MonsterAttack(BaseObject objAttack, BaseObject objTarget)
+    {
+        if (objAttack.GetObjectType() == ObjectType.Monster)
+        {
+            if (objTarget.GetObjectType() == ObjectType.Player)
+            {
+                Monster monster = (Monster)objAttack;
+                Player player = (Player)objTarget;
+            }
+            else if (objTarget.GetObjectType() == ObjectType.OtherPlayer)
+            {
+                OtherPlayer otherPlayer = (OtherPlayer)objTarget;
+                Monster monster = (Monster)objAttack;
+            }
+
+        }
+    }
+
+    public static void OtherPlayerAttack(int skillId, int otherPlayerId, BaseObject objTarget)
+    {
+        if (OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer other))
+        {
+            other.Attack(skillId, objTarget);
         }
     }
 }

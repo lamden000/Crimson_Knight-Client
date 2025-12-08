@@ -11,6 +11,10 @@ using UnityEngine;
 public class Player : BaseObject
 {
     public PlayerMovementController PlayerMovementController;
+
+
+    public BaseObject ObjFocus;
+
     public static Player Create(int id,string name)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
@@ -33,5 +37,15 @@ public class Player : BaseObject
     public override void DestroyObject()
     {
 
+    }
+
+    public override ObjectType GetObjectType()
+    {
+        return ObjectType.Player;
+    }
+
+    public void Attack(int skillId, BaseObject target)
+    {
+        //
     }
 }

@@ -44,6 +44,14 @@ public class OtherPlayer : BaseObject
         Destroy(this.gameObject);
     }
 
+    public override ObjectType GetObjectType()
+    {
+       return ObjectType.OtherPlayer;
+    }
 
 
+    public void Attack(int skillId, BaseObject target)
+    {
+        //
+    }
 }
