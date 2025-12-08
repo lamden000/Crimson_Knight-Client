@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: DeadlyCircle
+  m_Name: EnergySword
   m_EditorClassIdentifier: 
   skillName: 3
-  spawnPoint: 3
   mainLoop: 1
   mainFrames:
   - {fileID: 5785606575493089255, guid: c486bb8ca2485fd4983391600a378e7f, type: 3}
@@ -27,18 +26,11 @@ MonoBehaviour:
   - {fileID: 1926912873, guid: dfe54bdbf1e0ef14e8df47cfdb4fc63e, type: 3}
   - {fileID: 369503884, guid: dfe54bdbf1e0ef14e8df47cfdb4fc63e, type: 3}
   - {fileID: -903346402, guid: dfe54bdbf1e0ef14e8df47cfdb4fc63e, type: 3}
-  sparkleFPS: 12
-  hasSparkle: 1
+  sparkleFPS: 13
   aftermathFrames: []
   aftermathFPS: 12
-  hasAftermath: 0
   explosionRotatesWithMovement: 0
   movementType: 0
   autoExplosionTime: 5
   speed: 200
   explosionDelay: 0
-  spawnMultiple: 1
-  cloneExplodes: 0
-  spawnCount: 5
-  spawnRadius: 100
-  spawnPattern: 4

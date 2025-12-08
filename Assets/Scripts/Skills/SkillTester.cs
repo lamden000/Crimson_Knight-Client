@@ -2,51 +2,59 @@
 
 public class SkillTester : MonoBehaviour
 {
-    private SkillData testSkill;
-    public SkillDatabase skillDatabase;
-    public GameObject skillPrefab;
-    public Transform playerTest;
-    public SkillName skillName;
+    [Header("Assign Data")]
+    public SkillData spawnData;          // skill spawn config
+    public GameObject skillPrefab;       // shared prefab chứa component Skill
+
+
+    [Header("Tester Settings")]
+    public Transform target;             // optional, cho thử spawn target-based
+    public Camera cam;                   // camera để raycast mousepos
+    public Transform caster;          // optional, vị trí caster (nếu không dùng chuột)
+
 
     void Update()
     {
+        // Test bằng chuột trái
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouse.z = 0;
-
-            // 1) Raycast tìm monster
-            RaycastHit2D hit = Physics2D.Raycast(mouse, Vector2.zero);
-
-            if (hit.collider != null)
-            {
-                Transform target = hit.collider.transform;
-
-                // 2) Check tên object
-                if (target.name.ToLower().Contains("enemy"))
-                {
-                    // 4) Spawn skill và bắn xuống monster
-                    var obj = Instantiate(skillPrefab);
-                    testSkill=skillDatabase.GetSkillByName(skillName);
-
-                    // startPos sẽ bị override trong ProjectileFromSky nên bạn truyền đại vector nào cũng được
-                    obj.GetComponent<Skill>().Init(
-                        testSkill,
-                        playerTest.position,      // startPos không dùng
-                        mouse,         // endPos chính là đầu monster
-                        target
-                    );
-
-                    return;
-                }
-            }
-            else
-            {
-                // 5) (optional) Không click monster → bắn xuống vị trí chuột
-                // Nếu bạn muốn bắn vào đất:
-                var fallback = Instantiate(skillPrefab);
-                fallback.GetComponent<Skill>().Init(testSkill, playerTest.position, mouse);
-            }
+            SpawnSkillAtMouse();
         }
+    }
+
+
+    void SpawnSkillAtMouse()
+    {
+        if (skillPrefab == null)
+        {
+            Debug.LogError("SkillPrefab chưa được assign!");
+            return;
+        }
+
+        Vector3 mousePos = GetMouseWorldPosition();
+
+        // Tạo skill cha
+        var obj = Instantiate(skillPrefab, mousePos, Quaternion.identity);
+
+        var skill = obj.GetComponent<Skill>();
+
+        // Init skill cha (nó sẽ spawn children nếu spawnOnInit = true)
+        skill.Init(
+            spawnData,
+            caster.position,   
+            mousePos,      // mouse position
+            target         // optional target
+        );
+    }
+
+
+    Vector3 GetMouseWorldPosition()
+    {
+        if (cam == null)
+            cam = Camera.main;
+
+        Vector3 mouse = Input.mousePosition;
+        mouse.z = 10f; // khoảng cách từ camera (tùy bạn chỉnh)
+        return cam.ScreenToWorldPoint(mouse);
     }
 }
