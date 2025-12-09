@@ -1,24 +1,15 @@
-﻿using Unity.VisualScripting;
+﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
-
-public enum SkillName { ScorchingStrike, GammaMeteor, Vortex,DeadlyCircle }
-public enum SkillMovementType
-{
-    Projectile,        
-    Homing,       
-    ProjectileFromSky, 
-    PersistentArea,   
-    Wave,        
-    Orbit      
-}
 
 [CreateAssetMenu(menuName = "Skill/SkillObjectData")]
 public class SkillObjectData : ScriptableObject
 {
-    public SkillName skillName;
+    public string skillName;
 
     [Header("Main Animation Frames")]
     public bool mainLoop = true;
+    public bool autoDisableAfterMain = false;
     public Sprite[] mainFrames;
     public float mainFPS = 12f;
 
@@ -28,13 +19,16 @@ public class SkillObjectData : ScriptableObject
 
     [Header("Aftermath Effect Frames")]
     public Sprite[] aftermathFrames;
+    [Header("Leave play time 0 to play the animation only once")]
+    public float aftermathPlayTime = 0;
+    public bool aftermathLoop=false;
     public float aftermathFPS = 12f;
     public bool explosionRotatesWithMovement = true;
 
     [Header("Movement")]
-    public SkillMovementType movementType;
     public float autoExplosionTime = 5f;
     public float speed = 100f;
     public float explosionDelay = 0f;
 
+    public Vector3 scale = Vector3.one;
 }

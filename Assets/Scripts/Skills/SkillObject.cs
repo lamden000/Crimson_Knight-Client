@@ -13,17 +13,22 @@ public class SkillObject : MonoBehaviour
     private Transform target;
     private Vector3 mousePos;
     private Vector3 casterPos;
-    private bool exploded = false;
+    private Coroutine mainAnimCor;
+    private SkillMovementType movementType;
+    public bool exploded { get; private set; } = false;
+
     private bool isExplosive = false;
     public float skyHeight = 200f;
-    public void Init(SkillObjectData d,Vector3 casterPos ,Vector3 mousePos, bool isExplosive, Transform targetFollow = null)
+    public System.Action<SkillObject> onExplode;
+    public void Init(SkillObjectData d,Vector3 casterPos ,Vector3 mousePos, bool isExplosive,SkillMovementType movementType, Transform targetFollow = null)
     {
         data = d;
         this.target = targetFollow;
         this.mousePos = mousePos;
         this.casterPos = casterPos;
         this.isExplosive = isExplosive;
-
+        this.movementType = movementType;
+        transform.localScale= data.scale;
         PlayAnimations();
         StartCoroutine(AutoExplodeTimer());
         StartCoroutine(RunMovement());
@@ -32,7 +37,7 @@ public class SkillObject : MonoBehaviour
     void PlayAnimations()
     {
         // MAIN
-        mainAnim.Play(data.mainFrames, data.mainFPS,!data.mainLoop);
+        mainAnimCor= mainAnim.Play(data.mainFrames, data.mainFPS,data.mainLoop,data.autoDisableAfterMain);
 
         // AFTERMATH (ảnh hưởng sau nổ)
         aftermathAnim.sr.enabled = false;
@@ -40,7 +45,7 @@ public class SkillObject : MonoBehaviour
 
     IEnumerator RunMovement()
     {
-        switch (data.movementType)
+        switch (movementType)
         {
             case SkillMovementType.Projectile:
                 yield return Projectile();
@@ -54,11 +59,31 @@ public class SkillObject : MonoBehaviour
                 yield return Homing();
                 break;
 
-            case SkillMovementType.ProjectileFromSky:
-                yield return ProjectileFromSky();
+            case SkillMovementType.PersistentArea:
+                yield return PersistentAreaRoutine();
                 break;
         }
     }
+
+    IEnumerator PersistentAreaRoutine()
+    {
+       // Nếu mainLoop = true → main animation sẽ loop mãi → không bao giờ explode
+        // nên tôi fallback: nếu mainLoop = true → explode sau autoExplosionTime
+        if (data.mainLoop)
+        {
+            yield return new WaitForSeconds(data.autoExplosionTime);
+            yield return Explosion();
+            yield break;
+        }
+
+        // Đợi main animation chạy hết
+        if (mainAnimCor != null)
+            yield return mainAnimCor;
+
+        // Nổ ngay sau main animation
+        yield return Explosion();
+    }
+
 
     IEnumerator Projectile()
     {
@@ -100,29 +125,6 @@ public class SkillObject : MonoBehaviour
         yield return Explosion();
     }
 
-    IEnumerator ProjectileFromSky()
-    {
-        // Lấy vị trí target cần rơi xuống
-        Vector3 targetPos = mousePos;
-
-        Vector3 startSkyPos = new Vector3(targetPos.x, targetPos.y + skyHeight, targetPos.z);
-
-        // Chuyển object lên trời (startPos trong Init sẽ bị override)
-        transform.position = startSkyPos;
-
-        while (Vector3.Distance(transform.position, targetPos) > 1f)
-        {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                targetPos,
-                data.speed * Time.deltaTime
-            );
-            yield return null;
-        }
-
-        yield return Explosion();
-    }
-
     IEnumerator Explosion()
     {
         exploded = true;
@@ -140,7 +142,7 @@ public class SkillObject : MonoBehaviour
             // AFTERMATH
             if (data.aftermathFrames != null && data.aftermathFrames.Length > 0)
             {
-                afterCo = aftermathAnim.Play(data.aftermathFrames, data.aftermathFPS);
+                afterCo = aftermathAnim.Play(data.aftermathFrames, data.aftermathFPS,data.aftermathLoop,true,data.aftermathPlayTime);
             }
 
             // SPARKLE
@@ -161,6 +163,7 @@ public class SkillObject : MonoBehaviour
             if (sparkleCo != null)
                 yield return sparkleCo;
         }
+        onExplode?.Invoke(this);
         Destroy(gameObject);
     }
 

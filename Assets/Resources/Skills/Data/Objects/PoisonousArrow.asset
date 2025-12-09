@@ -10,20 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: EnergySword
+  m_Name: PoisonousArrow
   m_EditorClassIdentifier: 
-  skillName: Energy Sword
+  skillName: 
   mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
-  - {fileID: 5785606575493089255, guid: c486bb8ca2485fd4983391600a378e7f, type: 3}
-  mainFPS: 12
-  sparkleFrames: []
-  sparkleFPS: 13
+  - {fileID: -1289866874, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
+  - {fileID: -254550158, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
+  mainFPS: 8
+  sparkleFrames:
+  - {fileID: 8103479197554252974, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
+  - {fileID: 1348348275, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
+  sparkleFPS: 12
   aftermathFrames: []
   aftermathFPS: 12
-  explosionRotatesWithMovement: 0
+  explosionRotatesWithMovement: 1
   autoExplosionTime: 5
-  speed: 200
+  speed: 500
   explosionDelay: 0
   scale: {x: 1, y: 1, z: 1}

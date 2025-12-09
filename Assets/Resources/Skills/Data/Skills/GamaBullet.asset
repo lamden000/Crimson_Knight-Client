@@ -9,16 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44e8039126830d0448d589df087e1ccd, type: 3}
+  m_Script: {fileID: 11500000, guid: 700eb2cc5b9278f419699e6ccdad10e1, type: 3}
   m_Name: GamaBullet
   m_EditorClassIdentifier: 
-  spawnOnInit: 1
-  spawnOnExplode: 0
-  spawnOnHit: 0
   spawnEntries:
   - skillToSpawn: {fileID: 11400000, guid: bfa798b0da0e46642936ce040aded64f, type: 2}
+    chainEntry: 0
     pattern: 0
     count: 1
     radius: 0
     angleOffset: 0
     origin: 1
+    allObjectsExplode: 0
+    movementType: 2
+    useBurst: 0
+    burstSize: 0
+    burstInterval: 0
+    useInterval: 0
+    interval: 0

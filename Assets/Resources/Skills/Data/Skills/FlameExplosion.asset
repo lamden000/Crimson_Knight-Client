@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 700eb2cc5b9278f419699e6ccdad10e1, type: 3}
-  m_Name: MeteorShower
+  m_Name: FlameExplosion
   m_EditorClassIdentifier: 
   spawnEntries:
-  - skillToSpawn: {fileID: 11400000, guid: bd7f925b00e73814488c2b80d470652e, type: 2}
+  - skillToSpawn: {fileID: 11400000, guid: bc8bf32bd290fe942a517dad24108edb, type: 2}
     chainEntry: 0
-    pattern: 3
-    count: 3
-    radius: 100
+    pattern: 0
+    count: 1
+    radius: 0
     angleOffset: 0
-    origin: 0
+    origin: 2
     allObjectsExplode: 0
-    movementType: 2
+    movementType: 3
     useBurst: 0
     burstSize: 0
     burstInterval: 0

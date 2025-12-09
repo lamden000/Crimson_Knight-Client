@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
   m_Name: ScorchingMeteor
   m_EditorClassIdentifier: 
-  skillName: 0
-  spawnPoint: 2
+  skillName: Scorching Meteor
   mainLoop: 1
+  autoDisableAfterMain: 0
   mainFrames:
   - {fileID: -1245131596, guid: aa80d0140683e314f95af1284687f14c, type: 3}
   - {fileID: 556163307, guid: aa80d0140683e314f95af1284687f14c, type: 3}
@@ -29,18 +29,11 @@ MonoBehaviour:
   - {fileID: 177669434, guid: aa80d0140683e314f95af1284687f14c, type: 3}
   - {fileID: -743994482, guid: aa80d0140683e314f95af1284687f14c, type: 3}
   sparkleFPS: 12
-  hasSparkle: 1
   aftermathFrames:
   - {fileID: 2388653448091785184, guid: aa80d0140683e314f95af1284687f14c, type: 3}
   aftermathFPS: 1
-  hasAftermath: 1
   explosionRotatesWithMovement: 1
-  movementType: 0
   autoExplosionTime: 10
   speed: 500
   explosionDelay: 0
-  spawnMultiple: 1
-  cloneExplodes: 1
-  spawnCount: 3
-  spawnRadius: 100
-  spawnPattern: 4
+  scale: {x: 0.7, y: 0.7, z: 1}

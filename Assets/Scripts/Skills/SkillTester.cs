@@ -3,7 +3,7 @@
 public class SkillTester : MonoBehaviour
 {
     [Header("Assign Data")]
-    public SkillData spawnData;          // skill spawn config
+    public SkillSpawnData spawnData;          // skill spawn config
     public GameObject skillPrefab;       // shared prefab chứa component Skill
 
 
@@ -36,7 +36,7 @@ public class SkillTester : MonoBehaviour
         // Tạo skill cha
         var obj = Instantiate(skillPrefab, mousePos, Quaternion.identity);
 
-        var skill = obj.GetComponent<Skill>();
+        var skill = obj.GetComponent<SkillSpawnmer>();
 
         // Init skill cha (nó sẽ spawn children nếu spawnOnInit = true)
         skill.Init(

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Vortex
   m_EditorClassIdentifier: 
   skillName: 2
-  spawnPoint: 0
   mainLoop: 1
+  autoDisableAfterMain: 0
   mainFrames:
   - {fileID: 7946219937512301880, guid: f1ee25cbbca6bb44997b42aa57f09aa5, type: 3}
   - {fileID: -5613921726437303221, guid: f1ee25cbbca6bb44997b42aa57f09aa5, type: 3}
@@ -23,16 +23,10 @@ MonoBehaviour:
   mainFPS: 12
   sparkleFrames: []
   sparkleFPS: 12
-  hasSparkle: 0
   aftermathFrames: []
   aftermathFPS: 12
-  hasAftermath: 0
-  movementType: 3
+  explosionRotatesWithMovement: 1
   autoExplosionTime: 3
   speed: 0
   explosionDelay: 0
-  spawnMultiple: 1
-  cloneExplodes: 1
-  spawnCount: 7
-  spawnRadius: 200
-  spawnPattern: 3
+  scale: {x: 1, y: 1, z: 1}

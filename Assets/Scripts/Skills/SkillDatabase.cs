@@ -6,7 +6,7 @@ public class SkillDatabase : ScriptableObject
 {
     public List<SkillObjectData> allSkills;
 
-    public SkillObjectData GetSkillByName(SkillName name)
+    public SkillObjectData GetSkillByName(string name)
     {
         return allSkills.Find(s => s.skillName == name);
     }
