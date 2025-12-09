@@ -2,26 +2,45 @@
 
 public class PingPongAroundCenter : MonoBehaviour
 {
-    public Vector2 direction = Vector2.right;   // hướng ping pong
-    public float distance = 2f;                 // độ dài đường đi
-    public float speed = 2f;                    // tốc độ
-    private Transform center;                    // tâm chuyển động (mặc định chính object)
+    public Vector2 direction = Vector2.right; // hướng chuyển động
+    public float distance = 2f;               // tổng độ dài đường đi
+    public float speed = 2f;                  // tốc độ qua lại
+    public Transform center;                  // nếu null => lấy vị trí bắt đầu (fixed center)
 
-    private Vector3 startOffset;
+    private Vector3 fixedCenterPos;           // vị trí tâm cố định (world space)
+    private bool useFixedCenter = true;
 
     void Start()
     {
-        if (center == null) center = transform;
         direction = direction.normalized;
 
-        // vị trí bắt đầu so với center
-        startOffset = direction * distance * 0.5f;
+        if (center == null)
+        {
+            // không dùng transform làm center reference (tránh cộng dồn)
+            fixedCenterPos = transform.position;
+            useFixedCenter = true;
+        }
+        else
+        {
+            // nếu center được set (không phải chính transform), lấy vị trí động của center mỗi frame
+            // bạn có thể muốn dùng vị trí động hoặc cố định của center; ở đây ta theo vị trí động
+            useFixedCenter = false;
+        }
     }
 
     void Update()
     {
-        float t = Mathf.PingPong(Time.time * speed, 1f) - 0.5f; // trả về -0.5 đến +0.5
-        Vector3 offset = direction * distance * t;
-        transform.position = center.position + offset;
+        float t = Mathf.PingPong(Time.time * speed, 1f) - 0.5f; // -0.5 .. +0.5
+        Vector3 offset = (Vector3)direction * distance * t;
+
+        if (useFixedCenter)
+        {
+            transform.position = fixedCenterPos + offset;
+        }
+        else
+        {
+            // center != null và không phải chính transform: dùng vị trí center hiện tại
+            transform.position = center.position + offset;
+        }
     }
 }

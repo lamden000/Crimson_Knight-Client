@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: GammaExplosion
+  m_Name: GammaMeteor
   m_EditorClassIdentifier: 
-  skillName: 1
-  spawnPoint: 0
+  skillName: Gamma Meteor
   mainLoop: 1
+  autoDisableAfterMain: 0
   mainFrames:
   - {fileID: 8086470450585349147, guid: 15b6dd84f2df2aa4896234e0e13a2b58, type: 3}
   - {fileID: 682710032, guid: 15b6dd84f2df2aa4896234e0e13a2b58, type: 3}
@@ -29,18 +29,11 @@ MonoBehaviour:
   - {fileID: -1362568114, guid: 15b6dd84f2df2aa4896234e0e13a2b58, type: 3}
   - {fileID: -1040091644, guid: 15b6dd84f2df2aa4896234e0e13a2b58, type: 3}
   sparkleFPS: 12
-  hasSparkle: 0
   aftermathFrames:
   - {fileID: 843515851, guid: 15b6dd84f2df2aa4896234e0e13a2b58, type: 3}
   aftermathFPS: 5
-  hasAftermath: 0
   explosionRotatesWithMovement: 1
-  movementType: 1
   autoExplosionTime: 10
   speed: 500
   explosionDelay: 0
-  spawnMultiple: 0
-  cloneExplodes: 0
-  spawnCount: 1
-  spawnRadius: 0
-  spawnPattern: 0
+  scale: {x: 1, y: 1, z: 1}
