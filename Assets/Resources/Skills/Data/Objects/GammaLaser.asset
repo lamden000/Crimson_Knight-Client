@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: EnergySword
+  m_Name: GammaLaser
   m_EditorClassIdentifier: 
+  skillName: GammaLaser
   mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
-  - {fileID: 5785606575493089255, guid: c486bb8ca2485fd4983391600a378e7f, type: 3}
+  - {fileID: -5454866403630995592, guid: d2d8bbdb755286f489a60ba3659fd17d, type: 3}
+  - {fileID: 831912274045282159, guid: d2d8bbdb755286f489a60ba3659fd17d, type: 3}
   mainFPS: 12
   sparkleFrames: []
-  sparkleFPS: 13
+  sparkleFPS: 12
   aftermathFrames: []
   aftermathPlayTime: 0
   aftermathLoop: 0
   aftermathFPS: 12
-  explosionRotatesWithMovement: 0
-  autoExplosionTime: 5
-  speed: 300
+  explosionRotatesWithMovement: 1
+  autoExplosionTime: 3
+  speed: 100
   explosionDelay: 0
   scale: {x: 1, y: 1, z: 1}

@@ -217,7 +217,7 @@ public class SkillSpawnmer : MonoBehaviour
                     Vector3 dir = (target.position - origin).normalized;
                     dir=new Vector3(dir.x, dir.y, 0f);
 
-                    return origin + dir * lineSpawnSpacing * index;
+                    return origin + dir * lineSpawnSpacing * (index+1);
                 }
 
 

@@ -87,21 +87,31 @@ public class SkillObject : MonoBehaviour
 
     IEnumerator Projectile()
     {
-        Vector2 dir = mousePos - transform.position;
+        Vector2 dir = (Vector2)target.position - (Vector2)transform.position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
+        // Xoay theo hướng
         transform.rotation = Quaternion.Euler(0, 0, angle + 90f);
-        while (Vector3.Distance(transform.position, mousePos) > 1f)
+
+        // ---- AUTO FLIP ----
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * (dir.x >= 0 ? -1 : 1);
+        transform.localScale = scale;
+        // -------------------
+
+        while (Vector3.Distance(transform.position, target.position) > 1f)
         {
             transform.position = Vector3.MoveTowards(
                 transform.position,
-                mousePos,
+                target.position,
                 data.speed * Time.deltaTime
             );
             yield return null;
         }
+
         yield return Explosion();
     }
+
 
     IEnumerator Homing()
     {

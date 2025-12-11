@@ -29,7 +29,7 @@ public enum SkillMovementType
     Orbit   
 }
 
-[CreateAssetMenu(menuName = "Skill/SkillData")]
+[CreateAssetMenu(menuName = "Skill/SkillSpawnData")]
 public class SkillSpawnData : ScriptableObject
 {
     public List<SpawnEntry> spawnEntries;

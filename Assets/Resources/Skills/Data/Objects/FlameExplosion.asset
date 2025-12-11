@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
   m_Name: FlameExplosion
   m_EditorClassIdentifier: 
-  skillName: FlameExplosion
   mainLoop: 0
   autoDisableAfterMain: 0
   mainFrames:
@@ -27,7 +26,7 @@ MonoBehaviour:
   - {fileID: 6077835109571462102, guid: 9782ba8e3740ef640b8273be5e01c98b, type: 3}
   - {fileID: -6084093291185895879, guid: 9782ba8e3740ef640b8273be5e01c98b, type: 3}
   - {fileID: 7927118225080465418, guid: 9782ba8e3740ef640b8273be5e01c98b, type: 3}
-  aftermathPlayTime: 1
+  aftermathPlayTime: 3
   aftermathLoop: 1
   aftermathFPS: 8
   explosionRotatesWithMovement: 1

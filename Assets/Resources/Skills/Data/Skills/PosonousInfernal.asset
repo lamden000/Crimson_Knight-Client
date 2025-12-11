@@ -16,7 +16,7 @@ MonoBehaviour:
   - skillToSpawn: {fileID: 11400000, guid: b8f6fa5304c3d80409789732368b66d9, type: 2}
     chainEntry: 0
     pattern: 3
-    count: 10
+    count: 8
     radius: 50
     angleOffset: 0
     origin: 0
