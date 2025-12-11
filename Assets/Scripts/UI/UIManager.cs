@@ -1,7 +1,8 @@
-using Assets.Scripts;
+﻿using Assets.Scripts;
 using Assets.Scripts.Map;
 using Assets.Scripts.Networking;
 using System;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,7 +72,11 @@ public class UIManager : MonoBehaviour
     {
         string username = inputUsername.text;
         string password = inputPassword.text;
-
+        if(!await TemplateService.LoadTemplatesAysnc())
+        {
+            UIManager.Instance.ShowOK("Vui lòng thử lại!");
+            return;
+        }
         await LoginService.SendLoginRequest(username,password);
     }
     #endregion
