@@ -6,10 +6,10 @@ public class SkillDatabase : ScriptableObject
 {
     public List<SkillObjectData> allSkills;
 
-    public SkillObjectData GetSkillByName(string name)
+  /*  public SkillObjectData GetSkillByName(string name)
     {
-        return allSkills.Find(s => s.skillName == name);
-    }
+     //   return allSkills.Find(s => s.skillName == name);
+    }*/
 
     public SkillObjectData GetSkillByID(int id)
     {

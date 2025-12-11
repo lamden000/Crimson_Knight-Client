@@ -5,8 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Skill/SkillObjectData")]
 public class SkillObjectData : ScriptableObject
 {
-    public string skillName;
-
     [Header("Main Animation Frames")]
     public bool mainLoop = true;
     public bool autoDisableAfterMain = false;

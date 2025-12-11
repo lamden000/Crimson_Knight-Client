@@ -20,7 +20,7 @@ MonoBehaviour:
     radius: 100
     angleOffset: 0
     origin: 0
-    allObjectsExplode: 0
+    allObjectsExplode: 1
     movementType: 2
     useBurst: 0
     burstSize: 0

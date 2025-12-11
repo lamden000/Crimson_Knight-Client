@@ -19,7 +19,7 @@ MonoBehaviour:
     count: 7
     radius: 200
     angleOffset: 0
-    origin: 0
+    origin: 1
     allObjectsExplode: 0
     movementType: 0
     useBurst: 0
