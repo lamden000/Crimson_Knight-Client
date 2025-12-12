@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public enum Clazz { Knight, Assassin, Markman, Wizard }
+    public enum Clazz { Knight, Assassin, Marksman, Wizard }
 
     [SerializeField]
     private Clazz m_Class;
@@ -14,7 +14,6 @@ public class Character : MonoBehaviour
     { return m_Class; }
 
     private PlayerMovementController m_Controller;
-    public GameObject hitEffect;
 
     private void Start()
     {
@@ -35,7 +34,7 @@ public class Character : MonoBehaviour
             case Clazz.Wizard:
                 weapon = CharacterPart.Staff;
                 break;
-            case Clazz.Markman:
+            case Clazz.Marksman:
                 weapon = CharacterPart.Gun;
                 break;
         }
@@ -46,14 +45,11 @@ public class Character : MonoBehaviour
     public void TakeDamage(float damage, GameObject attacker)
     {
         m_Controller.HandleGetHit();        
-        GameObject hit= Instantiate(hitEffect,transform.position+new Vector3(0,50,0),Quaternion.identity);
-        Destroy(hit,0.5f);
     }
 
     void Update()
     {
       
-
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -64,7 +60,5 @@ public class Character : MonoBehaviour
             }
         }
     }
-
-
   
 }

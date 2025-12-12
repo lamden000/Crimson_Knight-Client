@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - NPC
   - Map Boundary
+  - Target Arrow
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - UI
   - Player
   - Monster
-  - 
+  - NPC
   - 
   - 
   - 

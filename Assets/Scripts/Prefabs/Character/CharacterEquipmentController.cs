@@ -13,9 +13,9 @@ public class CharacterEquipmentController : MonoBehaviour
     public TMP_InputField hatInput;
     public TMP_InputField eyesInput;
 
-    public Character character;
+    private Character character;
 
-    public PlayerAnimationController characterLoader; // script cũ của cậu để load sprites
+    private PlayerAnimationController characterLoader; // script cũ của cậu để load sprites
 
     void Update()
     {
@@ -28,7 +28,11 @@ public class CharacterEquipmentController : MonoBehaviour
 
     void ApplyVariants()
     {
-        // Body
+        if(character == null)
+        {
+            character=FindAnyObjectByType<Character>();
+            characterLoader = character.GetComponent<PlayerAnimationController>();
+        }
         if (!string.IsNullOrEmpty(outfitInput.text))
         {
             if (int.TryParse(outfitInput.text, out int bodyVariant))
