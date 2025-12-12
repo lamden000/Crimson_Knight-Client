@@ -1,18 +1,23 @@
 ﻿using UnityEngine;
-
+using UnityEngine.UI;
 public class SkillTreeUI : MonoBehaviour
 {
-    public SkillNode[] skillNodes;   // Kéo thả 7 node vào đây
+    public SkillNode[] skillNodes;   
     public SkillInfoPanel infoPanel;
-
+    public Button closeButton;
     SkillData[] skillList;
-
+    public GameObject menuRoot;
     void Start()
     {
         LoadSkillList();     // tạo dữ liệu
-        LoadSkillNodes();    // đưa dữ liệu vào node
+        LoadSkillNodes();
+        // đưa dữ liệu vào node
+        closeButton.onClick.AddListener(CloseAllMenu);
     }
-
+    void CloseAllMenu()
+    {
+        menuRoot.SetActive(false);      // ← TẮT TOÀN BỘ MENU
+    }
     void LoadSkillList()
     {
         skillList = new SkillData[]
