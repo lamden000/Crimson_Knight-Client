@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+[Serializable]
 public class MonsterTemplate
 {
     public int Id;
