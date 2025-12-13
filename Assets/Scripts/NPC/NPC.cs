@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class NPC : BaseObject
+public class NPC : MonoBehaviour
 {
     public NPCName npcName;
     private NPCDialogueController dialogueController;
@@ -33,20 +33,5 @@ public class NPC : BaseObject
 
 
         loadedData = true;
-    }
-
-    public override void AutoMoveToXY(int x, int y)
-    {
-
-    }
-
-    public override void DestroyObject()
-    {
-
-    }
-
-    public override ObjectType GetObjectType()
-    {
-        return ObjectType.NPC;
-    }
+    }    
 }

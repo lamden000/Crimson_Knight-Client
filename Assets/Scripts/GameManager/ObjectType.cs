@@ -9,6 +9,5 @@ public enum ObjectType : short
 {
     Player = 1,
     OtherPlayer = 2,
-    Monster = 3,
-    NPC = 4
+    Monster = 3
 }

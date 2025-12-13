@@ -13,7 +13,7 @@ public class DialogFactory : MonoBehaviour
     private void Awake()
     {
         if (mainCanvas == null)
-            mainCanvas = FindAnyObjectByType<Canvas>();
+            mainCanvas = FindObjectOfType<Canvas>();
     }
 
     public DialogYesNo CreateYesNo()

@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Networking.Dtos;
-using Assets.Scripts.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ namespace Assets.Scripts.Networking
 {
     public static class LoginService
     {
+        private const string LOGIN_API_URL = "http://localhost:7678/login";
         public static async Task SendLoginRequest(string username, string password)
         {
             UIManager.Instance.DisableLoginScreen();
@@ -22,7 +22,7 @@ namespace Assets.Scripts.Networking
             LoginRequest req = new LoginRequest { Username = username, Password = password };
             string jsonBody = JsonUtility.ToJson(req);
 
-            using (UnityWebRequest request = new UnityWebRequest(NetworkingUtil.GetLoginApiUrl(), "POST"))
+            using (UnityWebRequest request = new UnityWebRequest(LOGIN_API_URL, "POST"))
             {
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);

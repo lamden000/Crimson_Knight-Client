@@ -160,14 +160,9 @@ public class CharacterSpriteDatabase : MonoBehaviour
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.WalkLeft_1, Direction.Left, State.Walk);
         AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.WalkLeft_2, Direction.Left, State.Walk);
 
-
-        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackDown_1, Direction.Down, State.Attack);
-        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackUp_1, Direction.Up, State.Attack);
-        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackLeft_1, Direction.Left, State.Attack);
-
-        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackDown_2, Direction.Down, State.Attack);
-        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackUp_2, Direction.Up, State.Attack);
-        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackLeft_2, Direction.Left, State.Attack);
+        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackDown, Direction.Down, State.Attack);
+        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackUp, Direction.Up, State.Attack);
+        AddSprite(CharacterPart.Body, outfitVariant, (int)BodyState.AttackLeft, Direction.Left, State.Attack);
 
         loadedVariants.Add((CharacterPart.Body, outfitVariant));
     }
@@ -189,13 +184,9 @@ public class CharacterSpriteDatabase : MonoBehaviour
         AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.WalkLeft_1, Direction.Left, State.Walk);
         AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.WalkLeft_2, Direction.Left, State.Walk);
 
-        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackDown_1, Direction.Down, State.Attack);
-        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackUp_1, Direction.Up, State.Attack);
-        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackLeft_1, Direction.Left, State.Attack);
-
-        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackDown_2, Direction.Down, State.Attack);
-        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackUp_2, Direction.Up, State.Attack);
-        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackLeft_2, Direction.Left, State.Attack);
+        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackDown, Direction.Down, State.Attack);
+        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackUp, Direction.Up, State.Attack);
+        AddSprite(CharacterPart.Legs, outfitVariant, (int)BodyState.AttackLeft, Direction.Left, State.Attack);
 
         loadedVariants.Add((CharacterPart.Legs, outfitVariant));
     }

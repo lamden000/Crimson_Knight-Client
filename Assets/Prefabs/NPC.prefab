@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1819577653623476606}
   - component: {fileID: 6893388075005182601}
   - component: {fileID: 5898676549003640790}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: NPC
   m_TagString: NPC
   m_Icon: {fileID: 0}
@@ -106,7 +106,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentQuest: "\u0110\xE1nh Slime"
-  defaultPotrait: {fileID: 0}
   chatBubblePrefab: {fileID: 6947862536348020929, guid: 2c2d6fff0108c2e44a795b64d71e5f83, type: 3}
   bubbleDuration: 5
   bubbleScalePerChar: 0.01
