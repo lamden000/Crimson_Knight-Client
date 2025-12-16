@@ -32,6 +32,7 @@ public class GridmapLoader : MonoBehaviour
     private string currentOrigin = "Default";
     public bool drawGizmo=false;
     public List<GameObject> spawnPoints = new List<GameObject>();
+    public GameObject staticObjectPrefab;
 
     private void Start()
     {
@@ -302,7 +303,9 @@ public class GridmapLoader : MonoBehaviour
         boundaryCollider.size = new Vector2(mapWorldWidth, mapWorldHeight);
 
         boundaryCollider.transform.localPosition = new Vector3(mapWorldWidth / 2f, mapWorldHeight / 2f, 0f);
-        Camera.main.GetComponent<CameraFollow>().InitializeBounds();
+
+        MiniMapCamera.instance?.InitializeBounds(boundaryCollider);
+        CameraFollow.GI()?.InitializeBounds(boundaryCollider);
     }
     
     // Unload currently loaded map: clear tilemap, destroy spawned parents and clear caches.
@@ -502,17 +505,15 @@ public class GridmapLoader : MonoBehaviour
 
     private void CreateStaticObject(TiledObject obj, Tile baseTile, Transform objectParent)
     {
-        GameObject go = new GameObject($"Object_{obj.id}");
+        GameObject go = Instantiate(staticObjectPrefab);
+        go.name = $"Object_{obj.id}";
         go.transform.SetParent(objectParent);
         float mapHeightInWorldUnits = map.height * map.tileheight;
         float centerX = obj.x + obj.width / 2f;
         float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
 
-        var sr = go.AddComponent<SpriteRenderer>();
+        var sr = go.GetComponent<SpriteRenderer>();
         sr.sprite = baseTile.sprite;
-        sr.sortingLayerName = "Default";
-        sr.sortingOrder = 0;
-        sr.spriteSortPoint = SpriteSortPoint.Pivot;
 
         float spriteHeight = sr.bounds.size.y;
 

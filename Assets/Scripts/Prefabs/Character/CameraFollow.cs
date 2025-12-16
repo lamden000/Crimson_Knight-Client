@@ -26,8 +26,6 @@ public class CameraFollow : MonoBehaviour
         this.orthographicSize = orthographicSize;
     }
 
-
-
     private static CameraFollow ins;
     public static CameraFollow GI()
     {
@@ -49,14 +47,14 @@ public class CameraFollow : MonoBehaviour
 
     }
 
-    public void InitializeBounds()
+    public void InitializeBounds(BoxCollider2D bound)
     {
         if (cam == null)
         {
             cam = GetComponent<Camera>();
         }
 
-        bounds = GameObject.FindGameObjectWithTag("Map Boundary")?.GetComponent<BoxCollider2D>();
+        bounds = bound;
         halfHeight = orthographicSize;
 
         halfWidth = halfHeight * cam.aspect;

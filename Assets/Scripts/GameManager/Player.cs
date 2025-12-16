@@ -22,6 +22,7 @@ public class Player : BaseObject
         player.PlayerMovementController = player.gameObject.GetComponent<PlayerMovementController>();
         player.PlayerMovementController.IsMainPlayer = true;
         CameraFollow.GI().target = player.transform;
+      //  MiniMapCamera.instance.player= player.transform;
         //
         player.Id = id;
         player.Name = name;
