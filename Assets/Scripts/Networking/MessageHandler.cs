@@ -17,7 +17,11 @@ namespace Assets.Scripts.Networking
                 case MessageId.LOGIN:
                     int playerId = msg.ReadInt();
                     string name = msg.ReadString();
-                    GameHandler.Player = Player.Create(playerId,name);
+                    Player player = Player.Create(playerId, name); 
+                    GameHandler.Player = player;
+                    CameraFollow.GI().target = player.transform;
+                    MiniMapCamera.instance.player = player.transform;
+                    MiniMapCamera.instance.minimapWindow.SetActive(true);
                     break;
                 case MessageId.PLAYER_ENTER_MAP:
                     

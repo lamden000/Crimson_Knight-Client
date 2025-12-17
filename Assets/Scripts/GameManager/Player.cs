@@ -21,9 +21,6 @@ public class Player : BaseObject
         Player player = gameObject.AddComponent<Player>();
         player.PlayerMovementController = player.gameObject.GetComponent<PlayerMovementController>();
         player.PlayerMovementController.IsMainPlayer = true;
-        CameraFollow.GI().target = player.transform;
-      //  MiniMapCamera.instance.player= player.transform;
-        //
         player.Id = id;
         player.Name = name;
         return player;
@@ -59,7 +56,7 @@ public class Player : BaseObject
         {
             BaseObject newTarget = FindNearestTarget();
             if (newTarget != null)
-                UpdateTarget(newTarget);
+                SetFocus(newTarget);
             return;
         }
 
@@ -71,10 +68,10 @@ public class Player : BaseObject
             BaseObject newTarget = FindNearestTarget();
 
             if (newTarget != null)
-                UpdateTarget(newTarget);
+                SetFocus(newTarget);
             else
                 LoseTarget();
-        }
+        }      
         else
         {
             int characterArrowOffsetY = 100;
@@ -95,12 +92,6 @@ public class Player : BaseObject
             arrowIndicator.gameObject.SetActive(true);
         }
         base.SetFocus(objFocus);
-    }
-
-    public void UpdateTarget(BaseObject target)
-    {
-        SetFocus(target);
-        arrowIndicator.gameObject.SetActive(true);
     }
 
     BaseObject FindNearestTarget()

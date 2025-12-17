@@ -30,17 +30,10 @@ public class PingPongAroundCenter : MonoBehaviour
 
     void Update()
     {
-        float t = Mathf.PingPong(Time.time * speed, 1f) - 0.5f; // -0.5 .. +0.5
+        float t = Mathf.PingPong(Time.time * speed, 1f) - 0.5f;
         Vector3 offset = (Vector3)direction * distance * t;
 
-        if (useFixedCenter)
-        {
-            transform.position = fixedCenterPos + offset;
-        }
-        else
-        {
-            // center != null và không phải chính transform: dùng vị trí center hiện tại
-            transform.position = center.position + offset;
-        }
+        transform.localPosition = offset;
     }
+
 }

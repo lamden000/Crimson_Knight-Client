@@ -14,6 +14,9 @@ public class MiniMapCamera : MonoBehaviour
 
     private Camera cam;
     private Bounds bounds;
+
+    public GameObject minimapWindow;
+
     public static MiniMapCamera instance { get; private set; }
 
     void Awake()
@@ -52,46 +55,46 @@ public class MiniMapCamera : MonoBehaviour
             Debug.LogWarning("CameraFollow: Bounds collider is not set!");
         }*/
       mapBoundary= bound;
+      bounds = bound.bounds;
     }
-
 
     void LateUpdate()
     {
         if (player == null || mapBoundary == null)
             return;
 
+        bounds = mapBoundary.bounds;
+
         float camHeight = cam.orthographicSize;
         float camWidth = camHeight * cam.aspect;
 
         Vector3 targetPos = transform.position;
 
-        if (followX)
-            targetPos.x = player.position.x;
+        if (followX) targetPos.x = player.position.x;
+        if (followY) targetPos.y = player.position.y;
 
-        if (followY)
-            targetPos.y = player.position.y;
+        float minX = bounds.min.x + camWidth;
+        float maxX = bounds.max.x - camWidth;
+        float minY = bounds.min.y + camHeight;
+        float maxY = bounds.max.y - camHeight;
 
-        // Clamp trong boundary
-        targetPos.x = Mathf.Clamp(
-            targetPos.x,
-            bounds.min.x + camWidth,
-            bounds.max.x - camWidth
-        );
+        if (minX > maxX)
+            targetPos.x = bounds.center.x;
+        else
+            targetPos.x = Mathf.Clamp(targetPos.x, minX, maxX);
 
-        targetPos.y = Mathf.Clamp(
-            targetPos.y,
-            bounds.min.y + camHeight,
-            bounds.max.y - camHeight
-        );
+        if (minY > maxY)
+            targetPos.y = bounds.center.y;
+        else
+            targetPos.y = Mathf.Clamp(targetPos.y, minY, maxY);
 
-        // Gi? nguyên Z (2D mà, ??ng ngh?ch)
         targetPos.z = transform.position.z;
 
-        // Smooth follow (ho?c b? n?u b?n thích gi?t c?c)
         transform.position = Vector3.Lerp(
             transform.position,
             targetPos,
             smoothSpeed * Time.deltaTime
         );
     }
+
 }
