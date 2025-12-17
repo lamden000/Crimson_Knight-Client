@@ -50,6 +50,7 @@ public class PlayerAnimationController : MonoBehaviour
     private State currentState;
 
     private CharacterSpriteDatabase database;
+    public GameObject minimapIndicator;
     public AttackAnimationController attackAnimation;
     Character character;
 
@@ -114,6 +115,7 @@ public class PlayerAnimationController : MonoBehaviour
             transform.rotation = (dir == Direction.Right) ? Quaternion.Euler(0, 180f, 0) : Quaternion.identity;
 
             currentDir = dir;
+            UpdateMinimapIndicator(dir);
 
             if (state == State.Attack)
                 SetAttackAnimation(true);
@@ -125,6 +127,31 @@ public class PlayerAnimationController : MonoBehaviour
             currentFrame = 0;
             timer = 0;
         }
+    }
+
+    void UpdateMinimapIndicator(Direction dir)
+    {
+        if (minimapIndicator == null) return;
+
+        float angle = 0f;
+
+        switch (dir)
+        {
+            case Direction.Down:
+                angle = 0f;
+                break;
+            case Direction.Left:
+                angle = 270f;
+                break;
+            case Direction.Up:
+                angle = 180f;
+                break;
+            case Direction.Right:
+                angle = 270f;
+                break;
+        }
+
+        minimapIndicator.transform.localRotation = Quaternion.Euler(0, 0, angle);
     }
 
 
