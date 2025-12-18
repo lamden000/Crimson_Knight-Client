@@ -7,25 +7,9 @@ public class PingPongAroundCenter : MonoBehaviour
     public float speed = 2f;                  // tốc độ qua lại
     public Transform center;                  // nếu null => lấy vị trí bắt đầu (fixed center)
 
-    private Vector3 fixedCenterPos;           // vị trí tâm cố định (world space)
-    private bool useFixedCenter = true;
-
     void Start()
     {
         direction = direction.normalized;
-
-        if (center == null)
-        {
-            // không dùng transform làm center reference (tránh cộng dồn)
-            fixedCenterPos = transform.position;
-            useFixedCenter = true;
-        }
-        else
-        {
-            // nếu center được set (không phải chính transform), lấy vị trí động của center mỗi frame
-            // bạn có thể muốn dùng vị trí động hoặc cố định của center; ở đây ta theo vị trí động
-            useFixedCenter = false;
-        }
     }
 
     void Update()
