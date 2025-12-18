@@ -181,6 +181,9 @@ public class GridmapLoader : MonoBehaviour
 
                 tilemap.SetTile(pos, tile);
 
+                Matrix4x4 transform = GetTileTransform(rawGid);
+                tilemap.SetTransformMatrix(pos, transform);
+
                 if (gridNodes[logicY, x] == null)
                 {
                     Vector3 worldPos = tilemap.CellToWorld(pos);
@@ -197,6 +200,45 @@ public class GridmapLoader : MonoBehaviour
 
         AdjustBoundaryCollider();
     }
+
+    Matrix4x4 GetTileTransform(uint rawGid)
+    {
+        bool h = (rawGid & 0x80000000) != 0;
+        bool v = (rawGid & 0x40000000) != 0;
+        bool d = (rawGid & 0x20000000) != 0;
+
+        int a, b, c, d2;
+
+        if (!d)
+        {
+            a = h ? -1 : 1;
+            d2 = v ? -1 : 1;
+            b = c = 0;
+        }
+        else
+        {
+            a = 0;
+            b = v ? -1 : 1;
+            c = h ? -1 : 1;
+            d2 = 0;
+        }
+
+        Matrix4x4 m = Matrix4x4.identity;
+        m.m00 = a;
+        m.m01 = b;
+        m.m10 = c;
+        m.m11 = d2;
+
+        // pivot correction (tile center)
+        float px = 0.5f;
+        float py = 0.5f;
+        m.m03 = px - (a * px + b * py);
+        m.m13 = py - (c * px + d2 * py);
+
+        return m;
+    }
+
+
 
     TileNode[,] CreateSubGridFromColliders(TileNode[,] baseGrid, int subDivisions)
     {
@@ -283,8 +325,6 @@ public class GridmapLoader : MonoBehaviour
         Debug.Log("✅ Collider offset (-tileW, -tileH) applied to fix overlap alignment.");
         return subGrid;
     }
-
-
 
     private void AdjustBoundaryCollider()
     {
@@ -433,11 +473,11 @@ public class GridmapLoader : MonoBehaviour
                 switch (obj.type)
                 {
                     case "Collider":
-                        CreateColliderBox(obj, false, colliderParent.transform);
+                        CreateBoxCollider(obj, false, colliderParent.transform);
                         break;
 
                     case "Water":
-                        CreateColliderBox(obj, true,colliderParent.transform);
+                        CreateBoxCollider(obj, true,colliderParent.transform);
                         break;
 
                     case "NPC":
@@ -612,26 +652,45 @@ public class GridmapLoader : MonoBehaviour
             Debug.LogWarning($"Spawn origin '{originToFind}' not found in map spawn points.");
         }
     }
-void CreateColliderBox(TiledObject obj, bool isWater,Transform colliderParent)
+    void CreateBoxCollider(TiledObject obj, bool isWater, Transform parent)
     {
-        string name = isWater? "WaterBox":"ColliderBox";
-        GameObject go = new GameObject(name);
-        var col = go.AddComponent<BoxCollider2D>();
+        GameObject go = new GameObject(isWater ? "WaterBox" : "ColliderBox");
+        go.transform.SetParent(parent);
 
-        col.isTrigger = isWater;
+        var box = go.AddComponent<BoxCollider2D>();
+        box.isTrigger = isWater;
+        box.size = new Vector2(obj.width, obj.height);
+        box.offset = Vector2.zero;
 
-        float centerX = obj.x + obj.width / 2f;
-        float mapHeightInWorldUnits = map.height * map.tileheight;
-        float centerY = (mapHeightInWorldUnits - obj.y) - obj.height / 2f;
+        float mapHeight = map.height * map.tileheight;
 
-        go.transform.position = new Vector3(centerX, centerY, 0);
+        // 🔹 Tiled top-left → Unity world (chưa xoay)
+        Vector2 topLeft = new Vector2(
+            obj.x,
+            mapHeight - obj.y
+        );
 
-        col.size = new Vector2(obj.width, obj.height);
+        // 🔹 Vector từ top-left → center (local)
+        Vector2 localCenter = new Vector2(
+            obj.width / 2f,
+            -obj.height / 2f   // vì Tiled Y xuống
+        );
 
-        col.offset = Vector2.zero;
+        // 🔹 Rotation: Tiled clockwise → Unity CCW
+        float rot = -obj.rotation;
+        Quaternion q = Quaternion.Euler(0, 0, rot);
 
-        go.transform.SetParent(colliderParent);
+        // 🔹 Rotate center offset
+        Vector2 rotatedCenterOffset = q * localCenter;
+
+        // 🔹 Final position
+        Vector2 worldCenter = topLeft + rotatedCenterOffset;
+        go.transform.position = worldCenter;
+
+        // 🔹 Apply rotation
+        go.transform.rotation = q;
     }
+
 
     private void OnDrawGizmos()
     {
