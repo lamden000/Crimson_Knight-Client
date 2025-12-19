@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Map;
 using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,30 +41,10 @@ public class GameHandler : MonoBehaviour
         UIManager.Instance.EnableLoadScreen();
         //map
         MapManager.MapId = msg.ReadShort();
-        MapManager.MapName = msg.ReadString();
-        foreach (var obj in OtherPlayers)
-        {
-            obj.Value.DestroyObject();
-        }
-        OtherPlayers.Clear();
+        MapManager.LoadMapById(MapManager.MapId);
 
-        int size = msg.ReadShort();
-        for (int i = 0; i < size; i++)
-        {
-            int id = msg.ReadInt();
-            string name = msg.ReadString();
-            short xO = msg.ReadShort();
-            short yO = msg.ReadShort();
-            if (id == Player.Id)
-            {
-                continue;
-            }
-            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO);
-            if (!OtherPlayers.TryAdd(id, player))
-            {
-                player.DestroyObject();
-            }
-        }
+        MapManager.MapName = msg.ReadString();
+
 
         //player
         short x = msg.ReadShort();
@@ -72,10 +53,9 @@ public class GameHandler : MonoBehaviour
         Player.SetPosition(x, y);
 
 
-
-
         UIManager.Instance.DisableLoadScreen();
         UIManager.Instance.EnableGameScreen();
+
     }
 
     public static void OtherPlayerMove(Message msg)
@@ -136,6 +116,50 @@ public class GameHandler : MonoBehaviour
         if (OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer other))
         {
             other.Attack(skillId, objTarget);
+        }
+    }
+
+    public static void LoadOtherPlayersInMap(Message msg)
+    {
+        foreach (var obj in OtherPlayers)
+        {
+            obj.Value.DestroyObject();
+        }
+        OtherPlayers.Clear();
+
+        int size = msg.ReadShort();
+        for (int i = 0; i < size; i++)
+        {
+            int id = msg.ReadInt();
+            string name = msg.ReadString();
+            short xO = msg.ReadShort();
+            short yO = msg.ReadShort();
+            if (id == Player.Id)
+            {
+                continue;
+            }
+            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO);
+            if (!OtherPlayers.TryAdd(id, player))
+            {
+                player.DestroyObject();
+            }
+        }
+    }
+
+    public static void LoadMonstersInMap(Message msg)
+    {
+        foreach (var obj in Monsters)
+        {
+            obj.Value.DestroyObject();
+        }
+        int size = msg.ReadShort();
+        for (int i = 0; i < size; i++)
+        {
+            int templateId = msg.ReadInt();
+            int id = msg.ReadInt();
+            short x = msg.ReadShort();
+            short y = msg.ReadShort();
+            Monsters.TryAdd(i, Monster.Create(i, x, y, templateId));
         }
     }
 }

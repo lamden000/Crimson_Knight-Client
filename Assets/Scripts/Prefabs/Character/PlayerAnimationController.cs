@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static PlayerAnimationController;
 
 public class PlayerAnimationController : MonoBehaviour
 {
@@ -81,7 +80,10 @@ public class PlayerAnimationController : MonoBehaviour
         currentState = State.Idle;
 
         weaponType = character.getWeaponType();
-        attackAnimation.SetWeaponType(weaponType);
+        if (attackAnimation != null)
+        {
+            attackAnimation.SetWeaponType(weaponType);
+        }
 
         partVariants[weaponType]=weaponVariant;
         spriteRenderers[weaponType]=weaponSpriteRenderer;
@@ -242,6 +244,10 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void SetAttackAnimation(bool isAttacking)
     {
+        if (attackAnimation == null)
+        {
+            return;
+        }
         if(isAttacking)
         {
             spriteRenderers[weaponType].gameObject.SetActive(false);
