@@ -152,6 +152,7 @@ public class GameHandler : MonoBehaviour
         {
             obj.Value.DestroyObject();
         }
+        Monsters.Clear();
         int size = msg.ReadShort();
         for (int i = 0; i < size; i++)
         {

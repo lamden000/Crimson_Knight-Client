@@ -21,7 +21,7 @@ namespace Assets.Scripts.Map
 
         public static void LoadMapForLoginScreen()
         {
-            _gridmapLoader.LoadMapByName("map3.json","Default");
+            _gridmapLoader.LoadMapByName("Map1.json", "Default");
         }
         public static void LoadMapById(int id)
         {
