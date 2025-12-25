@@ -624,33 +624,33 @@ public class GridmapLoader : MonoBehaviour
 
     private void ResolveSpawnOrigin(string origin)
     {
-        // If no origin provided, default to "Default" spawn point
-        string originToFind = string.IsNullOrEmpty(origin) ? "Default" : origin;
+        //// If no origin provided, default to "Default" spawn point
+        //string originToFind = string.IsNullOrEmpty(origin) ? "Default" : origin;
 
-        GameObject found = spawnPoints.Find(s => s != null && s.name == originToFind);
-        if (found != null)
-        {
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                player.transform.position = found.transform.position;
-                // snap camera to player immediately if CameraFollow exists
-                if (Camera.main != null)
-                {
-                    var camFollow = Camera.main.GetComponent<CameraFollow>();
-                    if (camFollow != null)
-                        camFollow.SnapToTargetImmediate();
-                }
-            }
-            else
-            {
-                Debug.LogWarning("ResolveSpawnOrigin: Player GameObject with tag 'Player' not found.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Spawn origin '{originToFind}' not found in map spawn points.");
-        }
+        //GameObject found = spawnPoints.Find(s => s != null && s.name == originToFind);
+        //if (found != null)
+        //{
+        //    var player = GameObject.FindGameObjectWithTag("Player");
+        //    if (player != null)
+        //    {
+        //        player.transform.position = found.transform.position;
+        //        // snap camera to player immediately if CameraFollow exists
+        //        if (Camera.main != null)
+        //        {
+        //            var camFollow = Camera.main.GetComponent<CameraFollow>();
+        //            if (camFollow != null)
+        //                camFollow.SnapToTargetImmediate();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Debug.LogWarning("ResolveSpawnOrigin: Player GameObject with tag 'Player' not found.");
+        //    }
+        //}
+        //else
+        //{
+        //    Debug.LogWarning($"Spawn origin '{originToFind}' not found in map spawn points.");
+        //}
     }
     void CreateBoxCollider(TiledObject obj, bool isWater, Transform parent)
     {

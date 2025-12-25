@@ -134,12 +134,6 @@ public class Player : BaseObject
         //
     }
 
-    public override void SetPosition(short x, short y)
-    {
-        StartCoroutine(SystemUtil.Delay(1.0f, () =>
-        {
-            base.SetPosition(x, y);
-        }));
-    }
+  
   
 }

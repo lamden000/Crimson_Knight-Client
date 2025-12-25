@@ -75,10 +75,10 @@ public class GameHandler : MonoBehaviour
 
     public static void OtherPlayerEnterMap(int otherPlayerId, string otherPlayerName, short otherX, short otherY)
     {
-        OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY);
-        if (!OtherPlayers.TryAdd(otherPlayerId, player))
+        if (!OtherPlayers.ContainsKey(otherPlayerId))
         {
-            player.DestroyObject();
+            OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY);
+            OtherPlayers.Add(otherPlayerId, player);
         }
     }
 
