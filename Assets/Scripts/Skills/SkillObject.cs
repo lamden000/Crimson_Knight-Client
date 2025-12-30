@@ -62,6 +62,36 @@ public class SkillObject : MonoBehaviour
             case SkillMovementType.PersistentArea:
                 yield return PersistentAreaRoutine();
                 break;
+
+            case SkillMovementType.AttachedToTarget:
+                yield return AttachedToTargetRoutine();
+                break;
+        }
+    }
+
+    IEnumerator AttachedToTargetRoutine()
+    {
+        // Nếu không có target thì nổ luôn
+        if (target == null)
+        {
+            yield return Explosion();
+            yield break;
+        }
+
+        // Tính offset ban đầu dựa trên vị trí spawn (do SpawnPattern quyết định) so với target
+        Vector3 offset = transform.position - target.position;
+
+        while (!exploded && target != null)
+        {
+            // Cập nhật vị trí theo target + offset ban đầu
+            transform.position = target.position + offset;
+            yield return null;
+        }
+
+        // Nếu target chết/mất mà chưa nổ -> nổ
+        if (!exploded)
+        {
+            yield return Explosion();
         }
     }
 

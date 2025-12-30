@@ -1,22 +1,34 @@
 fileFormatVersion: 2
-guid: cd89d9e334ad81e49818a9853212f590
+guid: a09bd655d56b94c44b033fee64d3d685
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3738904829709905010
-    second: 1054_0
+      213: 3980162650476618840
+    second: Small293_0
   - first:
-      213: 2506834640512718921
-    second: 1054_1
+      213: 8593009316766392889
+    second: Small293_1
   - first:
-      213: 2277786326296832953
-    second: 1054_2
+      213: 3405191707410716024
+    second: Small293_2
   - first:
-      213: 8769461055968236499
-    second: 1054_3
+      213: 3738646169333961024
+    second: Small293_3
   - first:
-      213: -3423771484297193617
-    second: 1054_4
+      213: -8809440072839292310
+    second: Small293_4
+  - first:
+      213: 378229728626345197
+    second: Small293_5
+  - first:
+      213: -5601005985168221693
+    second: Small293_6
+  - first:
+      213: 7688365274433736634
+    second: Small293_7
+  - first:
+      213: 1501410189649300221
+    second: Small293_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -58,7 +70,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -151,111 +163,199 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 1054_0
+      name: Small293_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 336
-        width: 88
-        height: 65
+        y: 17
+        width: 6
+        height: 11
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 27ce9df022243e330800000000000000
-      internalID: 3738904829709905010
+      spriteID: 854afe1c7d06c3730800000000000000
+      internalID: 3980162650476618840
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1054_1
+      name: Small293_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 250
-        width: 86
-        height: 66
+        x: 6
+        y: 11
+        width: 8
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9489762e2d01ac220800000000000000
-      internalID: 2506834640512718921
+      spriteID: 932ab752270804770800000000000000
+      internalID: 8593009316766392889
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1054_2
+      name: Small293_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 167
-        width: 86
-        height: 67
+        x: 18
+        y: 15
+        width: 8
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9bb2a2578925c9f10800000000000000
-      internalID: 2277786326296832953
+      spriteID: 875525001dba14f20800000000000000
+      internalID: 3405191707410716024
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 1054_3
+      name: Small293_3
       rect:
         serializedVersion: 2
-        x: 1
-        y: 75
-        width: 89
-        height: 86
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3d3db982e5263b970800000000000000
-      internalID: 8769461055968236499
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1054_4
-      rect:
-        serializedVersion: 2
-        x: 1
+        x: 26
         y: 0
-        width: 89
-        height: 64
+        width: 14
+        height: 19
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f679a5699f15c70d0800000000000000
-      internalID: -3423771484297193617
+      spriteID: 041960002e652e330800000000000000
+      internalID: 3738646169333961024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small293_4
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 13
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6a925c9de49eb580800000000000000
+      internalID: -8809440072839292310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small293_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1
+        width: 8
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de4044a2fedbf3500800000000000000
+      internalID: 378229728626345197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small293_6
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 1
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30a163d5bba3542b0800000000000000
+      internalID: -5601005985168221693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small293_7
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 3
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abf421e7b7f82ba60800000000000000
+      internalID: 7688365274433736634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small293_8
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 7
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfac238dc9416d410800000000000000
+      internalID: 1501410189649300221
       vertices: []
       indices: 
       edges: []
@@ -264,7 +364,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: ee438e64924be4642b2bcbfdd99278f7
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -274,11 +374,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      1054_0: 3738904829709905010
-      1054_1: 2506834640512718921
-      1054_2: 2277786326296832953
-      1054_3: 8769461055968236499
-      1054_4: -3423771484297193617
+      Small293_0: 3980162650476618840
+      Small293_1: 8593009316766392889
+      Small293_2: 3405191707410716024
+      Small293_3: 3738646169333961024
+      Small293_4: -8809440072839292310
+      Small293_5: 378229728626345197
+      Small293_6: -5601005985168221693
+      Small293_7: 7688365274433736634
+      Small293_8: 1501410189649300221
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

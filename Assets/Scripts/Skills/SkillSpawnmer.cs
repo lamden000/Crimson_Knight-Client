@@ -109,7 +109,10 @@ public class SkillSpawnmer : MonoBehaviour
 
         for (int i = 0; i < entry.count; i++)
         {
-            Vector3 pos = CalculatePosition(i, entry, origin);
+            // Cập nhật origin mỗi lần spawn
+            Vector3 currentOrigin = GetOrigin(entry);
+
+            Vector3 pos = CalculatePosition(i, entry, currentOrigin);
             bool explode = ShouldExplode(i, entry);
 
             var obj = CreateSkillInstance(entry.skillToSpawn, pos, explode, entry.movementType);
@@ -128,6 +131,9 @@ public class SkillSpawnmer : MonoBehaviour
 
         while (spawnedCount < entry.count)
         {
+            // Cập nhật origin mỗi burst (nếu origin lệ thuộc vào target)
+            Vector3 currentOrigin = GetOrigin(entry);
+            
             int amount = Mathf.Min(entry.burstSize, entry.count - spawnedCount);
 
             // spawn 1 burst
@@ -135,7 +141,8 @@ public class SkillSpawnmer : MonoBehaviour
             {
                 int index = spawnedCount + i;
 
-                Vector3 pos = CalculatePosition(index, entry, origin);
+                // Sử dụng currentOrigin mới cập nhật
+                Vector3 pos = CalculatePosition(index, entry, currentOrigin);
                 bool explode = ShouldExplode(index, entry);
 
                 var obj = CreateSkillInstance(entry.skillToSpawn, pos, explode, entry.movementType);

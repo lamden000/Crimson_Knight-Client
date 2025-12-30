@@ -10,23 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: FlameExplosion
+  m_Name: FreezeEffect
   m_EditorClassIdentifier: 
-  mainLoop: 0
+  mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
-  - {fileID: -6595164176353123292, guid: 54067ee91b7f9694b893d4f0c15db0b3, type: 3}
-  - {fileID: 6299436664004506988, guid: 54067ee91b7f9694b893d4f0c15db0b3, type: 3}
-  - {fileID: -8062740599837142825, guid: 54067ee91b7f9694b893d4f0c15db0b3, type: 3}
-  mainFPS: 8
+  - {fileID: 21300000, guid: 88afaf79c8914564c9dc100e7b191b3d, type: 3}
+  mainFPS: 12
   sparkleFrames: []
   sparkleFPS: 12
-  aftermathFrames: []
-  aftermathPlayTime: 3
-  aftermathLoop: 1
-  aftermathFPS: 8
-  explosionRotatesWithMovement: 1
-  autoExplosionTime: 1
-  speed: 100
+  aftermathFrames:
+  - {fileID: 21300000, guid: ed3c9e25db1535846a3e1b7d2d9bfb92, type: 3}
+  - {fileID: 21300000, guid: 4da41c26cf2456c42ae1803a09587115, type: 3}
+  - {fileID: 21300000, guid: a09bd655d56b94c44b033fee64d3d685, type: 3}
+  aftermathPlayTime: 0
+  aftermathLoop: 0
+  aftermathFPS: 12
+  explosionRotatesWithMovement: 0
+  autoExplosionTime: 2
+  speed: 0
   explosionDelay: 0
   scale: {x: 1, y: 1, z: 1}

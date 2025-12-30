@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: FlameExplosion
+  m_Name: InfectedEffect
   m_EditorClassIdentifier: 
-  mainLoop: 0
+  mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
-  - {fileID: -6595164176353123292, guid: 54067ee91b7f9694b893d4f0c15db0b3, type: 3}
-  - {fileID: 6299436664004506988, guid: 54067ee91b7f9694b893d4f0c15db0b3, type: 3}
-  - {fileID: -8062740599837142825, guid: 54067ee91b7f9694b893d4f0c15db0b3, type: 3}
+  - {fileID: -2390945645401983017, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
+  - {fileID: 2994914308367910269, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
+  - {fileID: 4479787964876907038, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
+  - {fileID: 1659231836, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
+  - {fileID: 325026941, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
   mainFPS: 8
   sparkleFrames: []
   sparkleFPS: 12
   aftermathFrames: []
-  aftermathPlayTime: 3
-  aftermathLoop: 1
-  aftermathFPS: 8
+  aftermathPlayTime: 0
+  aftermathLoop: 0
+  aftermathFPS: 12
   explosionRotatesWithMovement: 1
   autoExplosionTime: 1
   speed: 100
