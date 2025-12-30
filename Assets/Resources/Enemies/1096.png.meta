@@ -160,10 +160,10 @@ TextureImporter:
       name: 1096_0
       rect:
         serializedVersion: 2
-        x: 13
+        x: 7
         y: 200
-        width: 94
-        height: 99
+        width: 102
+        height: 100
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,19 +182,19 @@ TextureImporter:
       name: 1096_1
       rect:
         serializedVersion: 2
-        x: 123
-        y: 202
-        width: 121
-        height: 97
+        x: 7
+        y: 99
+        width: 102
+        height: 100
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c1f633818cd76a3c0800000000000000
+      spriteID: c5bb11daa2f60a848a43888befd1e763
       internalID: -4348650091826680036
       vertices: []
       indices: 
@@ -204,9 +204,9 @@ TextureImporter:
       name: 1096_2
       rect:
         serializedVersion: 2
-        x: 13
-        y: 99
-        width: 95
+        x: 8
+        y: 1
+        width: 101
         height: 97
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -214,9 +214,9 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ae11991dc07e9beb0800000000000000
+      spriteID: 913c1602d2d07f24991331946a22aa11
       internalID: -4703474293569678870
       vertices: []
       indices: 
@@ -226,19 +226,19 @@ TextureImporter:
       name: 1096_3
       rect:
         serializedVersion: 2
-        x: 135
-        y: 100
-        width: 95
-        height: 99
+        x: 136
+        y: 101
+        width: 97
+        height: 95
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f6962d8444f927bf0800000000000000
+      spriteID: 9520b6a1f685d2d4599305747c0fd0e5
       internalID: -328024707216283281
       vertices: []
       indices: 
@@ -248,64 +248,20 @@ TextureImporter:
       name: 1096_4
       rect:
         serializedVersion: 2
-        x: 226
-        y: 166
-        width: 7
-        height: 7
+        x: 124
+        y: 203
+        width: 120
+        height: 97
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: cd9f3afe8f87172d0800000000000000
+      spriteID: 545e3ed2287c954419410de782b96001
       internalID: -3282709642808657444
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1096_5
-      rect:
-        serializedVersion: 2
-        x: 226
-        y: 142
-        width: 8
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: dcfc0cd788f69a050800000000000000
-      internalID: 5812299426114359245
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1096_6
-      rect:
-        serializedVersion: 2
-        x: 15
-        y: 2
-        width: 95
-        height: 95
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4e0f77581127efc10800000000000000
-      internalID: 2089232696725729508
       vertices: []
       indices: 
       edges: []
@@ -314,7 +270,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: cbb7eda687d1faa4b8beaf4dd53fb3bb
     internalID: 0
     vertices: []
     indices: 
@@ -329,8 +285,6 @@ TextureImporter:
       1096_2: -4703474293569678870
       1096_3: -328024707216283281
       1096_4: -3282709642808657444
-      1096_5: 5812299426114359245
-      1096_6: 2089232696725729508
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

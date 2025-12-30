@@ -230,8 +230,8 @@ public class GridmapLoader : MonoBehaviour
         m.m11 = d2;
 
         // pivot correction (tile center)
-        float px = 0.5f;
-        float py = 0.5f;
+        float px = 0f;
+        float py = 0f;
         m.m03 = px - (a * px + b * py);
         m.m13 = py - (c * px + d2 * py);
 

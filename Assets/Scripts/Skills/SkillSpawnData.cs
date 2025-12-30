@@ -26,7 +26,8 @@ public enum SkillMovementType
     Homing, // bay theo target
     PersistentArea, //nổ sau khi main animation kết thúc
     Wave,   
-    Orbit   
+    Orbit,
+    AttachedToTarget // Dính theo target (VD: hiệu ứng cháy, buff, debuff)
 }
 
 [CreateAssetMenu(menuName = "Skill/SkillSpawnData")]

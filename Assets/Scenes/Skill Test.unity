@@ -281,6 +281,38 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!1 &609145173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 609145174}
+  m_Layer: 0
+  m_Name: EnemyRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &609145174
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609145173}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -41, y: -172, z: -2.9979243}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1622601999}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 618c62a2357ff644ca440d03752c3741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnData: {fileID: 11400000, guid: 5c04f51b83957774c8be6c9657e940bb, type: 2}
+  spawnData: {fileID: 11400000, guid: 3d5ff6d002b6d154d9b1a679e4e54875, type: 2}
   skillPrefab: {fileID: 6238373639070386677, guid: 54e92526a64ce2f4cbbac85e7cd5610a, type: 3}
   target: {fileID: 1622601999}
   cam: {fileID: 519420031}
@@ -653,12 +685,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1622601997}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26, y: -187, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 50, y: 50, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 609145174}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1622602000
 BoxCollider2D:
@@ -713,14 +745,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1622601997}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ea739bc6137709449cbdc3dc82e1288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 1, y: 0}
   distance: 300
-  speed: 100
+  speed: 0.5
   center: {fileID: 0}
 --- !u!50 &1622602002
 Rigidbody2D:
@@ -812,8 +844,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
-  - {fileID: 1622601999}
   - {fileID: 1113818011}
   - {fileID: 1239952202}
   - {fileID: 1356850376}
   - {fileID: 4403904394034814777}
+  - {fileID: 609145174}
