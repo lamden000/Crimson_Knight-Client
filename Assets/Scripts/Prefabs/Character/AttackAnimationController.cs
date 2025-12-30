@@ -1,10 +1,9 @@
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class AttackAnimationController : MonoBehaviour
 {
     public Animator animator;
-    public AnimatorController wizardAttackAC;
+    public RuntimeAnimatorController wizardAttackAC;
     public AnimatorOverrideController knightAttackAC;
     public AnimatorOverrideController assassinAttackAC;
     public AnimatorOverrideController markmanAttackAC;

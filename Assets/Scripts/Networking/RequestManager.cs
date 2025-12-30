@@ -15,5 +15,12 @@ namespace Assets.Scripts.Networking
             msg.WriteInt(y);
             Session.AddMessage(msg);
         }
+
+        public static void EnterMap(short departId)
+        {
+            Message msg = new Message(MessageId.PLAYER_ENTER_MAP);
+            msg.WriteShort(departId);
+            Session.AddMessage(msg);
+        }
     }
 }

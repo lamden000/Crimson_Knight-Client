@@ -22,7 +22,7 @@ public class PlayerMovementController : MovementControllerBase
     private float attackTimer = 0f;
     private float attackCooldownTimer = 0f;
 
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private Vector2 moveAxisInput;
     private PlayerAnimationController anim;
     private float attackAnimDuration = 0.4f;

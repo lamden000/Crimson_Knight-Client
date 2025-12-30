@@ -27,6 +27,12 @@ namespace Assets.Scripts.Networking
                     
                     GameHandler.PlayerEnterMap(msg);
                     break;
+                case MessageId.PLAYER_OTHERPLAYERS_IN_MAP:
+                    GameHandler.LoadOtherPlayersInMap(msg);
+                    break;
+                case MessageId.PLAYER_MONSTERS_IN_MAP:
+                    GameHandler.LoadMonstersInMap(msg);
+                    break;
                 case MessageId.OTHER_PLAYER_MOVE:
                     GameHandler.OtherPlayerMove(msg);
                     break;

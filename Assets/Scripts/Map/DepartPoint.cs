@@ -1,3 +1,4 @@
+﻿using Assets.Scripts.Networking;
 using System.IO;
 using UnityEngine;
 
@@ -63,25 +64,36 @@ public class DepartPoint : MonoBehaviour
         arrowStartLocalPos = arrowTransform.localPosition + (-arrowDirVector) * arrowOffsetDistance;
     }
 
-    //private void OnTriggerEnter2D(Collider2D other)
-    //{
-    //    // Only respond to player collisions (expects the Player GameObject to have tag "Player")
-    //    if (!other.CompareTag("Player"))
-    //        return;
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.CompareTag("Player"))
+            return;
 
-    //    var loader = FindAnyObjectByType<GridmapLoader>();
-    //    if (loader == null)
-    //    {
-    //        Debug.LogError("DepartPoint: No GridmapLoader found in scene to handle map transition.");
-    //        return;
-    //    }
+        var loader = FindAnyObjectByType<GridmapLoader>();
+        if (loader == null)
+        {
+            Debug.LogError("DepartPoint: No GridmapLoader found in scene to handle map transition.");
+            return;
+        }
 
-    //    // Use current loader jsonFileName (strip extension) as origin
-    //    string current = loader.jsonFileName ?? string.Empty;
-    //    string originBase = Path.GetFileNameWithoutExtension(current);
+        string current = loader.jsonFileName ?? string.Empty;
+        string originBase = Path.GetFileNameWithoutExtension(current);
 
-    //    loader.LoadMapByName(destinationMapName, originBase);
-    //}
+        int departId = GetMapValue(destinationMapName);
+        if(departId == -1)
+        {
+            Debug.Log("Map không hợp lệ");
+            return;
+        }
+
+        RequestManager.EnterMap((short)departId);
+    }
+
+    int GetMapValue(string input)
+    {
+        return int.TryParse(input, out int value) ? value : -1;
+    }
+
 
     private void Update()
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ public abstract class BaseObject : MonoBehaviour
     public abstract void AutoMoveToXY(int x, int y);
     public abstract void DestroyObject();
 
-    public void SetPosition(short x, short y)
+    public virtual void SetPosition(short x, short y)
     {
         this.transform.position = new Vector3(x, y, this.transform.position.z);
     }

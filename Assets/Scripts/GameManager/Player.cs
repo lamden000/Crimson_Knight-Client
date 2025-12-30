@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ public class Player : BaseObject
     public LayerMask targetMask;
     private Transform arrowIndicator;
 
-    public static Player Create(int id,string name)
+    public static Player Create(int id, string name)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
         Player player = gameObject.AddComponent<Player>();
@@ -30,7 +31,7 @@ public class Player : BaseObject
     {
         if (arrowIndicator == null)
             arrowIndicator = GameObject.FindGameObjectWithTag("Target Arrow").transform;
-        targetMask = LayerMask.GetMask("Player","Monster", "NPC");
+        targetMask = LayerMask.GetMask("Player", "Monster", "NPC");
     }
 
     public override void AutoMoveToXY(int x, int y)
@@ -46,7 +47,8 @@ public class Player : BaseObject
 
     void Update()
     {
-       UpdateTargetLogic();
+        UpdateTargetLogic();
+        
     }
 
     void UpdateTargetLogic()
@@ -71,12 +73,12 @@ public class Player : BaseObject
                 SetFocus(newTarget);
             else
                 LoseTarget();
-        }      
+        }
         else
         {
             int characterArrowOffsetY = 100;
-            
-            if(objFocus.GetObjectType()==ObjectType.Monster)
+
+            if (objFocus.GetObjectType() == ObjectType.Monster)
             {
                 characterArrowOffsetY = 30;
             }
@@ -87,7 +89,7 @@ public class Player : BaseObject
 
     public override void SetFocus(BaseObject objFocus)
     {
-        if(!arrowIndicator.gameObject.activeInHierarchy)
+        if (!arrowIndicator.gameObject.activeInHierarchy)
         {
             arrowIndicator.gameObject.SetActive(true);
         }
@@ -104,7 +106,7 @@ public class Player : BaseObject
         foreach (var hit in hits)
         {
             BaseObject bo = hit.GetComponent<BaseObject>();
-            if (bo == null|| bo == this.GetComponent<BaseObject>()) continue;
+            if (bo == null || bo == this.GetComponent<BaseObject>()) continue;
             float d = Vector3.Distance(transform.position, bo.transform.position);
 
             if (d < bestDist)
@@ -131,4 +133,7 @@ public class Player : BaseObject
     {
         //
     }
+
+  
+  
 }

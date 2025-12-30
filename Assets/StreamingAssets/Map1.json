@@ -1152,7 +1152,7 @@
                 {
                  "height":218,
                  "id":128,
-                 "name":"Town_Left",
+                 "name":"1_Left",
                  "rotation":0,
                  "type":"Depart Point",
                  "visible":true,
@@ -1240,7 +1240,7 @@
                 {
                  "height":149.333333333333,
                  "id":140,
-                 "name":"Forest_Right",
+                 "name":"2_Right",
                  "rotation":0,
                  "type":"Depart Point",
                  "visible":true,
