@@ -10,23 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
-  m_Name: FireEffect
+  m_Name: LightningOrb
   m_EditorClassIdentifier: 
   mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
-  - {fileID: 6823455508061547011, guid: 6a19e7fa1a904c6499b14602a1d4fb3a, type: 3}
-  - {fileID: 932249490389131945, guid: 6a19e7fa1a904c6499b14602a1d4fb3a, type: 3}
-  - {fileID: 1455199575, guid: 6a19e7fa1a904c6499b14602a1d4fb3a, type: 3}
-  mainFPS: 8
+  - {fileID: 8019293111685995765, guid: c0b641de5d3a8d440a9b421fcb35ee53, type: 3}
+  - {fileID: -9057484602020864655, guid: c0b641de5d3a8d440a9b421fcb35ee53, type: 3}
+  - {fileID: 3567110202100047496, guid: c0b641de5d3a8d440a9b421fcb35ee53, type: 3}
+  - {fileID: -2813563191942323915, guid: c0b641de5d3a8d440a9b421fcb35ee53, type: 3}
+  mainFPS: 12
+  mainSortingOrder: 5
   sparkleFrames: []
   sparkleFPS: 12
+  sparkleSortingOrder: 5
   aftermathFrames: []
   aftermathPlayTime: 0
   aftermathLoop: 0
   aftermathFPS: 12
+  aftermathSortingOrder: 5
   explosionRotatesWithMovement: 1
-  autoExplosionTime: 3
-  speed: 0
+  autoExplosionTime: 5
+  speed: 100
   explosionDelay: 0
   scale: {x: 1, y: 1, z: 1}

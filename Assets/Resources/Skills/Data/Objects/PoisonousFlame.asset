@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
   m_Name: PoisonousFlame
   m_EditorClassIdentifier: 
-  skillName: PoisonousFlame
   mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
@@ -20,6 +19,7 @@ MonoBehaviour:
   - {fileID: 5556927379369749764, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
   - {fileID: -9064008496242435298, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
   mainFPS: 8
+  mainSortingOrder: -1
   sparkleFrames:
   - {fileID: 3441283164803145110, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
   - {fileID: -7747901890102533598, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
@@ -27,8 +27,12 @@ MonoBehaviour:
   - {fileID: 5556927379369749764, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
   - {fileID: 8103479197554252974, guid: 22dff314742011c4b84bc99174bdf3a5, type: 3}
   sparkleFPS: 10
+  sparkleSortingOrder: 5
   aftermathFrames: []
+  aftermathPlayTime: 0
+  aftermathLoop: 0
   aftermathFPS: 1
+  aftermathSortingOrder: 5
   explosionRotatesWithMovement: 1
   autoExplosionTime: 2
   speed: 100

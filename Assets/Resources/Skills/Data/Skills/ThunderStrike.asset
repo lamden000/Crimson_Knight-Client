@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 700eb2cc5b9278f419699e6ccdad10e1, type: 3}
-  m_Name: KillerVines
+  m_Name: ThunderStrike
   m_EditorClassIdentifier: 
   spawnEntries:
-  - skillToSpawn: {fileID: 11400000, guid: f48130fa92cf17c47a6ad05595f9306c, type: 2}
+  - skillToSpawn: {fileID: 11400000, guid: 702c118484149614497014426bb70501, type: 2}
     chainEntry: 0
-    pattern: 5
-    count: 5
-    radius: 200
+    pattern: 3
+    count: 3
+    radius: 120
     angleOffset: 0
     origin: 1
-    allObjectsExplode: 0
-    movementType: 0
+    allObjectsExplode: 1
+    movementType: 3
     useBurst: 0
     burstSize: 0
     burstInterval: 0

@@ -10,10 +10,12 @@ public class SkillObjectData : ScriptableObject
     public bool autoDisableAfterMain = false;
     public Sprite[] mainFrames;
     public float mainFPS = 12f;
+    public int mainSortingOrder = 5;
 
     [Header("Optional Sparkle Frame Animation")]
     public Sprite[] sparkleFrames;
     public float sparkleFPS = 12f;
+    public int sparkleSortingOrder = 5;
 
     [Header("Aftermath Effect Frames")]
     public Sprite[] aftermathFrames;
@@ -21,6 +23,7 @@ public class SkillObjectData : ScriptableObject
     public float aftermathPlayTime = 0;
     public bool aftermathLoop=false;
     public float aftermathFPS = 12f;
+    public int aftermathSortingOrder = 5;
     public bool explosionRotatesWithMovement = true;
 
     [Header("Movement")]

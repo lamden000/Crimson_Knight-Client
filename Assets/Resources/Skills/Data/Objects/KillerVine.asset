@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
   m_Name: KillerVine
   m_EditorClassIdentifier: 
-  skillName: KillerVine
   mainLoop: 1
   autoDisableAfterMain: 0
   mainFrames:
@@ -23,12 +22,15 @@ MonoBehaviour:
   - {fileID: -3114426075411962287, guid: 531dc745cddaafb47afe21285142d3e1, type: 3}
   - {fileID: -9200912628763051462, guid: 531dc745cddaafb47afe21285142d3e1, type: 3}
   mainFPS: 10
+  mainSortingOrder: 0
   sparkleFrames: []
   sparkleFPS: 12
+  sparkleSortingOrder: 5
   aftermathFrames: []
   aftermathPlayTime: 0
   aftermathLoop: 0
   aftermathFPS: 12
+  aftermathSortingOrder: 5
   explosionRotatesWithMovement: 1
   autoExplosionTime: 3
   speed: 0

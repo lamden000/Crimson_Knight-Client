@@ -37,7 +37,7 @@ public class SkillObject : MonoBehaviour
     void PlayAnimations()
     {
         // MAIN
-        mainAnimCor= mainAnim.Play(data.mainFrames, data.mainFPS,data.mainLoop,data.autoDisableAfterMain);
+        mainAnimCor= mainAnim.Play(data.mainFrames, data.mainFPS,data.mainLoop,data.autoDisableAfterMain, 0f, data.mainSortingOrder);
 
         // AFTERMATH (ảnh hưởng sau nổ)
         aftermathAnim.sr.enabled = false;
@@ -182,13 +182,13 @@ public class SkillObject : MonoBehaviour
             // AFTERMATH
             if (data.aftermathFrames != null && data.aftermathFrames.Length > 0)
             {
-                afterCo = aftermathAnim.Play(data.aftermathFrames, data.aftermathFPS,data.aftermathLoop,true,data.aftermathPlayTime);
+                afterCo = aftermathAnim.Play(data.aftermathFrames, data.aftermathFPS,data.aftermathLoop,true,data.aftermathPlayTime, data.aftermathSortingOrder);
             }
 
             // SPARKLE
             if (data.sparkleFrames != null && data.sparkleFrames.Length > 0)
             {
-                sparkleCo = sparkleAnim.Play(data.sparkleFrames, data.sparkleFPS);
+                sparkleCo = sparkleAnim.Play(data.sparkleFrames, data.sparkleFPS, false, true, 0f, data.sparkleSortingOrder);
             }
             else
             {

@@ -156,10 +156,10 @@ TextureImporter:
         serializedVersion: 2
         x: 4
         y: 310
-        width: 308
+        width: 145
         height: 158
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.59550285, y: 0.1517925}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -180,8 +180,8 @@ TextureImporter:
         y: 158
         width: 149
         height: 149
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5877968, y: 0.1243791}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -198,12 +198,12 @@ TextureImporter:
       name: 1174_2
       rect:
         serializedVersion: 2
-        x: 160
-        y: 157
-        width: 146
+        x: 0
+        y: 0
+        width: 148
         height: 151
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.63258535, y: 0.13356099}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -220,12 +220,12 @@ TextureImporter:
       name: 1174_3
       rect:
         serializedVersion: 2
-        x: 5
-        y: 0
-        width: 145
+        x: 154
+        y: 317
+        width: 158
         height: 151
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57589626, y: 0.09385388}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -243,11 +243,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 159
-        y: 1
+        y: 0
         width: 153
-        height: 152
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        height: 154
+      alignment: 9
+      pivot: {x: 0.5783763, y: 0.15219574}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -260,11 +260,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: 1174_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 157
+        width: 145
+        height: 159
+      alignment: 9
+      pivot: {x: 0.59915876, y: 0.12684093}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4126fa0098256c341a7fd3dbc7cf3059
+      internalID: -1955811820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d96d0a66bf8765946af6ad6a64b58509
     internalID: 0
     vertices: []
     indices: 
@@ -279,6 +301,7 @@ TextureImporter:
       1174_2: 7743165207655118837
       1174_3: 7667014581514132146
       1174_4: 5326450529366311525
+      1174_5: -1955811820
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
