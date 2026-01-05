@@ -29,15 +29,22 @@ public class SkillObject : MonoBehaviour
         this.isExplosive = isExplosive;
         this.movementType = movementType;
         transform.localScale= data.scale;
+
+        StartCoroutine(RoutineLogic());
+    }
+
+    IEnumerator RoutineLogic()
+    {
+        // ACTIVE PHASE
         PlayAnimations();
         StartCoroutine(AutoExplodeTimer());
-        StartCoroutine(RunMovement());
+        yield return StartCoroutine(RunMovement());
     }
 
     void PlayAnimations()
     {
         // MAIN
-        mainAnimCor= mainAnim.Play(data.mainFrames, data.mainFPS,data.mainLoop,data.autoDisableAfterMain);
+        mainAnimCor= mainAnim.Play(data.mainFrames, data.mainFPS,data.mainLoop,data.autoDisableAfterMain, 0f, data.mainSortingOrder);
 
         // AFTERMATH (ảnh hưởng sau nổ)
         aftermathAnim.sr.enabled = false;
@@ -117,7 +124,18 @@ public class SkillObject : MonoBehaviour
 
     IEnumerator Projectile()
     {
-        Vector2 dir = (Vector2)target.position - (Vector2)transform.position;
+        Vector2 dir;
+        if (target != null)
+        {
+            dir = ((Vector2)target.position - (Vector2)transform.position).normalized;
+        }
+        else
+        {
+            // Nếu không có target, bắn theo hướng chuột hoặc mặc định phải
+            dir = ((Vector2)mousePos - (Vector2)transform.position).normalized;
+            if (dir == Vector2.zero) dir = Vector2.right;
+        }
+
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         // Xoay theo hướng
@@ -125,21 +143,20 @@ public class SkillObject : MonoBehaviour
 
         // ---- AUTO FLIP ----
         Vector3 scale = transform.localScale;
+        // Reset scale x dương trước khi flip để tránh lỗi flip liên tục nếu gọi lại
         scale.x = Mathf.Abs(scale.x) * (dir.x >= 0 ? -1 : 1);
         transform.localScale = scale;
         // -------------------
 
-        while (Vector3.Distance(transform.position, target.position) > 1f)
+        // Bay thẳng theo hướng dir mãi mãi (hoặc đến khi AutoExplodeTimer gọi Explosion)
+        while (!exploded)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                target.position,
-                data.speed * Time.deltaTime
-            );
+            transform.position += (Vector3)dir * data.speed * Time.deltaTime;
             yield return null;
         }
-
-        yield return Explosion();
+        
+        // Lưu ý: Projectile này giờ sẽ phụ thuộc vào AutoExplodeTimer để dừng/nổ
+        // chứ không nổ khi chạm target (trừ khi thêm Collider trigger)
     }
 
 
@@ -182,13 +199,13 @@ public class SkillObject : MonoBehaviour
             // AFTERMATH
             if (data.aftermathFrames != null && data.aftermathFrames.Length > 0)
             {
-                afterCo = aftermathAnim.Play(data.aftermathFrames, data.aftermathFPS,data.aftermathLoop,true,data.aftermathPlayTime);
+                afterCo = aftermathAnim.Play(data.aftermathFrames, data.aftermathFPS,data.aftermathLoop,true,data.aftermathPlayTime, data.aftermathSortingOrder);
             }
 
             // SPARKLE
             if (data.sparkleFrames != null && data.sparkleFrames.Length > 0)
             {
-                sparkleCo = sparkleAnim.Play(data.sparkleFrames, data.sparkleFPS);
+                sparkleCo = sparkleAnim.Play(data.sparkleFrames, data.sparkleFPS, false, true, 0f, data.sparkleSortingOrder);
             }
             else
             {

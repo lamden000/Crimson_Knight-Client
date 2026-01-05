@@ -9,7 +9,7 @@ public class SkillAnimation : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
-    public Coroutine Play(Sprite[] frames, float fps, bool loop = false, bool autoDisable = true, float playTime = 0f)
+    public Coroutine Play(Sprite[] frames, float fps, bool loop = false, bool autoDisable = true, float playTime = 0f, int sortingOrder = 5)
     {
         if (frames == null || frames.Length == 0)
         {
@@ -17,6 +17,7 @@ public class SkillAnimation : MonoBehaviour
             return null;
         }
 
+        sr.sortingOrder = sortingOrder;
         sr.enabled = true;
         return StartCoroutine(PlayAnim(frames, fps, loop, autoDisable, playTime));
     }

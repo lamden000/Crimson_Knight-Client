@@ -39,7 +39,7 @@ public class MonsterSpriteDatabase : MonoBehaviour
         AddSprite(enemyName, EnemySprite.GetHit, MonsterState.GetHit);
 
         AddSprite(enemyName, EnemySprite.Idle_1, MonsterState.Idle);
-      //  AddSprite(enemyName, EnemySprite.Idle_2, EnemyState.Idle);
+        AddSprite(enemyName, EnemySprite.Idle_2, MonsterState.Idle);
 
         loadedEnemy.Add(enemyName);
     }
@@ -57,6 +57,10 @@ public class MonsterSpriteDatabase : MonoBehaviour
         string spriteName = $"{enemyIndex}_{(int)stateCode}";
 
         Sprite[] all = Resources.LoadAll<Sprite>(folderPath + "/" + sheetName);
+
+        if (stateCode == EnemySprite.Idle_2 && all.Length < 6)
+            return;
+
         Sprite sprite = System.Array.Find(all, s => s.name == spriteName);
 
         if (sprite != null)
