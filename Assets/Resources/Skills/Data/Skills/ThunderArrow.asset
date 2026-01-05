@@ -21,7 +21,7 @@ MonoBehaviour:
     angleOffset: 0
     origin: 1
     allObjectsExplode: 0
-    movementType: 2
+    movementType: 1
     useBurst: 0
     burstSize: 0
     burstInterval: 0

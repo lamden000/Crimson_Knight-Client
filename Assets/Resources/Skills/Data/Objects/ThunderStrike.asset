@@ -32,7 +32,7 @@ MonoBehaviour:
   aftermathFPS: 12
   aftermathSortingOrder: -1
   explosionRotatesWithMovement: 1
-  autoExplosionTime: 5
+  autoExplosionTime: 1
   speed: 1000
   explosionDelay: 0
   scale: {x: 1, y: 1, z: 1}

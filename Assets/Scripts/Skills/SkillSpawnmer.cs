@@ -9,6 +9,7 @@ public class SkillSpawnmer : MonoBehaviour
     private Vector3 casterPos;
     private Vector3 mousePos;
     private Transform target;
+    private Dictionary<SpawnEntry, List<Vector3>> predefinedPositions; // Vị trí đã tính từ warning
 
     public GameObject skillObjectPrefab;
     public float skyHeight = 200f;
@@ -18,13 +19,15 @@ public class SkillSpawnmer : MonoBehaviour
         SkillSpawnData spData,
         Vector3 casterPosition,
         Vector3 mousePosition,
-        Transform targetFollow = null)
+        Transform targetFollow = null,
+        Dictionary<SpawnEntry, List<Vector3>> spawnPositions = null)
     {
         spawnData = spData;
 
         casterPos = casterPosition;
         mousePos = mousePosition;
         target = targetFollow;
+        predefinedPositions = spawnPositions; // Lưu vị trí từ warning
 
         transform.position = casterPosition;
 
@@ -91,9 +94,19 @@ public class SkillSpawnmer : MonoBehaviour
     {
         List<SkillObject> spawned = new List<SkillObject>();
 
+        // Kiểm tra xem có vị trí đã tính sẵn từ warning không
+        List<Vector3> positions = null;
+        if (predefinedPositions != null && predefinedPositions.ContainsKey(entry))
+        {
+            positions = predefinedPositions[entry];
+        }
+
         for (int i = 0; i < entry.count; i++)
         {
-            Vector3 pos = CalculatePosition(i, entry, origin);
+            // Sử dụng vị trí từ warning nếu có, nếu không thì tính toán
+            Vector3 pos = (positions != null && i < positions.Count) 
+                ? positions[i] 
+                : CalculatePosition(i, entry, origin);
             bool explode = ShouldExplode(i, entry);
 
             var obj = CreateSkillInstance(entry.skillToSpawn, pos, explode, entry.movementType);
@@ -107,12 +120,28 @@ public class SkillSpawnmer : MonoBehaviour
     {
         List<SkillObject> spawned = new List<SkillObject>();
 
+        // Kiểm tra xem có vị trí đã tính sẵn từ warning không
+        List<Vector3> positions = null;
+        if (predefinedPositions != null && predefinedPositions.ContainsKey(entry))
+        {
+            positions = predefinedPositions[entry];
+        }
+
         for (int i = 0; i < entry.count; i++)
         {
-            // Cập nhật origin mỗi lần spawn
-            Vector3 currentOrigin = GetOrigin(entry);
+            Vector3 pos;
+            if (positions != null && i < positions.Count)
+            {
+                // Sử dụng vị trí từ warning
+                pos = positions[i];
+            }
+            else
+            {
+                // Cập nhật origin mỗi lần spawn và tính toán
+                Vector3 currentOrigin = GetOrigin(entry);
+                pos = CalculatePosition(i, entry, currentOrigin);
+            }
 
-            Vector3 pos = CalculatePosition(i, entry, currentOrigin);
             bool explode = ShouldExplode(i, entry);
 
             var obj = CreateSkillInstance(entry.skillToSpawn, pos, explode, entry.movementType);
@@ -127,13 +156,17 @@ public class SkillSpawnmer : MonoBehaviour
     {
         List<SkillObject> spawned = new List<SkillObject>();
 
+        // Kiểm tra xem có vị trí đã tính sẵn từ warning không
+        List<Vector3> positions = null;
+        if (predefinedPositions != null && predefinedPositions.ContainsKey(entry))
+        {
+            positions = predefinedPositions[entry];
+        }
+
         int spawnedCount = 0;
 
         while (spawnedCount < entry.count)
         {
-            // Cập nhật origin mỗi burst (nếu origin lệ thuộc vào target)
-            Vector3 currentOrigin = GetOrigin(entry);
-            
             int amount = Mathf.Min(entry.burstSize, entry.count - spawnedCount);
 
             // spawn 1 burst
@@ -141,8 +174,19 @@ public class SkillSpawnmer : MonoBehaviour
             {
                 int index = spawnedCount + i;
 
-                // Sử dụng currentOrigin mới cập nhật
-                Vector3 pos = CalculatePosition(index, entry, currentOrigin);
+                Vector3 pos;
+                if (positions != null && index < positions.Count)
+                {
+                    // Sử dụng vị trí từ warning
+                    pos = positions[index];
+                }
+                else
+                {
+                    // Cập nhật origin mỗi burst (nếu origin lệ thuộc vào target)
+                    Vector3 currentOrigin = GetOrigin(entry);
+                    pos = CalculatePosition(index, entry, currentOrigin);
+                }
+
                 bool explode = ShouldExplode(index, entry);
 
                 var obj = CreateSkillInstance(entry.skillToSpawn, pos, explode, entry.movementType);
@@ -280,7 +324,10 @@ public class SkillSpawnmer : MonoBehaviour
             };
         }
 
-        sk.Init(data, casterPos, mousePos, isExplosive,mtype, target);
+        // Đối với Projectile, không truyền target để nó sử dụng mousePos (vị trí đã khóa từ warning)
+        // thay vì target.position (vị trí hiện tại có thể đã thay đổi)
+        Transform targetToUse = (mtype == SkillMovementType.Projectile) ? null : target;
+        sk.Init(data, casterPos, mousePos, isExplosive, mtype, targetToUse);
         return sk;
     }
 
