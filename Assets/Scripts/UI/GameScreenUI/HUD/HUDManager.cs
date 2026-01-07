@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class HUDManager : MonoBehaviour
+public class HUDManager : BaseUIManager
 {
     [Header("HP / MP")]
     public RectTransform hpBar;
@@ -16,6 +16,9 @@ public class HUDManager : MonoBehaviour
     {
         maxHPWidth = hpBar.sizeDelta.x;
         maxMPWidth = mpBar.sizeDelta.x;
+
+        for (int i = 0; i < skillSlots.Length; i++)
+            skillSlots[i] = new SkillSlot();
 
         for (int i = 0; i < skillSlots.Length; i++)
             skillSlots[i].Init(i + 1);

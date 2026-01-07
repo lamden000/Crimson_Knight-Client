@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class TabManager : MonoBehaviour
+public class MenuTabManager : BaseUIManager
 {
     [System.Serializable]
     public class Tab
@@ -28,6 +28,7 @@ public class TabManager : MonoBehaviour
             closeButton.onClick.AddListener(CloseMenu);
 
         CloseAllTabs();
+        OpenTab(0);
     }
 
     public void OpenTab(int index)
@@ -49,5 +50,11 @@ public class TabManager : MonoBehaviour
     public void CloseMenu()
     {
         this.gameObject.SetActive(false);
+    }
+
+    public override void ShowUI()
+    {
+        base.ShowUI();
+        OpenTab(0);
     }
 }

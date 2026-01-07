@@ -18,6 +18,10 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     private float cooldownRemaining = 0;
     public void Init(int index)
     {
+        if(icon == null)
+        {
+            return;
+        }
         slotIndex = index;
 
         if (skillId < 0)

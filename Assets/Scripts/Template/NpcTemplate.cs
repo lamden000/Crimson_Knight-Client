@@ -11,4 +11,5 @@ public class NpcTemplate
     public string Name;
     public int ImageId;
     public int ImageTalkId;
+    public string Content;
 }
