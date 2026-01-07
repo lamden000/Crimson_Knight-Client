@@ -8,16 +8,20 @@ namespace Assets.Scripts.Networking
 {
     public enum MessageId : short
     {
-        LOGIN,
-        PLAYER_MOVE,
-        PLAYER_ENTER_MAP,
-        PLAYER_OTHERPLAYERS_IN_MAP,
-        PLAYER_MONSTERS_IN_MAP,
-        PLAYER_NPCS_IN_MAP,
+        //client,
+        CLIENT_LOGIN,
+        CLIENT_MOVE,
+        CLIENT_ENTER_MAP,
 
-        //send other
-        OTHER_PLAYER_MOVE,
-        OTHER_PLAYER_ENTER_MAP,
-        OTHER_PLAYER_EXIT_MAP
+        //server
+        SERVER_LOGIN,
+        SERVER_ENTER_MAP,
+        SERVER_OTHERPLAYERS_IN_MAP,
+        SERVER_MONSTERS_IN_MAP,
+        SERVER_NPCS_IN_MAP,
+        //other players
+        SERVER_OTHER_PLAYER_MOVE,
+        SERVER_OTHER_PLAYER_ENTER_MAP,
+        SERVER_OTHER_PLAYER_EXIT_MAP,
     }
 }

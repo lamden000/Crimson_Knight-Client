@@ -72,7 +72,7 @@ namespace Assets.Scripts.Networking
         }
         private static void SendTokenHandshake(string token)
         {
-            Message msg = new Message(MessageId.LOGIN);
+            Message msg = new Message(MessageId.CLIENT_LOGIN);
             msg.WriteString(token);
             SendMessage(msg);
         }

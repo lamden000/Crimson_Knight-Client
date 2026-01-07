@@ -10,7 +10,7 @@ namespace Assets.Scripts.Networking
     {
         public static void PlayerMove(int x, int y)
         {
-            Message msg = new Message(MessageId.PLAYER_MOVE);
+            Message msg = new Message(MessageId.CLIENT_MOVE);
             msg.WriteInt(x);
             msg.WriteInt(y);
             Session.AddMessage(msg);
@@ -18,7 +18,7 @@ namespace Assets.Scripts.Networking
 
         public static void EnterMap(short departId)
         {
-            Message msg = new Message(MessageId.PLAYER_ENTER_MAP);
+            Message msg = new Message(MessageId.CLIENT_ENTER_MAP);
             msg.WriteShort(departId);
             Session.AddMessage(msg);
         }
