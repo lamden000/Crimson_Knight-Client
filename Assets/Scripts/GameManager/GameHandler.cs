@@ -181,4 +181,25 @@ public class GameHandler : MonoBehaviour
             Npcs.TryAdd(i, Npc.Create(x, y, templateId));
         }
     }
+
+    public static void ShowMenu(Message msg)
+    {
+        int npcId = msg.ReadInt();
+        string title = msg.ReadString();
+        byte size = msg.ReadByte();
+        string[] arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            string menuItem = msg.ReadString();
+            arr[i] = menuItem;
+        }
+        UIManager.Instance.ShowDropdown(
+        title,
+        arr,
+        (selectedIndex) =>
+        {
+            Debug.Log($"NPC ID: {npcId}, Chọn menu index: {selectedIndex}");
+            RequestManager.RequestSelectMenuItem(npcId, (byte)selectedIndex);
+        });
+    }
 }

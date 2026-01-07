@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Networking;
+using System;
 using UnityEngine;
 
 public class GameScreenUIManager : BaseUIManager
@@ -45,6 +46,7 @@ public class GameScreenUIManager : BaseUIManager
         Npc npc = (Npc)baseObject;
         Action actionYes = () =>
         {
+            RequestManager.RequestShowMenu(npc.Template.Id);
             Debug.Log(npc.Template.Name);
             talkingUIManager.HideUI();
             ShowHUD();

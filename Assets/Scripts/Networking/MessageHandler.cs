@@ -39,6 +39,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_OTHER_PLAYER_MOVE:
                     GameHandler.OtherPlayerMove(msg);
                     break;
+                case MessageId.SERVER_SHOW_MENU:
+                    GameHandler.ShowMenu(msg);
+                    break;
 
                 //OTHER PLAYER MESSAGES
                 case MessageId.SERVER_OTHER_PLAYER_ENTER_MAP:

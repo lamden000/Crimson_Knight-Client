@@ -22,5 +22,20 @@ namespace Assets.Scripts.Networking
             msg.WriteShort(departId);
             Session.AddMessage(msg);
         }
+
+        public static void RequestShowMenu(int id)
+        {
+            Message msg = new Message(MessageId.CLIENT_SHOW_MENU);
+            msg.WriteInt(id);
+            Session.AddMessage(msg);
+        }
+
+        public static void RequestSelectMenuItem(int npcId, byte menuItemId)
+        {
+            Message msg = new Message(MessageId.CLIENT_SELECT_MENU_ITEM);
+            msg.WriteInt(npcId);
+            msg.WriteByte(menuItemId);
+            Session.AddMessage(msg);
+        }
     }
 }

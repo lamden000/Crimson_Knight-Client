@@ -46,6 +46,18 @@ public class Player : BaseObject
     {
         UpdateTargetLogic();
         UpdateMouse();
+        UpdateInput();
+    }
+
+    private void UpdateInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            if (objFocus != null && objFocus.GetObjectType() == ObjectType.Npc)
+            {
+                UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus);
+            }
+        }
     }
 
     private void UpdateMouse()
@@ -53,7 +65,7 @@ public class Player : BaseObject
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPos.z = 0; 
+            mouseWorldPos.z = 0;
 
             BaseObject nearestObject = FindNearestObjectToPosition(mouseWorldPos);
 
@@ -69,7 +81,7 @@ public class Player : BaseObject
     {
         BaseObject result = null;
         float minDistSq = float.MaxValue;
-        float maxClickDistance = 50f; 
+        float maxClickDistance = 50f;
 
         void Check(BaseObject obj)
         {
@@ -127,7 +139,7 @@ public class Player : BaseObject
         float offsetY = GetArrowOffsetForObject(objFocus) + 10;
 
         arrowIndicator.position = objFocus.transform.position + Vector3.up * offsetY;
-        
+
         this.objFocus = objFocus;
     }
 
@@ -139,7 +151,7 @@ public class Player : BaseObject
         if (objRenderer != null)
         {
             float offsetToTop = objRenderer.bounds.max.y - obj.transform.position.y;
-            return offsetToTop + 0.5f; 
+            return offsetToTop + 0.5f;
         }
 
         return obj.ArrowIndicatorOffsetY;

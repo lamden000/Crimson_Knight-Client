@@ -12,6 +12,8 @@ namespace Assets.Scripts.Networking
         CLIENT_LOGIN,
         CLIENT_MOVE,
         CLIENT_ENTER_MAP,
+        CLIENT_SHOW_MENU,
+        CLIENT_SELECT_MENU_ITEM,
 
         //server
         SERVER_LOGIN,
@@ -19,6 +21,8 @@ namespace Assets.Scripts.Networking
         SERVER_OTHERPLAYERS_IN_MAP,
         SERVER_MONSTERS_IN_MAP,
         SERVER_NPCS_IN_MAP,
+        SERVER_SHOW_MENU,
+
         //other players
         SERVER_OTHER_PLAYER_MOVE,
         SERVER_OTHER_PLAYER_ENTER_MAP,

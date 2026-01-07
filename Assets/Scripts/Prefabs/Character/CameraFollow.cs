@@ -43,7 +43,7 @@ public class CameraFollow : MonoBehaviour
             //GameHandler.Player.SetPosition(744, 486);
             //Npc.Create(GameHandler.Player.GetX(), GameHandler.Player.GetY(), 0);
            // UIManager.Instance.gameScreenUIManager.ShowHUD(); 
-            UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus); 
+            //UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus); 
         
         }
         if (Input.GetKeyDown(KeyCode.X))
