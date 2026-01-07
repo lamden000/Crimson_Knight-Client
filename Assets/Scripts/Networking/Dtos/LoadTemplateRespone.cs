@@ -10,5 +10,6 @@ namespace Assets.Scripts.Networking.Dtos
     public class LoadTemplateRespone
     {
         public List<MonsterTemplate> MonsterTemplates;
+        public List<NpcTemplate> NpcTemplates;
     }
 }

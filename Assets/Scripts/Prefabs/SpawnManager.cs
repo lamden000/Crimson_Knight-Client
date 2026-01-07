@@ -11,6 +11,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject monsterPrefab;
 
+    [SerializeField]
+    private GameObject npcPrefab;
 
     private void Awake()
     {
@@ -59,4 +61,19 @@ public class SpawnManager : MonoBehaviour
         return monster;
     }
 
+    public GameObject SpawnNpcPrefab(int x, int y, int templateId)
+    {
+        if (npcPrefab == null)
+        {
+            Debug.LogError("Npc prefab not assigned!");
+            return null;
+        }
+        GameObject npc = Instantiate(npcPrefab, new Vector2(x, y), Quaternion.identity);
+        var npcCtrl = npc.GetComponent<NPCPrefab>();
+        if (npcCtrl != null)
+        {
+            npcCtrl.Init(TemplateManager.NpcTemplates[templateId]);
+        }
+        return npc;
+    }
 }

@@ -33,6 +33,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.PLAYER_MONSTERS_IN_MAP:
                     GameHandler.LoadMonstersInMap(msg);
                     break;
+                case MessageId.PLAYER_NPCS_IN_MAP:
+                    GameHandler.LoadNpcsInMap(msg);
+                    break;
                 case MessageId.OTHER_PLAYER_MOVE:
                     GameHandler.OtherPlayerMove(msg);
                     break;

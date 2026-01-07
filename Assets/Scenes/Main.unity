@@ -5878,7 +5878,6 @@ MonoBehaviour:
   jsonFileName: City.json
   tilemap: {fileID: 812316890}
   tileScale: 1
-  npcPrefab: {fileID: 7966250143148145752, guid: db19cc480d81b3e48bf8f50e632a8dd9, type: 3}
   departPointPrefab: {fileID: 4986769588029670656, guid: 8d6961c5dd8169348bc398b4cedbb89b, type: 3}
   subGridDivisions: 2
   loadingOverlay: {fileID: 1391705646}
@@ -5886,7 +5885,7 @@ MonoBehaviour:
   loadInEditMode: 0
   drawGizmo: 0
   spawnPoints: []
-  staticObjectPrefab: {fileID: 0}
+  staticObjectPrefab: {fileID: 8405621036506794425, guid: 0ec04c7599bb59d48a2e80031b5c0cd1, type: 3}
 --- !u!114 &1001723880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7641,7 +7640,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1318829329
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7830,7 +7829,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 3063
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -8774,63 +8773,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1459271276
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 281.14963
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 132.89958
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121665292168734499, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
-      propertyPath: m_Name
-      value: Character
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
 --- !u!1 &1503627467
 GameObject:
   m_ObjectHideFlags: 0
@@ -9093,6 +9035,7 @@ MonoBehaviour:
   CharacterPrefab: {fileID: 8350450418846385827, guid: 5d45ad547cbd9a946b31a9c4a1bfe072, type: 3}
   OtherCharacterPrefab: {fileID: 8350450418846385827, guid: e364a4c37b3079148956f70ddb4f990d, type: 3}
   monsterPrefab: {fileID: 7770863435547427057, guid: b4aec6785b9e43c43ae237633aef8499, type: 3}
+  npcPrefab: {fileID: 7966250143148145752, guid: db19cc480d81b3e48bf8f50e632a8dd9, type: 3}
 --- !u!114 &1572721657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12182,7 +12125,6 @@ SceneRoots:
   - {fileID: 1615316085}
   - {fileID: 1001723878}
   - {fileID: 3274477203460657586}
-  - {fileID: 1459271276}
   - {fileID: 4949125724144214659}
   - {fileID: 1133940112}
   - {fileID: 1440667051}

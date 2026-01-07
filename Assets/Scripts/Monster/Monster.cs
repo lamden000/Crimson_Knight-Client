@@ -20,10 +20,6 @@ public class Monster : BaseObject
     {
     }
 
-    public override void DestroyObject()
-    {
-        Destroy(this.gameObject);
-    }
 
     public override ObjectType GetObjectType()
     {

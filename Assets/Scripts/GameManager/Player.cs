@@ -31,7 +31,7 @@ public class Player : BaseObject
     {
         if (arrowIndicator == null)
             arrowIndicator = GameObject.FindGameObjectWithTag("Target Arrow").transform;
-        targetMask = LayerMask.GetMask("Player", "Monster", "NPC");
+        targetMask = LayerMask.GetMask("Player", "Monster", "Npc");
     }
 
     public override void AutoMoveToXY(int x, int y)
@@ -39,12 +39,7 @@ public class Player : BaseObject
 
         PlayerMovementController.MoveToXY(x, y);
     }
-
-    public override void DestroyObject()
-    {
-
-    }
-
+ 
     void Update()
     {
         UpdateTargetLogic();

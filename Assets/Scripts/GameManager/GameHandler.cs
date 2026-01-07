@@ -33,6 +33,7 @@ public class GameHandler : MonoBehaviour
     public static Player Player;
     public static Dictionary<int, OtherPlayer> OtherPlayers = new Dictionary<int, OtherPlayer>();
     public static Dictionary<int, Monster> Monsters = new Dictionary<int, Monster>();
+    public static Dictionary<int, Npc> Npcs = new Dictionary<int, Npc>();
 
 
     public static void PlayerEnterMap(Message msg)
@@ -161,6 +162,23 @@ public class GameHandler : MonoBehaviour
             short x = msg.ReadShort();
             short y = msg.ReadShort();
             Monsters.TryAdd(i, Monster.Create(i, x, y, templateId));
+        }
+    }
+
+    public static void LoadNpcsInMap(Message msg)
+    {
+        foreach (var obj in Npcs)
+        {
+            obj.Value.DestroyObject();
+        }
+        Npcs.Clear();
+        int size = msg.ReadShort();
+        for (int i = 0; i < size; i++)
+        {
+            int templateId = msg.ReadInt();
+            short x = msg.ReadShort();
+            short y = msg.ReadShort();
+            Npcs.TryAdd(i, Npc.Create(x, y, templateId));
         }
     }
 }

@@ -29,6 +29,7 @@ namespace Assets.Scripts.Networking
                     {
                         LoadTemplateRespone res = JsonUtility.FromJson<LoadTemplateRespone>(responseJson);
                         TemplateManager.MonsterTemplates = res.MonsterTemplates;
+                        TemplateManager.NpcTemplates = res.NpcTemplates;
                         flag = true;
                     }
                     catch (Exception ex)

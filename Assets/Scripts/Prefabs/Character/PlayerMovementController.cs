@@ -28,9 +28,7 @@ public class PlayerMovementController : MovementControllerBase
     private float attackAnimDuration = 0.4f;
     private Vector2 moveInput;
     private bool isGettingHit = false;
-    [Header("Interaction")]
-    [SerializeField] private float npcInteractRange = 1.2f;
-    private Coroutine npcTalkCoroutine;
+   
 
 
     public bool IsMainPlayer = false;
@@ -82,18 +80,7 @@ public class PlayerMovementController : MovementControllerBase
             return;
         }
 
-        if (npcTalkCoroutine != null)
-        {
-            if (moveAxisInput != Vector2.zero)
-            {
-                StopCoroutine(npcTalkCoroutine);
-                npcTalkCoroutine = null;
-                CancelAutoFollow();
-                ManualMove();
-                return;
-            }
-            return;
-        }
+       
         var mouse = Mouse.current;
         var touchScreen = Touchscreen.current;
 
@@ -122,26 +109,9 @@ public class PlayerMovementController : MovementControllerBase
                     targetEnemy = hit.transform;
                     isMovingToEnemy = true;
                 }
-                else if (hit.collider.CompareTag("NPC"))
+                else if (hit.collider.CompareTag("Npc"))
                 {
-                    var npc = hit.collider.GetComponent<NPCDialogueController>();
-                    if (npc == null) return;
-                    CancelAutoFollow();
-                    if (npcTalkCoroutine != null)
-                    {
-                        StopCoroutine(npcTalkCoroutine);
-                        npcTalkCoroutine = null;
-                    }
-
-                    Vector3 dirToNpc = (npc.transform.position - transform.position).normalized;
-                    Direction dir;
-                    if (Mathf.Abs(dirToNpc.x) > Mathf.Abs(dirToNpc.y))
-                        dir = dirToNpc.x > 0 ? Direction.Right : Direction.Left;
-                    else
-                        dir = dirToNpc.y > 0 ? Direction.Up : Direction.Down;
-
-                    anim.SetAnimation(dir, State.Walk);
-                    npcTalkCoroutine = StartCoroutine(MoveToNPCAndTalk(npc));
+                   
                 }
                 return;
             }
@@ -362,12 +332,7 @@ public class PlayerMovementController : MovementControllerBase
         if (moving)
         {
             flag = true;
-            // manual input cancels any pending NPC interaction
-            if (npcTalkCoroutine != null)
-            {
-                StopCoroutine(npcTalkCoroutine);
-                npcTalkCoroutine = null;
-            }
+            
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
                 desiredVelocity = new Vector2(h * moveSpeed, 0);
@@ -411,39 +376,9 @@ public class PlayerMovementController : MovementControllerBase
             StopCoroutine(followCoroutine);
             followCoroutine = null;
         }
-        // stop any pending NPC interaction
-        if (npcTalkCoroutine != null)
-        {
-            StopCoroutine(npcTalkCoroutine);
-            npcTalkCoroutine = null;
-        }
+       
         ClearPath();
     }
-
-    private IEnumerator MoveToNPCAndTalk(NPCDialogueController npc)
-    {
-        if (npc == null) yield break;
-
-        if (Vector3.Distance(transform.position, npc.transform.position) <= npcInteractRange)
-        {
-            npc.StartDialogue();
-            npcTalkCoroutine = null;
-            yield break;
-        }
-
-        // use base MoveToTarget that stops when within npcInteractRange
-        yield return StartCoroutine(MoveToTarget(npc.transform, npcInteractRange, arrivalDistance));
-
-        // after arriving, ensure npc still exists then start dialogue
-        if (npc != null)
-        {
-            npc.StartDialogue();
-        }
-
-        npcTalkCoroutine = null;
-    }
-
-
 
     protected override void OnPathFinished()
     {

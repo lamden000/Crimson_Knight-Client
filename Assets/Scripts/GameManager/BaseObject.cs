@@ -19,7 +19,10 @@ public abstract class BaseObject : MonoBehaviour
     public BaseObject objFocus;
 
     public abstract void AutoMoveToXY(int x, int y);
-    public abstract void DestroyObject();
+    public virtual void DestroyObject()
+    {
+        Destroy(this.gameObject);
+    }
 
     public virtual void SetPosition(short x, short y)
     {
@@ -35,7 +38,7 @@ public abstract class BaseObject : MonoBehaviour
     }
     public virtual void SetFocus(BaseObject objFocus)
     {
-      this.objFocus = objFocus;
+        this.objFocus = objFocus;
     }
 
     public void SetEffect(int effectId, int duration)

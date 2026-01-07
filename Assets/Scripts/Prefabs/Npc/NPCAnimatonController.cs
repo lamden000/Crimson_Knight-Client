@@ -40,9 +40,9 @@ public class NPCAnimatonController : MonoBehaviour
     /// <summary>
     /// Loads the Idle sprites from Resources/NPCs/Sprites/{index}.png
     /// </summary>
-    public void LoadIdleSprites(NPCName npcName)
+    public void LoadIdleSprites(NpcTemplate template)
     {
-        int index = (int)npcName;
+        int index = (int)template.ImageId;
         string path = $"NPCs/Sprites/{index}";
         idleSprites = Resources.LoadAll<Sprite>(path);
 

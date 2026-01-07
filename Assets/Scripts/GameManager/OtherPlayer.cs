@@ -39,16 +39,11 @@ public class OtherPlayer : BaseObject
             PlayerMovementController.MoveToXY(move.Item1, move.Item2);
         }
     }
-    public override void DestroyObject()
-    {
-        Destroy(this.gameObject);
-    }
 
     public override ObjectType GetObjectType()
     {
        return ObjectType.OtherPlayer;
     }
-
 
     public void Attack(int skillId, BaseObject target)
     {

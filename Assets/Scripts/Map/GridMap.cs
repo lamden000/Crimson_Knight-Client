@@ -18,7 +18,7 @@ public class GridmapLoader : MonoBehaviour
     public Tilemap tilemap;
     public float tileScale = 1f;
     //public GameObject monsterPrefab;
-    public GameObject npcPrefab;
+    //public GameObject npcPrefab;
     public GameObject departPointPrefab;
     public int subGridDivisions=2;
     // UI overlay used for map loading transition (set in inspector)
@@ -480,9 +480,9 @@ public class GridmapLoader : MonoBehaviour
                         CreateBoxCollider(obj, true,colliderParent.transform);
                         break;
 
-                    case "NPC":
-                        SpawnNPC(obj,npcParent.transform);
-                        break;
+                    //case "NPC":
+                    //    SpawnNPC(obj,npcParent.transform);
+                    //    break;
 
                     //case "Monster":
                     //    SpawnMonster(obj, monsterParent.transform);
@@ -503,26 +503,26 @@ public class GridmapLoader : MonoBehaviour
         }
     }
 
-    private void SpawnNPC(TiledObject obj,Transform npcParent)
-    {
-        if (npcPrefab == null)
-        {
-            Debug.LogError("NPC prefab not assigned!");
-            return;
-        }
+    //private void SpawnNPC(TiledObject obj,Transform npcParent)
+    //{
+    //    if (npcPrefab == null)
+    //    {
+    //        Debug.LogError("NPC prefab not assigned!");
+    //        return;
+    //    }
 
-        Vector3 pos = GetWorldPosition(obj);
-        GameObject npc = Instantiate(npcPrefab, pos, Quaternion.identity);
-        npc.name = $"NPC_{obj.name}_{obj.id}";
-        npc.transform.SetParent(npcParent);
+    //    Vector3 pos = GetWorldPosition(obj);
+    //    GameObject npc = Instantiate(npcPrefab, pos, Quaternion.identity);
+    //    npc.name = $"NPC_{obj.name}_{obj.id}";
+    //    npc.transform.SetParent(npcParent);
 
-        // Auto-assign NPCName enum if it matches
-        var npcCtrl = npc.GetComponent<NPC>();
-        if (npcCtrl != null && System.Enum.TryParse(obj.name, out NPCName npcEnum))
-        {
-            npcCtrl.Init(npcEnum);
-        }
-    }
+    //    // Auto-assign NPCName enum if it matches
+    //    var npcCtrl = npc.GetComponent<NPC>();
+    //    if (npcCtrl != null && System.Enum.TryParse(obj.name, out NPCName npcEnum))
+    //    {
+    //        npcCtrl.Init(npcEnum);
+    //    }
+    //}
 
     //private void SpawnMonster(TiledObject obj, Transform monsterParent)
     //{
