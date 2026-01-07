@@ -16,7 +16,7 @@ public abstract class BaseObject : MonoBehaviour
     public int CurrentMp { get; set; }
     public int MaxMp { get; set; }
 
-    public BaseObject objFocus;
+    public virtual float ArrowIndicatorOffsetY => 1.5f; 
 
     public abstract void AutoMoveToXY(int x, int y);
     public virtual void DestroyObject()
@@ -36,10 +36,7 @@ public abstract class BaseObject : MonoBehaviour
     {
         return (short)this.transform.position.y;
     }
-    public virtual void SetFocus(BaseObject objFocus)
-    {
-        this.objFocus = objFocus;
-    }
+   
 
     public void SetEffect(int effectId, int duration)
     {

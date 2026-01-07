@@ -11,8 +11,10 @@ using UnityEngine;
 
 public class Player : BaseObject
 {
+    public BaseObject objFocus;
+
     public PlayerMovementController PlayerMovementController;
-    public float maxTargetDistance = 500f;
+
     public LayerMask targetMask;
     private Transform arrowIndicator;
 
@@ -39,79 +41,136 @@ public class Player : BaseObject
 
         PlayerMovementController.MoveToXY(x, y);
     }
- 
+
     void Update()
     {
         UpdateTargetLogic();
-        
+        UpdateMouse();
+    }
+
+    private void UpdateMouse()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = 0; 
+
+            BaseObject nearestObject = FindNearestObjectToPosition(mouseWorldPos);
+
+            if (nearestObject != null)
+            {
+                objFocus = nearestObject;
+                SetFocus(objFocus);
+            }
+        }
+    }
+
+    BaseObject FindNearestObjectToPosition(Vector3 position)
+    {
+        BaseObject result = null;
+        float minDistSq = float.MaxValue;
+        float maxClickDistance = 50f; 
+
+        void Check(BaseObject obj)
+        {
+            if (obj == null || obj.transform == null) return;
+
+            float distSq = Vector3.SqrMagnitude(obj.transform.position - position);
+            if (distSq < minDistSq && distSq <= maxClickDistance * maxClickDistance)
+            {
+                minDistSq = distSq;
+                result = obj;
+            }
+        }
+
+        foreach (var p in GameHandler.Npcs.Values)
+            Check(p);
+
+        foreach (var m in GameHandler.Monsters.Values)
+            Check(m);
+
+        foreach (var op in GameHandler.OtherPlayers.Values)
+            Check(op);
+
+        return result;
     }
 
     void UpdateTargetLogic()
     {
-        // 1️⃣ CHƯA CÓ TARGET -> TÌM LUÔN
-        if (objFocus == null)
-        {
-            BaseObject newTarget = FindNearestTarget();
-            if (newTarget != null)
-                SetFocus(newTarget);
-            return;
-        }
+        int maxTargetDistance = 300;
 
-        // 2️⃣ CÓ TARGET -> CHECK KHOẢNG CÁCH
-        float dist = Vector3.Distance(transform.position, objFocus.transform.position);
-
-        if (dist > maxTargetDistance)
+        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance)
         {
             BaseObject newTarget = FindNearestTarget();
 
-            if (newTarget != null)
-                SetFocus(newTarget);
-            else
-                LoseTarget();
-        }
-        else
-        {
-            int characterArrowOffsetY = 100;
-
-            if (objFocus.GetObjectType() == ObjectType.Monster)
+            if (newTarget == null || MathUtil.Distance(this, newTarget) > maxTargetDistance)
             {
-                characterArrowOffsetY = 30;
+                LoseTarget();
+                return;
             }
-
-            arrowIndicator.position = objFocus.transform.position + Vector3.up * characterArrowOffsetY;
+            objFocus = newTarget;
         }
+        SetFocus(objFocus);
     }
 
-    public override void SetFocus(BaseObject objFocus)
+    public void SetFocus(BaseObject objFocus)
     {
+        if (objFocus == null)
+        {
+            return;
+        }
         if (!arrowIndicator.gameObject.activeInHierarchy)
         {
             arrowIndicator.gameObject.SetActive(true);
         }
-        base.SetFocus(objFocus);
+
+        float offsetY = GetArrowOffsetForObject(objFocus) + 10;
+
+        arrowIndicator.position = objFocus.transform.position + Vector3.up * offsetY;
+        
+        this.objFocus = objFocus;
+    }
+
+    private float GetArrowOffsetForObject(BaseObject obj)
+    {
+        if (obj == null) return 1.5f;
+
+        Renderer objRenderer = obj.GetComponent<Renderer>();
+        if (objRenderer != null)
+        {
+            float offsetToTop = objRenderer.bounds.max.y - obj.transform.position.y;
+            return offsetToTop + 0.5f; 
+        }
+
+        return obj.ArrowIndicatorOffsetY;
     }
 
     BaseObject FindNearestTarget()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, maxTargetDistance, targetMask);
+        BaseObject result = null;
+        int minDistSq = int.MaxValue;
 
-        BaseObject nearest = null;
-        float bestDist = Mathf.Infinity;
-
-        foreach (var hit in hits)
+        void Check(BaseObject obj)
         {
-            BaseObject bo = hit.GetComponent<BaseObject>();
-            if (bo == null || bo == this.GetComponent<BaseObject>()) continue;
-            float d = Vector3.Distance(transform.position, bo.transform.position);
-
-            if (d < bestDist)
+            int d = MathUtil.Distance(GameHandler.Player, obj);
+            if (d < minDistSq)
             {
-                bestDist = d;
-                nearest = bo;
+                minDistSq = d;
+                result = obj;
             }
         }
 
-        return nearest;
+        foreach (var p in GameHandler.Npcs.Values)
+            Check(p);
+
+        foreach (var m in GameHandler.Monsters.Values)
+            Check(m);
+
+        foreach (var op in GameHandler.OtherPlayers.Values)
+            Check(op);
+
+        return result;
+
     }
 
     void LoseTarget()
@@ -129,6 +188,20 @@ public class Player : BaseObject
         //
     }
 
-  
-  
+    public bool CanAttack()
+    {
+        if (this.objFocus == null)
+        {
+            return false;
+        }
+
+        if (this.objFocus.GetObjectType() == ObjectType.Npc)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
 }

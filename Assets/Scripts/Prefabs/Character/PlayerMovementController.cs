@@ -59,63 +59,10 @@ public class PlayerMovementController : MovementControllerBase
         moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
         UpdateAttackTimers();
-
-        if (isMovingToEnemy && targetEnemy != null)
-        {
-            if (moveAxisInput != Vector2.zero)
-            {
-                CancelAutoFollow();
-                ManualMove();
-                return;
-            }
-
-            Monster enemy = targetEnemy.GetComponent<Monster>();
-            if (enemy == null)
-            {
-                CancelAutoFollow();
-                return;
-            }
-
-            AutoMoveToEnemyPath();
-            return;
-        }
-
        
         var mouse = Mouse.current;
         var touchScreen = Touchscreen.current;
 
-        if (mouse != null && mouse.leftButton.wasPressedThisFrame ||
-                    touchScreen != null && touchScreen.primaryTouch.press.wasPressedThisFrame)
-        {
-            Camera cam = Camera.main;
-            Vector2 screenPos = Vector2.zero;
-            if (touchScreen == null)
-            {
-                screenPos = Mouse.current.position.ReadValue();
-            }
-            else
-            {
-                screenPos = touchScreen.position.ReadValue();
-            }
-            Vector3 screenToWorld = cam.ScreenToWorldPoint(screenPos);
-            Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
-            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-
-            if (hit.collider != null)
-            {
-                if (hit.collider.CompareTag("Enemy"))
-                {
-                    ClearPath();
-                    targetEnemy = hit.transform;
-                    isMovingToEnemy = true;
-                }
-                else if (hit.collider.CompareTag("Npc"))
-                {
-                   
-                }
-                return;
-            }
-        }
 
         if (IsMainPlayer)
         {
@@ -199,54 +146,6 @@ public class PlayerMovementController : MovementControllerBase
     }
 
 
-    private void AutoMoveToEnemyPath()
-    {
-        if (targetEnemy == null)
-        {
-            Debug.LogWarning("[AutoMove] ❌ No target enemy!");
-            return;
-        }
-
-        Vector3 dir = targetEnemy.position - transform.position;
-
-        // Nếu trong tầm đánh
-        if (dir.magnitude <= attackRange)
-        {
-            desiredVelocity = Vector2.zero;
-            TryAttack(dir);
-            return;
-        }
-
-        // Nếu chưa có path hoặc đã đến node hiện tại → tìm lại đường và bắt đầu coroutine follow
-        if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile() || pathfinder != null)
-        {
-            var startNode = pathfinder.GetTileFromWorld(transform.position);
-            var endNode = pathfinder.GetTileFromWorld(targetEnemy.position);
-
-            if (startNode == null || endNode == null)
-            {
-                Debug.LogWarning("[AutoMove] ❌ StartNode or EndNode is null!");
-                return;
-            }
-
-            // pass the agent's BoxCollider2D size to pathfinder so obstacles are considered with agent's size
-            var agentSize = GetAgentSizeFromCollider(boxCollider);
-            var path = pathfinder.FindPath(startNode, endNode, agentSize);
-            if (path == null || path.Count == 0)
-            {
-                return;
-            }
-
-            SetCurrentPathFromNodes(path);
-            pathIndex = 0;
-
-            // start base follow coroutine, but stop early when within attackRange of the enemy
-            StartFollow(1f, attackRange, targetEnemy);
-            return;
-        }
-    }
-
-
     override protected void MoveAlongPath()
     {
         if (currentPath == null || pathIndex >= currentPath.Count)
@@ -282,45 +181,6 @@ public class PlayerMovementController : MovementControllerBase
                 anim.SetAnimation(Direction.Down, State.Walk);
         }
     }
-
-    private bool ReachedTargetTile()
-    {
-        if (targetEnemy == null) return false;
-        if (!EnsurePathfinder()) return false;
-
-        var playerNode = pathfinder.GetTileFromWorld(transform.position);
-        var enemyNode = pathfinder.GetTileFromWorld(targetEnemy.position);
-        if (playerNode == null || enemyNode == null) return false;
-        return playerNode.gridPos == enemyNode.gridPos;
-    }
-
-    private void TryAttack(Vector3 dir)
-    {
-        if (isAttacking || attackCooldownTimer > 0) return;
-
-        isAttacking = true;
-        attackTimer = 0f;
-        attackCooldownTimer = attackCooldown;
-        desiredVelocity = Vector2.zero;
-
-        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-        {
-            Direction direction = (dir.x > 0)
-                ? Direction.Right
-                : Direction.Left; ;
-            anim.SetAnimation(direction, State.Attack);
-        }
-        else
-        {
-            if (dir.y > 0)
-                anim.SetAnimation(Direction.Up, State.Attack);
-            else
-                anim.SetAnimation(Direction.Down, State.Attack);
-        }
-        targetEnemy.gameObject.GetComponent<MonsterPrefab>().TakeDamage(100, gameObject);
-    }
-
-
 
     bool flag = false;
     private void ManualMove()
