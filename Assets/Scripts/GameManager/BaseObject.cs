@@ -16,7 +16,10 @@ public abstract class BaseObject : MonoBehaviour
     public int CurrentMp { get; set; }
     public int MaxMp { get; set; }
 
-    public virtual float ArrowIndicatorOffsetY => 1.5f; 
+    // bo tro cho nametag
+    protected GameObject nameTag;
+    private Vector3 nameTagOriginalScale;
+    private Quaternion nameTagOriginalRotation;
 
     public abstract void AutoMoveToXY(int x, int y);
     public virtual void DestroyObject()
@@ -36,7 +39,7 @@ public abstract class BaseObject : MonoBehaviour
     {
         return (short)this.transform.position.y;
     }
-   
+
 
     public void SetEffect(int effectId, int duration)
     {
@@ -44,4 +47,53 @@ public abstract class BaseObject : MonoBehaviour
 
 
     public abstract ObjectType GetObjectType();
+
+    public virtual float GetTopOffsetY()
+    {
+        Renderer objRenderer = this.GetComponentInChildren<Renderer>();
+        if (objRenderer != null)
+        {
+            float offsetToTop = objRenderer.bounds.max.y - this.transform.position.y;
+            return offsetToTop + 10f;
+        }
+        return 1.5f;
+    }
+
+    public void SetNameTag(GameObject nameTagObject)
+    {
+        nameTag = nameTagObject;
+        if (nameTag != null)
+        {
+            nameTagOriginalScale = nameTag.transform.localScale;
+            nameTagOriginalRotation = nameTag.transform.localRotation;
+        }
+    }
+
+    protected virtual void LateUpdate()
+    {
+        if (nameTag != null)
+        {
+            Vector3 targetScale = nameTagOriginalScale;
+            Quaternion targetRotation = nameTagOriginalRotation;
+
+            if (transform.localScale.x < 0)
+            {
+                targetScale.x = -Mathf.Abs(nameTagOriginalScale.x);
+            }
+            else
+            {
+                targetScale.x = Mathf.Abs(nameTagOriginalScale.x);
+            }
+
+            float yRotation = transform.rotation.eulerAngles.y;
+            if (Mathf.Abs(yRotation - 180f) < 1f)
+            {
+                targetRotation = Quaternion.Euler(0, 180f, 0) * nameTagOriginalRotation;
+            }
+
+            nameTag.transform.localScale = targetScale;
+            nameTag.transform.localRotation = targetRotation;
+        }
+    }
 }
+

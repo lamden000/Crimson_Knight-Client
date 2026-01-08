@@ -13,6 +13,10 @@ public class Monster : BaseObject
         monster.Id = id;
         monster.Template = TemplateManager.MonsterTemplates[templateId];
         monster.Name = monster.Template.Name;
+        GameObject nameTag = SpawnManager.GI().SpawnDisplayBaseObjectNamePrefab(monster.Name);
+        nameTag.transform.SetParent(monster.transform);
+        nameTag.transform.localPosition = new Vector3(0, monster.GetTopOffsetY(), 0);
+        monster.SetNameTag(nameTag);
         return monster;
     }
 

@@ -23,6 +23,10 @@ public class OtherPlayer : BaseObject
         otherPlayer.Id = id;
         otherPlayer.Name = name;
         otherPlayer.SetPosition(x, y);
+        GameObject nameTag = SpawnManager.GI().SpawnDisplayBaseObjectNamePrefab(otherPlayer.Name);
+        nameTag.transform.SetParent(otherPlayer.transform);
+        nameTag.transform.localPosition = new Vector3(0, otherPlayer.GetTopOffsetY(), 0);
+        otherPlayer.SetNameTag(nameTag);
         return otherPlayer;
     }
 
@@ -47,5 +51,10 @@ public class OtherPlayer : BaseObject
     public void Attack(int skillId, BaseObject target)
     {
         //
+    }
+
+    public override float GetTopOffsetY()
+    {
+        return base.GetTopOffsetY() + 28;
     }
 }

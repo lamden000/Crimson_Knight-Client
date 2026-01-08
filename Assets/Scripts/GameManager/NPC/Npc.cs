@@ -16,6 +16,10 @@ public class Npc : BaseObject
         npc.Id = templateId;
         npc.Template = TemplateManager.NpcTemplates[templateId];
         npc.Name = npc.Template.Name;
+        GameObject nameTag = SpawnManager.GI().SpawnDisplayBaseObjectNamePrefab(npc.Name);
+        nameTag.transform.SetParent(npc.transform);
+        nameTag.transform.localPosition = new Vector3(0, npc.GetTopOffsetY(), 0);
+        npc.SetNameTag(nameTag);
         return npc;
     }
 

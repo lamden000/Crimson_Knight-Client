@@ -143,29 +143,12 @@ public class Player : BaseObject
             arrowIndicator.gameObject.SetActive(true);
         }
 
-        float offsetY = GetArrowOffsetForObject(objFocus) + 10;
-        if (objFocus.GetObjectType() == ObjectType.OtherPlayer)
-        {
-            offsetY += 28;
-        }
+        float offsetY = objFocus.GetTopOffsetY();
         arrowIndicator.position = objFocus.transform.position + Vector3.up * offsetY;
 
         this.objFocus = objFocus;
     }
 
-    private float GetArrowOffsetForObject(BaseObject obj)
-    {
-        if (obj == null) return 1.5f;
-
-        Renderer objRenderer = obj.GetComponentInChildren<Renderer>();
-        if (objRenderer != null)
-        {
-            float offsetToTop = objRenderer.bounds.max.y - obj.transform.position.y;
-            return offsetToTop + 0.5f;
-        }
-
-        return obj.ArrowIndicatorOffsetY;
-    }
 
     BaseObject FindNearestTarget()
     {
@@ -227,6 +210,5 @@ public class Player : BaseObject
 
         return true;
     }
-
-
+   
 }

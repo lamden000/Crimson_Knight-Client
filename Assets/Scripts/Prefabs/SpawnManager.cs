@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class SpawnManager : MonoBehaviour
 
     [SerializeField]
     private GameObject npcPrefab;
+
+    [SerializeField]
+    private GameObject displayBaseObjectNamePrefab;
+
 
     private void Awake()
     {
@@ -75,5 +80,25 @@ public class SpawnManager : MonoBehaviour
             npcCtrl.Init(TemplateManager.NpcTemplates[templateId]);
         }
         return npc;
+    }
+
+    public GameObject SpawnDisplayBaseObjectNamePrefab(string name)
+    {
+        if (displayBaseObjectNamePrefab == null)
+        {
+            Debug.LogError("DisplayBaseObjectName prefab not assigned!");
+            return null;
+        }
+        GameObject displayObj = Instantiate(displayBaseObjectNamePrefab, Vector3.zero, Quaternion.identity);
+        TextMeshPro tmp = displayObj.GetComponent<TextMeshPro>();
+        if (tmp != null)
+        {
+            tmp.text = name;
+        }
+        else
+        {
+            Debug.LogError("TextMeshPro k tim thay!");
+        }
+        return displayObj;
     }
 }
