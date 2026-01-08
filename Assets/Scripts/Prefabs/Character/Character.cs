@@ -5,19 +5,16 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public enum Clazz { Knight, Assassin, Marksman, Wizard }
 
     [SerializeField]
-    private Clazz m_Class;
-
-    public Clazz GetClass()
-    { return m_Class; }
+    private ClassType m_Class;
 
     private PlayerMovementController m_Controller;
 
     private void Start()
     {
         m_Controller = GetComponent<PlayerMovementController>();
+        m_Class = ClassType.XA_THU;
     }
 
     public CharacterPart getWeaponType()
@@ -25,16 +22,16 @@ public class Character : MonoBehaviour
         CharacterPart weapon = CharacterPart.Gun;
         switch (m_Class)
         {
-            case Clazz.Assassin:
+            case ClassType.SAT_THU:
                 weapon = CharacterPart.Knive;
                 break;
-            case Clazz.Knight:
+            case ClassType.CHIEN_BINH:
                 weapon = CharacterPart.Sword;
                 break;
-            case Clazz.Wizard:
+            case ClassType.PHAP_SU:
                 weapon = CharacterPart.Staff;
                 break;
-            case Clazz.Marksman:
+            case ClassType.XA_THU:
                 weapon = CharacterPart.Gun;
                 break;
         }
