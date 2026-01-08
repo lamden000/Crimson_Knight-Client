@@ -144,7 +144,10 @@ public class Player : BaseObject
         }
 
         float offsetY = GetArrowOffsetForObject(objFocus) + 10;
-
+        if (objFocus.GetObjectType() == ObjectType.OtherPlayer)
+        {
+            offsetY += 28;
+        }
         arrowIndicator.position = objFocus.transform.position + Vector3.up * offsetY;
 
         this.objFocus = objFocus;
@@ -154,7 +157,7 @@ public class Player : BaseObject
     {
         if (obj == null) return 1.5f;
 
-        Renderer objRenderer = obj.GetComponent<Renderer>();
+        Renderer objRenderer = obj.GetComponentInChildren<Renderer>();
         if (objRenderer != null)
         {
             float offsetToTop = objRenderer.bounds.max.y - obj.transform.position.y;
