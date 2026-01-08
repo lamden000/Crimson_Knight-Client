@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerAnimationController))]
 public class PlayerMovementController : MovementControllerBase
@@ -44,10 +43,7 @@ public class PlayerMovementController : MovementControllerBase
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnMove(InputValue input)
-    {
-        moveInput = input.Get<Vector2>();
-    }
+
 
     private void Update()
     {
@@ -56,17 +52,23 @@ public class PlayerMovementController : MovementControllerBase
             desiredVelocity = Vector2.zero;
             return;
         }
-        moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
         UpdateAttackTimers();
-       
-        var mouse = Mouse.current;
-        var touchScreen = Touchscreen.current;
-
 
         if (IsMainPlayer)
         {
-            moveAxisInput = new Vector2(moveInput.x, moveInput.y);
+            if (Main.IsMobile())
+            {
+                moveInput = MovementButtonManager.MovementInput;
+            }
+            else
+            {
+                float horizontal = Input.GetAxisRaw("Horizontal"); 
+                float vertical = Input.GetAxisRaw("Vertical");    
+                moveInput = new Vector2(horizontal, vertical);
+            }
+            
+            moveAxisInput = moveInput;
             ManualMove();
         }
     }

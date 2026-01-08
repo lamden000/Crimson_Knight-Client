@@ -7,22 +7,39 @@ public class MovementButtonManager : MonoBehaviour
     public ButtonPressEffect downButton;
     public ButtonPressEffect rightButton;
 
+    public static Vector2 MovementInput { get; private set; }
+
+    private void Start()
+    {
+        if (Main.IsPC())
+        {
+            this.gameObject.SetActive(false);
+        }
+    }
+
     void Update()
     {
-        // W
-        if (Input.GetKeyDown(KeyCode.W)) upButton.Press();
-        if (Input.GetKeyUp(KeyCode.W)) upButton.Release();
+        float horizontal = 0f;
+        float vertical = 0f;
 
-        // A
-        if (Input.GetKeyDown(KeyCode.A)) leftButton.Press();
-        if (Input.GetKeyUp(KeyCode.A)) leftButton.Release();
+        if (rightButton != null && rightButton.isPressed)
+        {
+            horizontal = 1f;
+        }
+        else if (leftButton != null && leftButton.isPressed)
+        {
+            horizontal = -1f;
+        }
 
-        // S
-        if (Input.GetKeyDown(KeyCode.S)) downButton.Press();
-        if (Input.GetKeyUp(KeyCode.S)) downButton.Release();
+        if (upButton != null && upButton.isPressed)
+        {
+            vertical = 1f;
+        }
+        else if (downButton != null && downButton.isPressed)
+        {
+            vertical = -1f;
+        }
 
-        // D
-        if (Input.GetKeyDown(KeyCode.D)) rightButton.Press();
-        if (Input.GetKeyUp(KeyCode.D)) rightButton.Release();
+        MovementInput = new Vector2(horizontal, vertical);
     }
 }

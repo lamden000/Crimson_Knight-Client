@@ -18,6 +18,9 @@ public class Player : BaseObject
     public LayerMask targetMask;
     private Transform arrowIndicator;
 
+
+    private float lastClickTime = 0f;
+
     public static Player Create(int id, string name)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
@@ -53,10 +56,7 @@ public class Player : BaseObject
     {
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (objFocus != null && objFocus.GetObjectType() == ObjectType.Npc)
-            {
-                UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus);
-            }
+            Attack(-1, objFocus);
         }
     }
 
@@ -73,6 +73,13 @@ public class Player : BaseObject
             {
                 objFocus = nearestObject;
                 SetFocus(objFocus);
+
+                float timeSinceLastClick = Time.time - lastClickTime;
+                if (timeSinceLastClick <= 0.3f)
+                {
+                    Attack(-1, objFocus);
+                }
+                lastClickTime = Time.time;
             }
         }
     }
@@ -197,7 +204,10 @@ public class Player : BaseObject
 
     public void Attack(int skillId, BaseObject target)
     {
-        //
+        if (objFocus != null && objFocus.GetObjectType() == ObjectType.Npc)
+        {
+            UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus);
+        }
     }
 
     public bool CanAttack()
