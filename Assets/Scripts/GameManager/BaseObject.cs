@@ -15,6 +15,7 @@ public abstract class BaseObject : MonoBehaviour
     public int MaxHp { get; set; }
     public int CurrentMp { get; set; }
     public int MaxMp { get; set; }
+    public short Level { get; set; }
 
     // bo tro cho nametag
     protected GameObject nameTag;
@@ -73,6 +74,15 @@ public abstract class BaseObject : MonoBehaviour
     {
         if (nameTag != null)
         {
+            if(this == GameHandler.Player.objFocus)
+            {
+                nameTag.SetActive(false);
+            }
+            else
+            {
+                nameTag.SetActive(true);
+            }
+
             Vector3 targetScale = nameTagOriginalScale;
             Quaternion targetRotation = nameTagOriginalRotation;
 

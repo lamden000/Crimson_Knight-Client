@@ -180,7 +180,7 @@ public class Player : BaseObject
 
     void LoseTarget()
     {
-        SetFocus(null);
+        this.objFocus = null;
         arrowIndicator.gameObject.SetActive(false);
     }
     public override ObjectType GetObjectType()
