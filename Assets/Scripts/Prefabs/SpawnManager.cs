@@ -22,6 +22,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject txtDisplayTakeDamagePrefab;
 
+    [SerializeField]
+    private GameObject pkIconPrefab;
+
 
     private void Awake()
     {
@@ -144,8 +147,18 @@ public class SpawnManager : MonoBehaviour
         }
 
         StartCoroutine(MoveUpAndDestroy(obj, 1.0f, 20.0f));
-        
+
         return obj;
+    }
+
+    public GameObject SpawnPkIconPrefab()
+    {
+        if (pkIconPrefab == null)
+        {
+            Debug.LogError("pkIconPrefab prefab not assigned!");
+            return null;
+        }
+        return Instantiate(pkIconPrefab, Vector3.zero, Quaternion.identity);
     }
 
 }

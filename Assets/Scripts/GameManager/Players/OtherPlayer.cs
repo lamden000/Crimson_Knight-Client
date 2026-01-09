@@ -32,6 +32,11 @@ public class OtherPlayer : BaseObject
         nameTag.transform.SetParent(otherPlayer.transform);
         nameTag.transform.localPosition = new Vector3(0, otherPlayer.GetTopOffsetY(), 0);
         otherPlayer.SetNameTag(nameTag);
+
+        GameObject pkicon = SpawnManager.GI().SpawnPkIconPrefab();
+        pkicon.transform.SetParent(otherPlayer.transform);
+        pkicon.transform.localPosition = new Vector3(0, otherPlayer.GetTopOffsetY() + 15, 0);
+        otherPlayer.SetPkIcon(pkicon);
         return otherPlayer;
     }
 
@@ -66,5 +71,49 @@ public class OtherPlayer : BaseObject
     public void ChangePkType(PkType type)
     {
         this.PkType = type;
+        PkIconManager pkIconManager = PkIcon.GetComponent<PkIconManager>();
+        if (pkIconManager != null)
+        {
+            pkIconManager.SetPkState(this.PkType);
+        }
+    }
+
+    private GameObject PkIcon;
+    private Vector3 PkIconOriginalScale;
+    private Quaternion PkIconOriginalRotation;
+    public void SetPkIcon(GameObject icon)
+    {
+        this.PkIcon = icon;
+        PkIconOriginalScale = PkIcon.transform.localScale;
+        PkIconOriginalRotation = PkIcon.transform.localRotation;
+    }
+
+
+    protected override void LateUpdate()
+    {
+        base.LateUpdate();
+        if (PkIcon != null)
+        {
+            Vector3 targetScale = PkIconOriginalScale;
+            Quaternion targetRotation = PkIconOriginalRotation;
+
+            if (transform.localScale.x < 0)
+            {
+                targetScale.x = -Mathf.Abs(PkIconOriginalScale.x);
+            }
+            else
+            {
+                targetScale.x = Mathf.Abs(PkIconOriginalScale.x);
+            }
+
+            float yRotation = transform.rotation.eulerAngles.y;
+            if (Mathf.Abs(yRotation - 180f) < 1f)
+            {
+                targetRotation = Quaternion.Euler(0, 180f, 0) * PkIconOriginalRotation;
+            }
+
+            PkIcon.transform.localScale = targetScale;
+            PkIcon.transform.localRotation = targetRotation;
+        }
     }
 }
