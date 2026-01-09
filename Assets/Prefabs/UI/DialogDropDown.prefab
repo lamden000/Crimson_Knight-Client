@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 340, y: 390}
+  m_SizeDelta: {x: 290, y: 340}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1234738099887937163
 CanvasRenderer:
@@ -107,9 +107,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 891205942668034907}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.0009460449}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &9047455417366666683
@@ -129,8 +129,8 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
-  m_Spacing: 5
+  m_ChildAlignment: 1
+  m_Spacing: 3
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -189,7 +189,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 350, y: 400}
+  m_SizeDelta: {x: 300, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4955287872439264829
 CanvasRenderer:
@@ -264,7 +264,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 145}
-  m_SizeDelta: {x: 340, y: 100}
+  m_SizeDelta: {x: 290, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6087686410652691823
 CanvasRenderer:
@@ -339,10 +339,10 @@ RectTransform:
   - {fileID: 4944658534862791511}
   m_Father: {fileID: 1569771704205614493}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.08037157}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000030517578}
-  m_SizeDelta: {x: -4.3105, y: -4.9262}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0.000030517578}
+  m_SizeDelta: {x: -0.000030518, y: -2.0496}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8769454943537930933
 CanvasRenderer:
@@ -504,7 +504,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   titleText: {fileID: 1681199188573922540}
   contentParent: {fileID: 4944658534862791511}
-  itemPrefab: {fileID: 6971035403623558016, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
+  itemPrefab: {fileID: 2184688823233066079, guid: 3b5bde9a8cd150c4eace7c3636f59a7f, type: 3}
   closeButton: {fileID: 1787663617483819042}
 --- !u!225 &-2519460262323003662
 CanvasGroup:
@@ -690,8 +690,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.688, y: -64.441}
-  m_SizeDelta: {x: 439.3017, y: 379.0471}
+  m_AnchoredPosition: {x: -0.3599, y: -48.881}
+  m_SizeDelta: {x: 375.3436, y: 410.16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6879710019068447572
 CanvasRenderer:

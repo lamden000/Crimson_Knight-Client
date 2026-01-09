@@ -8,7 +8,7 @@ public class DialogDropdown : DialogBase
 {
     [Header("References")]
     [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private RectTransform contentParent;   // Dùng RectTransform thay vì Transform
+    [SerializeField] private RectTransform contentParent;
     [SerializeField] private Button itemPrefab;
     [SerializeField] private Button closeButton;
     private Action<int> onSelected;
