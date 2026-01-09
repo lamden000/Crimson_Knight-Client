@@ -26,4 +26,12 @@ public static class MathUtil
         return (int)Math.Sqrt(dx * dx + dy * dy);
     }
 
+
+    static readonly Random ran = new Random();
+
+    public static int RandomInt(int a, int b)
+    {
+        return ran.Next(a, b + 1);
+    }
+
 }

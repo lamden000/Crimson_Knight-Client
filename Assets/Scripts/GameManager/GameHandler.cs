@@ -219,11 +219,18 @@ public class GameHandler : MonoBehaviour
             BaseObject target = null;
             if(isPlayer)
             {
-                if(OtherPlayers.TryGetValue(targetId, out var otherPlayer))
+                if(GameHandler.Player.Id ==  targetId)
                 {
-                    if(otherPlayer!=null && !otherPlayer.IsDie())
+                    target = GameHandler.Player;
+                }
+                else
+                {
+                    if (OtherPlayers.TryGetValue(targetId, out var otherPlayer))
                     {
-                        target = otherPlayer;
+                        if (otherPlayer != null && !otherPlayer.IsDie())
+                        {
+                            target = otherPlayer;
+                        }
                     }
                 }
             }

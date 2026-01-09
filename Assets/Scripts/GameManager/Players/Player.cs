@@ -228,39 +228,67 @@ public class Player : BaseObject
                 int targetCount = skillUse.GetTargetCount();
                 int range = skillUse.GetRange();
 
-                //tam thoi test monster
-                List<Monster> targets = new List<Monster>();
-                targets.Add((Monster)target);
-                foreach (var monster in GameHandler.Monsters.Values)
+                List<BaseObject> targets = new List<BaseObject>();
+                targets.Add(target);
+                int remainSlot = targetCount - targets.Count;
+                if(remainSlot > 0)
                 {
-                    if (monster.IsDie())
-                        continue;
+                    int ranPlayer = MathUtil.RandomInt(0, remainSlot);
+                    foreach (var otherPlayer in GameHandler.OtherPlayers.Values)
+                    {
+                        if (ranPlayer <= 0)
+                            break;
 
-                    int dist = MathUtil.Distance(this, monster);
-                    if (dist > range)
-                        continue;
+                        if (otherPlayer.IsDie())
+                            continue;
 
-                    if (targets.Any(m => m.Id == monster.Id))
-                        continue;
+                        int dist = MathUtil.Distance(this, otherPlayer);
+                        if (dist > range)
+                            continue;
 
-                    targets.Add(monster);
+                        if (targets.Any(t => t.Id == otherPlayer.Id))
+                            continue;
 
-                    if (targets.Count >= targetCount)
-                        break;
+                        targets.Add(otherPlayer);
+                        ranPlayer--;
+                    }
+
+                    foreach (var monster in GameHandler.Monsters.Values)
+                    {
+                        if (targets.Count >= targetCount)
+                            break;
+
+                        if (monster.IsDie())
+                            continue;
+
+                        int dist = MathUtil.Distance(this, monster);
+                        if (dist > range)
+                            continue;
+
+                        if (targets.Any(t => t.Id == monster.Id))
+                            continue;
+
+                        targets.Add(monster);
+                    }
                 }
+               
                 if (targets.Count == 0)
                 {
                     Debug.Log("khong co target trong range");
                     return;
                 }
                 bool[] isPlayers = new bool[targets.Count];
-                for (int i = 0; i < targets.Count; i++)
-                {
-                    isPlayers[i] = false;
-                }
                 int[] targetIds = new int[targets.Count];
                 for (int i = 0; i < targets.Count; i++)
                 {
+                    if(targets[i].GetObjectType() == ObjectType.Player || targets[i].GetObjectType() == ObjectType.OtherPlayer)
+                    {
+                        isPlayers[i] = true;
+                    }
+                    else
+                    {
+                        isPlayers[i] = false;
+                    }
                     targetIds[i] = targets[i].Id;
                 }
                 RequestManager.RequestAttack(skillUse.TemplateId, isPlayers, targetIds);
