@@ -204,4 +204,43 @@ public class GameHandler : MonoBehaviour
             RequestManager.RequestSelectMenuItem(npcId, (byte)selectedIndex);
         });
     }
+
+    public static void AttackPlayerInfoMsg(Message msg)
+    {
+        int playerId = msg.ReadInt();
+        int skillUseId = msg.ReadInt();
+        int dam = msg.ReadInt();
+
+        int targetSize = msg.ReadByte();
+        for(int i = 0; i < targetSize; i++)
+        {
+            bool isPlayer = msg.ReadBool();
+            int targetId = msg.ReadInt();
+            BaseObject target = null;
+            if(isPlayer)
+            {
+                if(OtherPlayers.TryGetValue(targetId, out var otherPlayer))
+                {
+                    if(otherPlayer!=null && !otherPlayer.IsDie())
+                    {
+                        target = otherPlayer;
+                    }
+                }
+            }
+            else
+            {
+                if(Monsters.TryGetValue(targetId, out var monster))
+                {
+                    if(monster!=null && !monster.IsDie())
+                    {
+                        target = monster;
+                    }
+                }
+            }
+            if(target != null)
+            {
+                SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(target.GetX(), target.GetY() + (int)target.GetTopOffsetY(), dam);
+            }
+        }
+    }
 }

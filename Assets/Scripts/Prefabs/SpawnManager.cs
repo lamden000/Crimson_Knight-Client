@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -17,6 +18,9 @@ public class SpawnManager : MonoBehaviour
 
     [SerializeField]
     private GameObject displayBaseObjectNamePrefab;
+
+    [SerializeField]
+    private GameObject txtDisplayTakeDamagePrefab;
 
 
     private void Awake()
@@ -101,4 +105,47 @@ public class SpawnManager : MonoBehaviour
         }
         return displayObj;
     }
+
+    public GameObject SpawnTxtDisplayTakeDamagePrefab(int x, int y, int dame)
+    {
+        IEnumerator MoveUpAndDestroy(GameObject obj, float lifeTime, float speed)
+        {
+            float timer = 0f;
+
+            while (timer < lifeTime)
+            {
+                if (obj == null)
+                    yield break;
+
+                obj.transform.position += Vector3.up * speed * Time.deltaTime;
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            Destroy(obj);
+        }
+
+        if (txtDisplayTakeDamagePrefab == null)
+        {
+            Debug.Log("TxtDisplayTakeDamagePrefab prefab not assigned!");
+            return null;
+        }
+
+        GameObject obj = Instantiate(
+            txtDisplayTakeDamagePrefab,
+            new Vector2(x, y),
+            Quaternion.identity
+        );
+
+        TextMeshPro tmp = obj.GetComponent<TextMeshPro>();
+        if (tmp != null)
+        {
+            tmp.text = "-" + dame;
+        }
+
+        StartCoroutine(MoveUpAndDestroy(obj, 1.0f, 20.0f));
+        
+        return obj;
+    }
+
 }

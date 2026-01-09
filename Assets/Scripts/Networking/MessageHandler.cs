@@ -76,6 +76,9 @@ namespace Assets.Scripts.Networking
                         monster.LoadBaseInfoFromServer(msg);
                     }
                     break;
+                case MessageId.SERVER_ALL_SEND_ATTACK_PLAYER_INFO:
+                    GameHandler.AttackPlayerInfoMsg(msg);
+                    break;
                 default:
                     break;
             }

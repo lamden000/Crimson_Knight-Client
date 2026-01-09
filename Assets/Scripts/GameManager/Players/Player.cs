@@ -57,6 +57,10 @@ public class Player : BaseObject
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+           // SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(objFocus.GetX(), objFocus.GetY() + (int)objFocus.GetTopOffsetY(), 898);
+        }
     }
 
     private void UpdateInput()
@@ -207,6 +211,7 @@ public class Player : BaseObject
         }
         else
         {
+            Debug.Log("objfocus: "+ objFocus.GetX() + "-"+objFocus.GetY());
             Skill skillUse = Skills[0];
             if (skillUse != null && skillUse.CanAttack())
             {
@@ -228,21 +233,22 @@ public class Player : BaseObject
                 targets.Add((Monster)target);
                 foreach (var monster in GameHandler.Monsters.Values)
                 {
-                    if(monster.IsDie())
-                    {
+                    if (monster.IsDie())
                         continue;
-                    }
-                    int dist = MathUtil.Distance(target, monster);
-                    if (dist <= range && !targets.Contains(monster))
-                    {
-                        targets.Add(monster);
-                    }
-                    if(targets.Count >= targetCount)
-                    {
+
+                    int dist = MathUtil.Distance(this, monster);
+                    if (dist > range)
+                        continue;
+
+                    if (targets.Any(m => m.Id == monster.Id))
+                        continue;
+
+                    targets.Add(monster);
+
+                    if (targets.Count >= targetCount)
                         break;
-                    }
                 }
-                if(targets.Count == 0)
+                if (targets.Count == 0)
                 {
                     Debug.Log("khong co target trong range");
                     return;

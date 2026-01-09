@@ -9981,6 +9981,7 @@ MonoBehaviour:
   monsterPrefab: {fileID: 7770863435547427057, guid: b4aec6785b9e43c43ae237633aef8499, type: 3}
   npcPrefab: {fileID: 7966250143148145752, guid: db19cc480d81b3e48bf8f50e632a8dd9, type: 3}
   displayBaseObjectNamePrefab: {fileID: 4660658410794163430, guid: 157fd0bbaccf29841a44103d138c78bc, type: 3}
+  txtDisplayTakeDamagePrefab: {fileID: 4809548208224348429, guid: 8f2e9dbac875ab649a61e31bbae80f1a, type: 3}
 --- !u!114 &1572721657
 MonoBehaviour:
   m_ObjectHideFlags: 0
