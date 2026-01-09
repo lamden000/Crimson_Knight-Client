@@ -17,14 +17,21 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_LOGIN:
                     int playerId = msg.ReadInt();
                     string name = msg.ReadString();
-                    Player player = Player.Create(playerId, name); 
+                    ClassType classType = (ClassType)msg.ReadByte();
+                    Player player = Player.Create(playerId, name);
                     GameHandler.Player = player;
+                    GameHandler.Player.ClassType = classType;
                     CameraFollow.GI().target = player.transform;
                     MiniMapCamera.instance.player = player.transform;
                     MiniMapCamera.instance.minimapWindow.SetActive(true);
                     break;
+                case MessageId.SERVER_PLAYER_BASE_INFO:
+                    GameHandler.Player.LoadBaseInfoFromServer(msg);
+                    break;
+                case MessageId.SERVER_PLAYER_SKILL_INFO:
+                    GameHandler.Player.LoadPlayerSkillInfoFromServer(msg);
+                    break;
                 case MessageId.SERVER_ENTER_MAP:
-                    
                     GameHandler.PlayerEnterMap(msg);
                     break;
                 case MessageId.SERVER_OTHERPLAYERS_IN_MAP:
@@ -54,7 +61,21 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_OTHER_PLAYER_EXIT_MAP:
                     otherPlayerId = msg.ReadInt();
                     GameHandler.OtherPlayerExitMap(otherPlayerId);
-                    break;  
+                    break;
+                case MessageId.SERVER_OTHER_PLAYER_BASE_INFO:
+                    otherPlayerId = msg.ReadInt();
+                    if (GameHandler.OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer otherPlayer))
+                    {
+                        otherPlayer.LoadBaseInfoFromServer(msg);
+                    }
+                    break;
+                case MessageId.SERVER_MONSTER_BASE_INFO:
+                    int monsterId = msg.ReadInt();
+                    if (GameHandler.Monsters.TryGetValue(monsterId, out Monster monster))
+                    {
+                        monster.LoadBaseInfoFromServer(msg);
+                    }
+                    break;
                 default:
                     break;
             }

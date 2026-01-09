@@ -425,11 +425,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2215517435872313849, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 434.9912
       objectReference: {fileID: 0}
     - target: {fileID: 2215517435872313849, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2215517435872313849, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
       propertyPath: m_LocalPosition.x
@@ -461,11 +461,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2215517435872313849, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 217.4956
       objectReference: {fileID: 0}
     - target: {fileID: 2215517435872313849, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 2215517435872313849, guid: f9acbff80065a404db56773c7ef18b16, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -8616,7 +8616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!223 &1353071135
 Canvas:
   m_ObjectHideFlags: 0
@@ -12504,11 +12504,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4360452711129583142, guid: 3c43c963da7d8f14ea8581e5c9f3695a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4944658534862791511, guid: 3c43c963da7d8f14ea8581e5c9f3695a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,3 +1,4 @@
+using Assets.Scripts.Networking;
 using UnityEngine;
 
 public class Monster : BaseObject
@@ -28,5 +29,11 @@ public class Monster : BaseObject
     public override ObjectType GetObjectType()
     {
         return ObjectType.Monster;
+    }
+
+    public override void LoadBaseInfoFromServer(Message msg)
+    {
+        this.CurrentHp = msg.ReadInt();
+        this.MaxHp = msg.ReadInt();
     }
 }

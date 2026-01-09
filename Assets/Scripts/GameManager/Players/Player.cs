@@ -11,6 +11,13 @@ using UnityEngine;
 
 public class Player : BaseObject
 {
+    public List<Skill> Skills = new List<Skill>();
+    public int CurrentMp { get; set; }
+    public int MaxMp { get; set; }
+
+    public ClassType ClassType;
+    public long Exp;
+
     public BaseObject objFocus;
 
     public PlayerMovementController PlayerMovementController;
@@ -210,5 +217,32 @@ public class Player : BaseObject
 
         return true;
     }
-   
+
+    public override void LoadBaseInfoFromServer(Message msg)
+    {
+        //base
+        msg.ReadInt();
+        msg.ReadString();
+        this.Level = msg.ReadShort();
+        this.Exp = msg.ReadLong();
+        CurrentHp = msg.ReadInt();
+        MaxHp = msg.ReadInt();
+        CurrentMp = msg.ReadInt();
+        MaxMp = msg.ReadInt();
+    }
+
+    public void LoadPlayerSkillInfoFromServer(Message msg)
+    {
+        //skills
+        byte size = msg.ReadByte();
+        Skills.Clear();
+        for (int i = 0; i < size; i++)
+        {
+            int templateId = msg.ReadInt();
+            byte variant = msg.ReadByte();
+            Skill skill = new Skill(templateId, variant, this.ClassType);
+            Skills.Add(skill);
+        }
+    }
+
 }

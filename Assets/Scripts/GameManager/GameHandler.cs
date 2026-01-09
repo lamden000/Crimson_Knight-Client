@@ -133,6 +133,7 @@ public class GameHandler : MonoBehaviour
         {
             int id = msg.ReadInt();
             string name = msg.ReadString();
+            ClassType classType = (ClassType)msg.ReadByte();
             short xO = msg.ReadShort();
             short yO = msg.ReadShort();
             if (id == Player.Id)
@@ -140,6 +141,7 @@ public class GameHandler : MonoBehaviour
                 continue;
             }
             OtherPlayer player = OtherPlayer.Create(id, name, xO, yO);
+            player.ClassType = classType;
             if (!OtherPlayers.TryAdd(id, player))
             {
                 player.DestroyObject();

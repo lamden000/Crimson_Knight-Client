@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Networking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,10 @@ using UnityEngine;
 
 public class OtherPlayer : BaseObject
 {
+    public ClassType ClassType;
+
+
+
     public PlayerMovementController PlayerMovementController;
 
     public Queue<Tuple<int,int>> Moves = new Queue<Tuple<int,int>>();
@@ -56,5 +61,12 @@ public class OtherPlayer : BaseObject
     public override float GetTopOffsetY()
     {
         return base.GetTopOffsetY() + 28;
+    }
+
+    public override void LoadBaseInfoFromServer(Message msg)
+    {
+        this.CurrentHp = msg.ReadInt();
+        this.MaxHp = msg.ReadInt();
+        this.Level = msg.ReadShort();
     }
 }

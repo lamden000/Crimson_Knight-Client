@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utils;
+﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,6 @@ public abstract class BaseObject : MonoBehaviour
     public string Name { get; set; }
     public int CurrentHp { get; set; }
     public int MaxHp { get; set; }
-    public int CurrentMp { get; set; }
-    public int MaxMp { get; set; }
     public short Level { get; set; }
 
     // bo tro cho nametag
@@ -41,7 +40,10 @@ public abstract class BaseObject : MonoBehaviour
         return (short)this.transform.position.y;
     }
 
+    public virtual void LoadBaseInfoFromServer(Message msg)
+    {
 
+    }
     public void SetEffect(int effectId, int duration)
     {
     }
