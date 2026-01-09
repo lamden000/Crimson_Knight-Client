@@ -197,25 +197,76 @@ public class Player : BaseObject
 
     public void Attack(int skillId, BaseObject target)
     {
-        if (objFocus != null && objFocus.GetObjectType() == ObjectType.Npc)
+        if(objFocus == null)
+        {
+            return;
+        }
+        if (objFocus.GetObjectType() == ObjectType.Npc)
         {
             UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus);
         }
-    }
-
-    public bool CanAttack()
-    {
-        if (this.objFocus == null)
+        else
         {
-            return false;
-        }
+            Skill skillUse = Skills[0];
+            if (skillUse != null && skillUse.CanAttack())
+            {
+                if (!skillUse.IsLearned)
+                {
+                    Debug.Log("chua hoc skill");
+                    return;
+                }
+                if(this.CurrentMp <= skillUse.GetMpLost())
+                {
+                    Debug.Log("khong du mp");
+                    return;
+                }
+                int targetCount = skillUse.GetTargetCount();
+                int range = skillUse.GetRange();
 
-        if (this.objFocus.GetObjectType() == ObjectType.Npc)
-        {
-            return false;
+                //tam thoi test monster
+                List<Monster> targets = new List<Monster>();
+                targets.Add((Monster)target);
+                foreach (var monster in GameHandler.Monsters.Values)
+                {
+                    if(monster.IsDie())
+                    {
+                        continue;
+                    }
+                    int dist = MathUtil.Distance(target, monster);
+                    if (dist <= range && !targets.Contains(monster))
+                    {
+                        targets.Add(monster);
+                    }
+                    if(targets.Count >= targetCount)
+                    {
+                        break;
+                    }
+                }
+                if(targets.Count == 0)
+                {
+                    Debug.Log("khong co target trong range");
+                    return;
+                }
+                bool[] isPlayers = new bool[targets.Count];
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    isPlayers[i] = false;
+                }
+                int[] targetIds = new int[targets.Count];
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    targetIds[i] = targets[i].Id;
+                }
+                RequestManager.RequestAttack(skillUse.TemplateId, isPlayers, targetIds);
+                skillUse.StartTimeAttack = SystemUtil.CurrentTimeMillis();
+                this.CurrentMp -= skillUse.GetMpLost();
+                Debug.Log("Send attack " + skillUse.TemplateId);
+            }
+            else
+            {
+                Debug.Log("chua hoi chieu");
+            }
         }
-
-        return true;
     }
 
     public override void LoadBaseInfoFromServer(Message msg)

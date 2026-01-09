@@ -37,5 +37,21 @@ namespace Assets.Scripts.Networking
             msg.WriteByte(menuItemId);
             Session.AddMessage(msg);
         }
+
+        public static void RequestAttack(int skillUseId, bool[] isPlayers, int[] targetIds)
+        {
+            Message msg = new Message(MessageId.CLIENT_ATTACK);
+            msg.WriteInt(skillUseId);
+            msg.WriteByte((byte)isPlayers.Length);
+            foreach (bool isPlayer in isPlayers)
+            {
+                msg.WriteBool(isPlayer);
+            }
+            foreach (int targetId in targetIds)
+            {
+                msg.WriteInt(targetId);
+            }
+            Session.AddMessage(msg);
+        }
     }
 }

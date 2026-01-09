@@ -107,5 +107,10 @@ public abstract class BaseObject : MonoBehaviour
             nameTag.transform.localRotation = targetRotation;
         }
     }
+
+    public bool IsDie()
+    {
+        return CurrentHp <= 0;
+    }
 }
 
