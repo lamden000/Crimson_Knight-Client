@@ -216,14 +216,14 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int dam = msg.ReadInt();
 
         int targetSize = msg.ReadByte();
-        for(int i = 0; i < targetSize; i++)
+        for (int i = 0; i < targetSize; i++)
         {
             bool isPlayer = msg.ReadBool();
             int targetId = msg.ReadInt();
             BaseObject target = null;
-            if(isPlayer)
+            if (isPlayer)
             {
-                if(ClientReceiveMessageHandler.Player.Id ==  targetId)
+                if (ClientReceiveMessageHandler.Player.Id == targetId)
                 {
                     target = ClientReceiveMessageHandler.Player;
                 }
@@ -240,15 +240,15 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             }
             else
             {
-                if(Monsters.TryGetValue(targetId, out var monster))
+                if (Monsters.TryGetValue(targetId, out var monster))
                 {
-                    if(monster!=null && !monster.IsDie())
+                    if (monster != null && !monster.IsDie())
                     {
                         target = monster;
                     }
                 }
             }
-            if(target != null)
+            if (target != null)
             {
                 SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(target.GetX(), target.GetY() + (int)target.GetTopOffsetY(), dam);
             }
@@ -282,6 +282,23 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 otherPlayer.Level = Level;
                 otherPlayer.CurrentHp = CurrentHp;
                 otherPlayer.MaxHp = MaxHp;
+            }
+        }
+    }
+
+    public static void PlayerPktypeInfo(Message msg)
+    {
+        int playerId = msg.ReadInt();
+        PkType type = (PkType)msg.ReadByte();
+        if (playerId == Player.Id)
+        {
+            Player.ChangePkType(type);
+        }
+        else
+        {
+            if (ClientReceiveMessageHandler.OtherPlayers.TryGetValue(playerId, out OtherPlayer otherPlayer))
+            {
+                otherPlayer.ChangePkType(type);
             }
         }
     }

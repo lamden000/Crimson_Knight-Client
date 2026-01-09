@@ -54,7 +54,7 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_PLAYER_SKILL_INFO:
                     ClientReceiveMessageHandler.Player.LoadPlayerSkillInfoFromServer(msg);
                     break;
-               
+
                 case MessageId.SERVER_MONSTER_BASE_INFO:
                     int monsterId = msg.ReadInt();
                     if (ClientReceiveMessageHandler.Monsters.TryGetValue(monsterId, out Monster monster))
@@ -64,6 +64,9 @@ namespace Assets.Scripts.Networking
                     break;
                 case MessageId.SERVER_PLAYER_ATTACK:
                     ClientReceiveMessageHandler.PlayerAttack(msg);
+                    break;
+                case MessageId.SERVER_PLAYER_PKTYPE_INFO:
+                    ClientReceiveMessageHandler.PlayerPktypeInfo(msg);
                     break;
                 default:
                     break;

@@ -17,6 +17,7 @@ public class Player : BaseObject
 
     public ClassType ClassType;
     public long Exp;
+    public PkType PkType;
 
     public BaseObject objFocus;
 
@@ -57,9 +58,13 @@ public class Player : BaseObject
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-           // SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(objFocus.GetX(), objFocus.GetY() + (int)objFocus.GetTopOffsetY(), 898);
+            RequestManager.ChangePkType(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            RequestManager.ChangePkType((PkType)1);
         }
     }
 
@@ -201,17 +206,17 @@ public class Player : BaseObject
 
     public void Attack(int skillId, BaseObject target)
     {
-        if(objFocus == null)
+        if(target == null)
         {
             return;
         }
-        if (objFocus.GetObjectType() == ObjectType.Npc)
+        if (target.GetObjectType() == ObjectType.Npc)
         {
-            UIManager.Instance.gameScreenUIManager.ShowTalking(ClientReceiveMessageHandler.Player.objFocus);
+            UIManager.Instance.gameScreenUIManager.ShowTalking(target);
         }
         else
         {
-            Debug.Log("objfocus: "+ objFocus.GetX() + "-"+objFocus.GetY());
+            Debug.Log("objfocus: "+ target.GetX() + "-"+ target.GetY());
             Skill skillUse = Skills[0];
             if (skillUse != null && skillUse.CanAttack())
             {
@@ -229,6 +234,15 @@ public class Player : BaseObject
                 int range = skillUse.GetRange();
 
                 List<BaseObject> targets = new List<BaseObject>();
+                if(target.GetObjectType() == ObjectType.OtherPlayer)
+                {
+                    OtherPlayer otherPlayer = (OtherPlayer)target;
+                    if(otherPlayer.PkType == this.PkType)
+                    {
+                        Debug.Log("cung type pk");
+                        return;
+                    }
+                }
                 targets.Add(target);
                 int remainSlot = targetCount - targets.Count;
                 if(remainSlot > 0)
@@ -240,6 +254,9 @@ public class Player : BaseObject
                             break;
 
                         if (otherPlayer.IsDie())
+                            continue;
+
+                        if (otherPlayer.PkType == this.PkType)
                             continue;
 
                         int dist = MathUtil.Distance(this, otherPlayer);
@@ -319,4 +336,8 @@ public class Player : BaseObject
         }
     }
 
+    public void ChangePkType(PkType type)
+    {
+        this.PkType = type;
+    }
 }

@@ -53,5 +53,12 @@ namespace Assets.Scripts.Networking
             }
             Session.AddMessage(msg);
         }
+
+        public static void ChangePkType(PkType pkType)
+        {
+            Message msg = new Message(MessageId.CLIENT_PLAYER_CHANGE_PKTYPE);
+            msg.WriteByte((byte)pkType);
+            Session.AddMessage(msg);
+        }
     }
 }

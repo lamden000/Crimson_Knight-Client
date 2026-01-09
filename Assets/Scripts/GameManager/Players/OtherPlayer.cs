@@ -10,7 +10,7 @@ using UnityEngine;
 public class OtherPlayer : BaseObject
 {
     public ClassType ClassType;
-
+    public PkType PkType;
 
 
     public PlayerMovementController PlayerMovementController;
@@ -63,5 +63,8 @@ public class OtherPlayer : BaseObject
         return base.GetTopOffsetY() + 28;
     }
 
-   
+    public void ChangePkType(PkType type)
+    {
+        this.PkType = type;
+    }
 }
