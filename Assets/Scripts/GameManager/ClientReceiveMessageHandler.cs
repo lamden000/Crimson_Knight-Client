@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GameHandler : MonoBehaviour
+public class ClientReceiveMessageHandler : MonoBehaviour
 {
     void Start()
     {
@@ -36,30 +36,44 @@ public class GameHandler : MonoBehaviour
     public static Dictionary<int, Npc> Npcs = new Dictionary<int, Npc>();
 
 
-    public static void PlayerEnterMap(Message msg)
+    public static void EnterMap(Message msg)
     {
-        UIManager.Instance.DisableGameScreen();
-        UIManager.Instance.EnableLoadScreen();
-        //map
-        MapManager.MapId = msg.ReadShort();
-        MapManager.LoadMapById(MapManager.MapId);
+        bool isLoadMap = msg.ReadBool();
+        if (isLoadMap)
+        {
+            UIManager.Instance.DisableGameScreen();
+            UIManager.Instance.EnableLoadScreen();
+            //map
+            MapManager.MapId = msg.ReadShort();
+            MapManager.LoadMapById(MapManager.MapId);
 
-        MapManager.MapName = msg.ReadString();
-
-
-        //player
-        short x = msg.ReadShort();
-        short y = msg.ReadShort();
-
-        Player.SetPosition(x, y);
+            MapManager.MapName = msg.ReadString();
 
 
-        UIManager.Instance.DisableLoadScreen();
-        UIManager.Instance.EnableGameScreen();
+            //player
+            short x = msg.ReadShort();
+            short y = msg.ReadShort();
 
+            Player.SetPosition(x, y);
+
+
+            UIManager.Instance.DisableLoadScreen();
+            UIManager.Instance.EnableGameScreen();
+        }
+        else
+        {
+            int otherPlayerId = msg.ReadInt();
+            string otherPlayerName = msg.ReadString();
+            short otherX = msg.ReadShort();
+            short otherY = msg.ReadShort();
+            if (!OtherPlayers.ContainsKey(otherPlayerId))
+            {
+                OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY);
+                OtherPlayers.Add(otherPlayerId, player);
+            }
+        }
     }
-
-    public static void OtherPlayerMove(Message msg)
+    public static void PlayerMove(Message msg)
     {
         int id = msg.ReadInt();
         int x = msg.ReadShort();
@@ -74,15 +88,6 @@ public class GameHandler : MonoBehaviour
         }
     }
 
-    public static void OtherPlayerEnterMap(int otherPlayerId, string otherPlayerName, short otherX, short otherY)
-    {
-        if (!OtherPlayers.ContainsKey(otherPlayerId))
-        {
-            OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY);
-            OtherPlayers.Add(otherPlayerId, player);
-        }
-    }
-
     public static void OtherPlayerExitMap(int otherPlayerId)
     {
         OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer other);
@@ -92,7 +97,6 @@ public class GameHandler : MonoBehaviour
             OtherPlayers.Remove(otherPlayerId);
         }
     }
-
 
     public static void MonsterAttack(BaseObject objAttack, BaseObject objTarget)
     {
@@ -205,7 +209,7 @@ public class GameHandler : MonoBehaviour
         });
     }
 
-    public static void AttackPlayerInfoMsg(Message msg)
+    public static void PlayerAttack(Message msg)
     {
         int playerId = msg.ReadInt();
         int skillUseId = msg.ReadInt();
@@ -219,9 +223,9 @@ public class GameHandler : MonoBehaviour
             BaseObject target = null;
             if(isPlayer)
             {
-                if(GameHandler.Player.Id ==  targetId)
+                if(ClientReceiveMessageHandler.Player.Id ==  targetId)
                 {
-                    target = GameHandler.Player;
+                    target = ClientReceiveMessageHandler.Player;
                 }
                 else
                 {
@@ -247,6 +251,37 @@ public class GameHandler : MonoBehaviour
             if(target != null)
             {
                 SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(target.GetX(), target.GetY() + (int)target.GetTopOffsetY(), dam);
+            }
+        }
+    }
+
+    public static void PlayerBaseInfo(Message msg)
+    {
+        int playerId = msg.ReadInt();
+        string name = msg.ReadString();
+        short Level = msg.ReadShort();
+        long Exp = msg.ReadLong();
+        int CurrentHp = msg.ReadInt();
+        int MaxHp = msg.ReadInt();
+        int CurrentMp = msg.ReadInt();
+        int MaxMp = msg.ReadInt();
+
+        if (playerId == Player.Id)
+        {
+            Player.Level = Level;
+            Player.Exp = Exp;
+            Player.CurrentHp = CurrentHp;
+            Player.MaxHp = MaxHp;
+            Player.CurrentMp = CurrentMp;
+            Player.MaxMp = MaxMp;
+        }
+        else
+        {
+            if (ClientReceiveMessageHandler.OtherPlayers.TryGetValue(playerId, out OtherPlayer otherPlayer))
+            {
+                otherPlayer.Level = Level;
+                otherPlayer.CurrentHp = CurrentHp;
+                otherPlayer.MaxHp = MaxHp;
             }
         }
     }

@@ -10,7 +10,7 @@ namespace Assets.Scripts.Networking
     {
         public static void PlayerMove(int x, int y)
         {
-            Message msg = new Message(MessageId.CLIENT_MOVE);
+            Message msg = new Message(MessageId.CLIENT_PLAYER_MOVE);
             msg.WriteInt(x);
             msg.WriteInt(y);
             Session.AddMessage(msg);
@@ -40,7 +40,7 @@ namespace Assets.Scripts.Networking
 
         public static void RequestAttack(int skillUseId, bool[] isPlayers, int[] targetIds)
         {
-            Message msg = new Message(MessageId.CLIENT_ATTACK);
+            Message msg = new Message(MessageId.CLIENT_PLAYER_ATTACK);
             msg.WriteInt(skillUseId);
             msg.WriteByte((byte)isPlayers.Length);
             foreach (bool isPlayer in isPlayers)

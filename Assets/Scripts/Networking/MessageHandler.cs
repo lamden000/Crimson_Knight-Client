@@ -19,65 +19,51 @@ namespace Assets.Scripts.Networking
                     string name = msg.ReadString();
                     ClassType classType = (ClassType)msg.ReadByte();
                     Player player = Player.Create(playerId, name);
-                    GameHandler.Player = player;
-                    GameHandler.Player.ClassType = classType;
+                    ClientReceiveMessageHandler.Player = player;
+                    ClientReceiveMessageHandler.Player.ClassType = classType;
                     CameraFollow.GI().target = player.transform;
                     MiniMapCamera.instance.player = player.transform;
                     MiniMapCamera.instance.minimapWindow.SetActive(true);
                     break;
-                case MessageId.SERVER_PLAYER_BASE_INFO:
-                    GameHandler.Player.LoadBaseInfoFromServer(msg);
-                    break;
-                case MessageId.SERVER_PLAYER_SKILL_INFO:
-                    GameHandler.Player.LoadPlayerSkillInfoFromServer(msg);
+                case MessageId.SERVER_PLAYER_MOVE:
+                    ClientReceiveMessageHandler.PlayerMove(msg);
                     break;
                 case MessageId.SERVER_ENTER_MAP:
-                    GameHandler.PlayerEnterMap(msg);
-                    break;
-                case MessageId.SERVER_OTHERPLAYERS_IN_MAP:
-                    GameHandler.LoadOtherPlayersInMap(msg);
-                    break;
-                case MessageId.SERVER_MONSTERS_IN_MAP:
-                    GameHandler.LoadMonstersInMap(msg);
-                    break;
-                case MessageId.SERVER_NPCS_IN_MAP:
-                    GameHandler.LoadNpcsInMap(msg);
-                    break;
-                case MessageId.SERVER_OTHER_PLAYER_MOVE:
-                    GameHandler.OtherPlayerMove(msg);
+                    ClientReceiveMessageHandler.EnterMap(msg);
                     break;
                 case MessageId.SERVER_SHOW_MENU:
-                    GameHandler.ShowMenu(msg);
+                    ClientReceiveMessageHandler.ShowMenu(msg);
+                    break;
+                case MessageId.SERVER_PLAYER_EXIT_MAP:
+                    int otherPlayerId = msg.ReadInt();
+                    ClientReceiveMessageHandler.OtherPlayerExitMap(otherPlayerId);
+                    break;
+                case MessageId.SERVER_MONSTERS_IN_MAP:
+                    ClientReceiveMessageHandler.LoadMonstersInMap(msg);
+                    break;
+                case MessageId.SERVER_NPCS_IN_MAP:
+                    ClientReceiveMessageHandler.LoadNpcsInMap(msg);
+                    break;
+                case MessageId.SERVER_OTHERPLAYERS_IN_MAP:
+                    ClientReceiveMessageHandler.LoadOtherPlayersInMap(msg);
+                    break;
+                case MessageId.SERVER_PLAYER_BASE_INFO:
+                    ClientReceiveMessageHandler.PlayerBaseInfo(msg);
                     break;
 
-                //OTHER PLAYER MESSAGES
-                case MessageId.SERVER_OTHER_PLAYER_ENTER_MAP:
-                    int otherPlayerId = msg.ReadInt();
-                    string otherPlayerName = msg.ReadString();
-                    short otherX = msg.ReadShort();
-                    short otherY = msg.ReadShort();
-                    GameHandler.OtherPlayerEnterMap(otherPlayerId, otherPlayerName, otherX, otherY);
+                case MessageId.SERVER_PLAYER_SKILL_INFO:
+                    ClientReceiveMessageHandler.Player.LoadPlayerSkillInfoFromServer(msg);
                     break;
-                case MessageId.SERVER_OTHER_PLAYER_EXIT_MAP:
-                    otherPlayerId = msg.ReadInt();
-                    GameHandler.OtherPlayerExitMap(otherPlayerId);
-                    break;
-                case MessageId.SERVER_OTHER_PLAYER_BASE_INFO:
-                    otherPlayerId = msg.ReadInt();
-                    if (GameHandler.OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer otherPlayer))
-                    {
-                        otherPlayer.LoadBaseInfoFromServer(msg);
-                    }
-                    break;
+               
                 case MessageId.SERVER_MONSTER_BASE_INFO:
                     int monsterId = msg.ReadInt();
-                    if (GameHandler.Monsters.TryGetValue(monsterId, out Monster monster))
+                    if (ClientReceiveMessageHandler.Monsters.TryGetValue(monsterId, out Monster monster))
                     {
                         monster.LoadBaseInfoFromServer(msg);
                     }
                     break;
-                case MessageId.SERVER_ALL_SEND_ATTACK_PLAYER_INFO:
-                    GameHandler.AttackPlayerInfoMsg(msg);
+                case MessageId.SERVER_PLAYER_ATTACK:
+                    ClientReceiveMessageHandler.PlayerAttack(msg);
                     break;
                 default:
                     break;

@@ -39,11 +39,7 @@ public abstract class BaseObject : MonoBehaviour
     {
         return (short)this.transform.position.y;
     }
-
-    public virtual void LoadBaseInfoFromServer(Message msg)
-    {
-
-    }
+   
     public void SetEffect(int effectId, int duration)
     {
     }
@@ -76,7 +72,7 @@ public abstract class BaseObject : MonoBehaviour
     {
         if (nameTag != null)
         {
-            if(this == GameHandler.Player.objFocus)
+            if(this == ClientReceiveMessageHandler.Player.objFocus)
             {
                 nameTag.SetActive(false);
             }

@@ -32,7 +32,7 @@ public class HUDManager : BaseUIManager
 
     void UpdateHPMP()
     {
-        Player player = GameHandler.Player;
+        Player player = ClientReceiveMessageHandler.Player;
         if (player == null) return;
         if(player.MaxHp<=0 || player.MaxMp<=0) return;
         float hpRatio = player.CurrentHp / player.MaxHp;

@@ -63,10 +63,5 @@ public class OtherPlayer : BaseObject
         return base.GetTopOffsetY() + 28;
     }
 
-    public override void LoadBaseInfoFromServer(Message msg)
-    {
-        this.CurrentHp = msg.ReadInt();
-        this.MaxHp = msg.ReadInt();
-        this.Level = msg.ReadShort();
-    }
+   
 }

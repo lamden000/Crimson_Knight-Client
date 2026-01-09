@@ -32,7 +32,7 @@ public class Monster : BaseObject
         return ObjectType.Monster;
     }
 
-    public override void LoadBaseInfoFromServer(Message msg)
+    public void LoadBaseInfoFromServer(Message msg)
     {
         this.CurrentHp = msg.ReadInt();
         this.MaxHp = msg.ReadInt();

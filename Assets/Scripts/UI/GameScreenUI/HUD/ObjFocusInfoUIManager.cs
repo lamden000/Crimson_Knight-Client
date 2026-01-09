@@ -21,7 +21,7 @@ public class ObjFocusInfoUIManager : MonoBehaviour
 
     void RefreshData()
     {
-        if (GameHandler.Player.objFocus == null)
+        if (ClientReceiveMessageHandler.Player.objFocus == null)
         {
             txtName.text = "";
             txtLV.text = "";
@@ -30,7 +30,7 @@ public class ObjFocusInfoUIManager : MonoBehaviour
         }
         else
         {
-            var obj = GameHandler.Player.objFocus;
+            var obj = ClientReceiveMessageHandler.Player.objFocus;
             txtName.text = obj.Name;
             txtLV.text = "LV: " + obj.Level;
             txtContentHp.text = obj.CurrentHp + " / " + obj.MaxHp;

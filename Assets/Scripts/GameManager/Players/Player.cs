@@ -113,13 +113,13 @@ public class Player : BaseObject
             }
         }
 
-        foreach (var p in GameHandler.Npcs.Values)
+        foreach (var p in ClientReceiveMessageHandler.Npcs.Values)
             Check(p);
 
-        foreach (var m in GameHandler.Monsters.Values)
+        foreach (var m in ClientReceiveMessageHandler.Monsters.Values)
             Check(m);
 
-        foreach (var op in GameHandler.OtherPlayers.Values)
+        foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);
 
         return result;
@@ -168,7 +168,7 @@ public class Player : BaseObject
 
         void Check(BaseObject obj)
         {
-            int d = MathUtil.Distance(GameHandler.Player, obj);
+            int d = MathUtil.Distance(ClientReceiveMessageHandler.Player, obj);
             if (d < minDistSq)
             {
                 minDistSq = d;
@@ -176,13 +176,13 @@ public class Player : BaseObject
             }
         }
 
-        foreach (var p in GameHandler.Npcs.Values)
+        foreach (var p in ClientReceiveMessageHandler.Npcs.Values)
             Check(p);
 
-        foreach (var m in GameHandler.Monsters.Values)
+        foreach (var m in ClientReceiveMessageHandler.Monsters.Values)
             Check(m);
 
-        foreach (var op in GameHandler.OtherPlayers.Values)
+        foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);
 
         return result;
@@ -207,7 +207,7 @@ public class Player : BaseObject
         }
         if (objFocus.GetObjectType() == ObjectType.Npc)
         {
-            UIManager.Instance.gameScreenUIManager.ShowTalking(GameHandler.Player.objFocus);
+            UIManager.Instance.gameScreenUIManager.ShowTalking(ClientReceiveMessageHandler.Player.objFocus);
         }
         else
         {
@@ -234,7 +234,7 @@ public class Player : BaseObject
                 if(remainSlot > 0)
                 {
                     int ranPlayer = MathUtil.RandomInt(0, remainSlot);
-                    foreach (var otherPlayer in GameHandler.OtherPlayers.Values)
+                    foreach (var otherPlayer in ClientReceiveMessageHandler.OtherPlayers.Values)
                     {
                         if (ranPlayer <= 0)
                             break;
@@ -253,7 +253,7 @@ public class Player : BaseObject
                         ranPlayer--;
                     }
 
-                    foreach (var monster in GameHandler.Monsters.Values)
+                    foreach (var monster in ClientReceiveMessageHandler.Monsters.Values)
                     {
                         if (targets.Count >= targetCount)
                             break;
@@ -303,18 +303,7 @@ public class Player : BaseObject
         }
     }
 
-    public override void LoadBaseInfoFromServer(Message msg)
-    {
-        //base
-        msg.ReadInt();
-        msg.ReadString();
-        this.Level = msg.ReadShort();
-        this.Exp = msg.ReadLong();
-        CurrentHp = msg.ReadInt();
-        MaxHp = msg.ReadInt();
-        CurrentMp = msg.ReadInt();
-        MaxMp = msg.ReadInt();
-    }
+   
 
     public void LoadPlayerSkillInfoFromServer(Message msg)
     {
