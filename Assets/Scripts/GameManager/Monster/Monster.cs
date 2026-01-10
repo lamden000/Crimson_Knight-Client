@@ -28,11 +28,10 @@ public class Monster : BaseObject
     public override void AutoMoveToXY(int x, int y)
     {
     }
-
-
-    public override ObjectType GetObjectType()
+  
+    public override bool IsMonster()
     {
-        return ObjectType.Monster;
+        return true;
     }
 
     public void LoadBaseInfoFromServer(Message msg)

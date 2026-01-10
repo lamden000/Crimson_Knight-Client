@@ -44,12 +44,11 @@ public class OtherPlayer : BasePlayer
             this.AutoMoveToXY(move.Item1, move.Item2);
         }
     }
-    
 
-    public override ObjectType GetObjectType()
+
+    public override bool IsOtherPlayer()
     {
-       return ObjectType.OtherPlayer;
+        return true;
     }
-
     
 }

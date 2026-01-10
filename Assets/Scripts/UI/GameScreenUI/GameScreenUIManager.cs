@@ -38,7 +38,7 @@ public class GameScreenUIManager : BaseUIManager
     }
     public void ShowTalking(BaseObject baseObject)
     {
-        if (baseObject == null || baseObject.GetObjectType() != ObjectType.Npc)
+        if (baseObject == null || !baseObject.IsNpc())
         {
             return;
         }

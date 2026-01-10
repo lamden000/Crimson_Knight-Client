@@ -154,7 +154,7 @@ public class Player : BasePlayer
     {
         int maxTargetDistance = 300;
 
-        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.GetObjectType() == ObjectType.Monster && objFocus.IsDie()))
+        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.IsMonster() && objFocus.IsDie()))
         {
             BaseObject newTarget = FindNearestTarget();
 
@@ -180,7 +180,7 @@ public class Player : BasePlayer
         }
 
         float offsetY = objFocus.GetTopOffsetY();
-        if (objFocus.GetObjectType() == ObjectType.OtherPlayer)
+        if (objFocus.IsOtherPlayer())
         {
             PlayerAnimationController playerAnimationController = objFocus.GetComponent<PlayerAnimationController>();
             if (playerAnimationController != null)
@@ -240,9 +240,9 @@ public class Player : BasePlayer
         this.objFocus = null;
         arrowIndicator.gameObject.SetActive(false);
     }
-    public override ObjectType GetObjectType()
+    public override bool IsPlayer()
     {
-        return ObjectType.Player;
+        return true;
     }
 
     public void Attack(int skillId, BaseObject target)
@@ -251,7 +251,7 @@ public class Player : BasePlayer
         {
             return;
         }
-        if (target.GetObjectType() == ObjectType.Npc)
+        if (target.IsNpc())
         {
             UIManager.Instance.gameScreenUIManager.ShowTalking(target);
         }
@@ -275,7 +275,7 @@ public class Player : BasePlayer
                 int range = skillUse.GetRange();
 
                 List<BaseObject> targets = new List<BaseObject>();
-                if (target.GetObjectType() == ObjectType.OtherPlayer)
+                if (target.IsOtherPlayer())
                 {
                     OtherPlayer otherPlayer = (OtherPlayer)target;
                     if (otherPlayer.PkType == this.PkType)
@@ -339,7 +339,7 @@ public class Player : BasePlayer
                 int[] targetIds = new int[targets.Count];
                 for (int i = 0; i < targets.Count; i++)
                 {
-                    if (targets[i].GetObjectType() == ObjectType.Player || targets[i].GetObjectType() == ObjectType.OtherPlayer)
+                    if (targets[i].IsOtherPlayer())
                     {
                         isPlayers[i] = true;
                     }

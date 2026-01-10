@@ -32,9 +32,9 @@ public class Npc : BaseObject
     public override void AutoMoveToXY(int x, int y)
     {
     }
-   
-    public override ObjectType GetObjectType()
+
+    public override bool IsNpc()
     {
-        return ObjectType.Npc;
+        return true;
     }
 }

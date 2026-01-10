@@ -61,7 +61,7 @@ public abstract class BaseObject : MonoBehaviour
     }
 
 
-    public abstract ObjectType GetObjectType();
+    //public abstract ObjectType GetObjectType();
 
     public virtual float GetTopOffsetY()
     {
@@ -127,5 +127,11 @@ public abstract class BaseObject : MonoBehaviour
 
     public virtual void AniAttack(BaseObject target = null) { }
     public virtual void AniTakeDamage(int dam, BaseObject attacker) { }
+
+
+    public virtual bool IsMonster() { return false; }
+    public virtual bool IsNpc() { return false; }
+    public virtual bool IsPlayer() { return false; }
+    public virtual bool IsOtherPlayer() { return false; }
 }
 
