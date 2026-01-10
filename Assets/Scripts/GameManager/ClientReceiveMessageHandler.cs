@@ -103,31 +103,6 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         }
     }
 
-    public static void MonsterAttack(BaseObject objAttack, BaseObject objTarget)
-    {
-        if (objAttack.GetObjectType() == ObjectType.Monster)
-        {
-            if (objTarget.GetObjectType() == ObjectType.Player)
-            {
-                Monster monster = (Monster)objAttack;
-                Player player = (Player)objTarget;
-            }
-            else if (objTarget.GetObjectType() == ObjectType.OtherPlayer)
-            {
-                OtherPlayer otherPlayer = (OtherPlayer)objTarget;
-                Monster monster = (Monster)objAttack;
-            }
-
-        }
-    }
-
-    public static void OtherPlayerAttack(int skillId, int otherPlayerId, BaseObject objTarget)
-    {
-        if (OtherPlayers.TryGetValue(otherPlayerId, out OtherPlayer other))
-        {
-            other.Attack(skillId, objTarget);
-        }
-    }
 
     public static void LoadOtherPlayersInMap(Message msg)
     {

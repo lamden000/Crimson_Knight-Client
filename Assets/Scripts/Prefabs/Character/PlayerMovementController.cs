@@ -10,12 +10,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(PlayerAnimationController))]
 public class PlayerMovementController : MovementControllerBase
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float attackRange = 1.2f;
-    [SerializeField] private float attackCooldown = 0.8f;
     private static long timeStartSendMove = 0;
-    private Transform targetEnemy;
-    private bool isMovingToEnemy = false;
 
     private bool isAttacking = false;
     private float attackTimer = 0f;
@@ -234,9 +229,6 @@ public class PlayerMovementController : MovementControllerBase
 
     private void CancelAutoFollow()
     {
-        isMovingToEnemy = false;
-        targetEnemy = null;
-        // stop any running follow coroutine from base
         if (followCoroutine != null)
         {
             StopCoroutine(followCoroutine);

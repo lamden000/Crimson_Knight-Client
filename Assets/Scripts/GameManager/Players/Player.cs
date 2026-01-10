@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Networking;
+﻿using Assets.Scripts.GameManager.Players;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,19 +10,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class Player : BaseObject
+public class Player : BasePlayer
 {
     public List<Skill> Skills = new List<Skill>();
     public int CurrentMp { get; set; }
     public int MaxMp { get; set; }
 
-    public ClassType ClassType;
     public long Exp;
-    public PkType PkType;
 
     public BaseObject objFocus;
 
-    public PlayerMovementController PlayerMovementController;
 
     public LayerMask targetMask;
     private Transform arrowIndicator;
@@ -33,8 +31,7 @@ public class Player : BaseObject
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
         Player player = gameObject.AddComponent<Player>();
-        player.PlayerMovementController = player.gameObject.GetComponent<PlayerMovementController>();
-        player.PlayerMovementController.IsMainPlayer = true;
+        player.SetupPrefab(true);
         player.Id = id;
         player.Name = name;
 
@@ -50,12 +47,6 @@ public class Player : BaseObject
         if (arrowIndicator == null)
             arrowIndicator = GameObject.FindGameObjectWithTag("Target Arrow").transform;
         targetMask = LayerMask.GetMask("Player", "Monster", "Npc");
-    }
-
-    public override void AutoMoveToXY(int x, int y)
-    {
-
-        PlayerMovementController.MoveToXY(x, y);
     }
 
     void Update()
@@ -88,45 +79,6 @@ public class Player : BaseObject
         //{
         //    this.objFocus.gameObject.SetActive(false);
         //}
-    }
-
-    private GameObject PkIcon;
-    private Vector3 PkIconOriginalScale;
-    private Quaternion PkIconOriginalRotation;
-    public void SetPkIcon(GameObject icon)
-    {
-        this.PkIcon = icon;
-        PkIconOriginalScale = PkIcon.transform.localScale;
-        PkIconOriginalRotation = PkIcon.transform.localRotation;
-    }
-
-
-    protected override void LateUpdate()
-    {
-        base.LateUpdate();
-        if (PkIcon != null)
-        {
-            Vector3 targetScale = PkIconOriginalScale;
-            Quaternion targetRotation = PkIconOriginalRotation;
-
-            if (transform.localScale.x < 0)
-            {
-                targetScale.x = -Mathf.Abs(PkIconOriginalScale.x);
-            }
-            else
-            {
-                targetScale.x = Mathf.Abs(PkIconOriginalScale.x);
-            }
-
-            float yRotation = transform.rotation.eulerAngles.y;
-            if (Mathf.Abs(yRotation - 180f) < 1f)
-            {
-                targetRotation = Quaternion.Euler(0, 180f, 0) * PkIconOriginalRotation;
-            }
-
-            PkIcon.transform.localScale = targetScale;
-            PkIcon.transform.localRotation = targetRotation;
-        }
     }
 
 
@@ -426,63 +378,5 @@ public class Player : BaseObject
             Skill skill = new Skill(templateId, variant, this.ClassType);
             Skills.Add(skill);
         }
-    }
-
-    public void ChangePkType(PkType type)
-    {
-        this.PkType = type;
-        PkIconManager pkIconManager = PkIcon.GetComponent<PkIconManager>();
-        if (pkIconManager != null)
-        {
-            pkIconManager.SetPkState(this.PkType);
-        }
-    }
-
-    private Character GetCharacterPrefab()
-    {
-        return this.GetComponent<Character>();
-    }
-
-    private PlayerAnimationController GetPlayerAnimationController()
-    {
-        return this.GetComponent<PlayerAnimationController>();
-    }
-
-    public override void AniTakeDamage(int dam, BaseObject attacker)
-    {
-        GetCharacterPrefab().AniTakeDamage();
-        SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(this.GetX(), this.GetY() + (int)this.GetTopOffsetY(), dam);
-    }
-
-    public override void AniAttack(BaseObject target = null)
-    {
-        PlayerAnimationController playerAnimation = GetPlayerAnimationController();
-        Direction dirToTarget = playerAnimation.GetCurrentDirection();
-
-        if (target != null)
-        {
-            int x1 = target.GetX();
-            int y1 = target.GetY();
-            int x2 = this.GetX();
-            int y2 = this.GetY();
-            int deltaX = x1 - x2;
-            int deltaY = y1 - y2;
-            if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
-            {
-                if (deltaX > 0)
-                    dirToTarget = Direction.Right;
-                else
-                    dirToTarget = Direction.Left;
-            }
-            else
-            {
-                if (deltaY > 0)
-                    dirToTarget = Direction.Up;
-                else
-                    dirToTarget = Direction.Down;
-            }
-
-        }
-        playerAnimation.SetAnimation(dirToTarget, State.Attack);
     }
 }
