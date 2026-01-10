@@ -143,7 +143,7 @@ public class MonsterMovementController : MovementControllerBase
 
         yield return new WaitForSeconds(animationDelay);
 
-        playerTarget.gameObject.GetComponent<Character>().TakeDamage(enemy.damage,gameObject);
+        playerTarget.gameObject.GetComponent<Character>().AniTakeDamage(gameObject);
 
         StopMoving();
 

@@ -39,7 +39,7 @@ public class Character : MonoBehaviour
         return weapon;
     }
 
-    public void TakeDamage(float damage, GameObject attacker)
+    public void AniTakeDamage(GameObject attacker)
     {
         m_Controller.HandleGetHit();        
     }

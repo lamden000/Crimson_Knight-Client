@@ -39,7 +39,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
 
     private void LateUpdate()
     {
-       
+
     }
     public static void EnterMap(Message msg)
     {
@@ -220,6 +220,17 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int skillUseId = msg.ReadInt();
         int dam = msg.ReadInt();
 
+        BaseObject attacker = null;
+        if (playerId == Player.Id)
+        {
+            attacker = Player;
+        }
+        else
+        {
+            OtherPlayers.TryGetValue(playerId, out var value);
+            attacker = value;
+        }
+
         int targetSize = msg.ReadByte();
         for (int i = 0; i < targetSize; i++)
         {
@@ -250,6 +261,10 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                     if (monster != null && !monster.IsDie())
                     {
                         target = monster;
+                        if (attacker != null)
+                        {
+                            monster.StartAniTakeDamage(attacker);
+                        }
                     }
                 }
             }
@@ -305,6 +320,32 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             {
                 otherPlayer.ChangePkType(type);
             }
+        }
+    }
+
+    public static void MonsterAttackInfo(Message msg)
+    {
+        int monsterId = msg.ReadInt();
+        int dam = msg.ReadInt();
+        byte count = msg.ReadByte();
+        for (int i = 0; i < count; i++)
+        {
+            int playerId = msg.ReadInt();
+            BaseObject target = null;
+            if (playerId == Player.Id)
+            {
+                target = Player;
+            }
+            else
+            {
+                OtherPlayers.TryGetValue(playerId, out var value);
+                target = value;
+            }
+            if (target == null || target.IsDie())
+            {
+                return;
+            }
+            SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(target.GetX(), target.GetY() + (int)target.GetTopOffsetY(), dam);
         }
     }
 }

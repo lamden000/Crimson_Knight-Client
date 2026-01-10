@@ -68,6 +68,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_PLAYER_PKTYPE_INFO:
                     ClientReceiveMessageHandler.PlayerPktypeInfo(msg);
                     break;
+                case MessageId.SERVER_MONSTER_ATTACK:
+                    ClientReceiveMessageHandler.MonsterAttackInfo(msg);
+                    break;
                 default:
                     break;
             }

@@ -12,7 +12,6 @@ public class BossController : MonoBehaviour
     [Header("Normal Attack Settings")]
     public float attackRange = 1.5f; // Khoảng cách để đánh thường
     public float attackCooldown = 2f; // Cooldown giữa các lần đánh thường
-    public float attackDamage = 20f; // Sát thương đánh thường
     
     [Header("References")]
     public Transform targetPlayer;
@@ -206,7 +205,7 @@ public class BossController : MonoBehaviour
             Character character = targetPlayer.GetComponent<Character>();
             if (character != null)
             {
-                character.TakeDamage(attackDamage, gameObject);
+                character.AniTakeDamage(gameObject);
             }
         }
 

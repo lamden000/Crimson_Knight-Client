@@ -7,7 +7,6 @@ public class MonsterPrefab : MonoBehaviour
 {
     private MonsterMovementController movementController;
     //private MonsterName monsterName=MonsterName.Slime;
-    public float damage { private set; get; } = 10f;
 
     public MonsterState currentState;
     private bool isDead=false;
@@ -41,7 +40,7 @@ public class MonsterPrefab : MonoBehaviour
         currentState = state;
     }
 
-    public void TakeDamage(int damage,GameObject attacker)
+    public void AniTakeDamage(GameObject attacker)
     {
         SetState(MonsterState.GetHit);
         if (movementController != null && attacker != null)

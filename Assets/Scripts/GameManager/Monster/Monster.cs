@@ -1,4 +1,5 @@
 using Assets.Scripts.Networking;
+using System;
 using System.Threading;
 using UnityEngine;
 
@@ -56,5 +57,15 @@ public class Monster : BaseObject
             }
 
         }
+    }
+
+    private MonsterPrefab GetMonsterPrefab()
+    {
+        return this.GetComponent<MonsterPrefab>();
+    }
+
+    public void StartAniTakeDamage(BaseObject attacker)
+    {
+        this.GetMonsterPrefab().AniTakeDamage(attacker.gameObject);
     }
 }
