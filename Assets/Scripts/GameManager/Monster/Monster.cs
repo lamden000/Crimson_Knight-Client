@@ -1,4 +1,5 @@
 using Assets.Scripts.Networking;
+using System.Threading;
 using UnityEngine;
 
 public class Monster : BaseObject
@@ -36,5 +37,24 @@ public class Monster : BaseObject
     {
         this.CurrentHp = msg.ReadInt();
         this.MaxHp = msg.ReadInt();
+    }
+
+    protected override void CheckCurrentHp()
+    {
+        if (IsDie())
+        {
+            if (gameObject.activeSelf)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            if (!gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+            }
+
+        }
     }
 }

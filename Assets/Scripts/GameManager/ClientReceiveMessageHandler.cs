@@ -36,6 +36,11 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     public static Dictionary<int, Npc> Npcs = new Dictionary<int, Npc>();
 
 
+
+    private void LateUpdate()
+    {
+       
+    }
     public static void EnterMap(Message msg)
     {
         bool isLoadMap = msg.ReadBool();

@@ -83,6 +83,11 @@ public class Player : BaseObject
         {
             RequestManager.ChangePkType((PkType)4);
         }
+
+        //if (Input.GetKeyDown(KeyCode.Z))
+        //{
+        //    this.objFocus.gameObject.SetActive(false);
+        //}
     }
 
     private GameObject PkIcon;
@@ -179,7 +184,13 @@ public class Player : BaseObject
             Check(p);
 
         foreach (var m in ClientReceiveMessageHandler.Monsters.Values)
+        {
+            if (m.IsDie())
+            {
+                continue;
+            }
             Check(m);
+        }
 
         foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);
@@ -191,7 +202,7 @@ public class Player : BaseObject
     {
         int maxTargetDistance = 300;
 
-        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance)
+        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.GetObjectType()==ObjectType.Monster && objFocus.IsDie()))
         {
             BaseObject newTarget = FindNearestTarget();
 
@@ -242,7 +253,13 @@ public class Player : BaseObject
             Check(p);
 
         foreach (var m in ClientReceiveMessageHandler.Monsters.Values)
+        {
+            if (m.IsDie())
+            {
+                continue;
+            }
             Check(m);
+        }
 
         foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);

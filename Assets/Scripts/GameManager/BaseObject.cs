@@ -12,7 +12,23 @@ public abstract class BaseObject : MonoBehaviour
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public int CurrentHp { get; set; }
+    private int _currentHp;
+
+    public int CurrentHp
+    {
+        get => _currentHp;
+        set
+        {
+            if (_currentHp == value) return;
+            _currentHp = Math.Max(0, value);
+            CheckCurrentHp();
+        }
+    }
+
+    protected virtual void CheckCurrentHp()
+    {
+    }
+
     public int MaxHp { get; set; }
     public short Level { get; set; }
 

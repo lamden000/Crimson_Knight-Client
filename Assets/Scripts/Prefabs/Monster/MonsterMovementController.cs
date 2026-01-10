@@ -400,4 +400,16 @@ public class MonsterMovementController : MovementControllerBase
             Gizmos.DrawSphere(targetPos, 5f);
         }    
     }
+
+    protected void OnEnable()
+    {
+        ClearPath();
+        desiredVelocity = Vector2.zero;
+        StopAllCoroutines();
+        if (centerNode != null && pathfinder != null)
+        {
+            isPatrolling = true;
+            patrolCoroutine = StartCoroutine(PatrolRoutine());
+        }
+    }
 }
