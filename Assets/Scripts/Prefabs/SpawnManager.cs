@@ -195,7 +195,9 @@ public class SpawnManager : MonoBehaviour
                 spawnData,           
                 caster.position,     
                 target != null ? target.position : caster.position,
-                target            
+                target,
+                null, // spawnPositions - giữ null vì không có từ warning ở đây
+                duration // truyền duration vào
             );
         }
         else

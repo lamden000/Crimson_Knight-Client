@@ -10,6 +10,7 @@ public class SkillSpawnmer : MonoBehaviour
     private Vector3 mousePos;
     private Transform target;
     private Dictionary<SpawnEntry, List<Vector3>> predefinedPositions; // Vị trí đã tính từ warning
+    private float overrideDuration = -1f; // Nếu >= 0, sẽ override duration cho skill object có canOverrideDuration = true
 
     public GameObject skillObjectPrefab;
     public float skyHeight = 200f;
@@ -30,7 +31,8 @@ public class SkillSpawnmer : MonoBehaviour
         Vector3 casterPosition,
         Vector3 mousePosition,
         Transform targetFollow = null,
-        Dictionary<SpawnEntry, List<Vector3>> spawnPositions = null)
+        Dictionary<SpawnEntry, List<Vector3>> spawnPositions = null,
+        float duration = -1f)
     {
         spawnData = spData;
 
@@ -38,6 +40,7 @@ public class SkillSpawnmer : MonoBehaviour
         mousePos = mousePosition;
         target = targetFollow;
         predefinedPositions = spawnPositions; // Lưu vị trí từ warning
+        overrideDuration = duration; // Lưu duration để override nếu cần
 
         transform.position = casterPosition;
 
@@ -351,7 +354,7 @@ public class SkillSpawnmer : MonoBehaviour
         // Đối với Projectile, không truyền target để nó sử dụng mousePos (vị trí đã khóa từ warning)
         // thay vì target.position (vị trí hiện tại có thể đã thay đổi)
         Transform targetToUse = (mtype == SkillMovementType.Projectile) ? null : target;
-        sk.Init(data, casterPos, mousePos, isExplosive, mtype, targetToUse);
+        sk.Init(data, casterPos, mousePos, isExplosive, mtype, targetToUse, overrideDuration);
         
         // Thêm vào danh sách để track
         allSpawnedObjects.Add(sk);

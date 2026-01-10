@@ -5353,7 +5353,7 @@ GameObject:
   - component: {fileID: 812316888}
   - component: {fileID: 812316890}
   - component: {fileID: 812316889}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13588,10 +13588,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1211356350274837612, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_VolumeLayerMask.m_Bits
+      value: 1536
+      objectReference: {fileID: 0}
     - target: {fileID: 2893697436898506962, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1341744493}
+    - target: {fileID: 6130797024866310621, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6414720007255027491, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
       propertyPath: m_Name
       value: InGameUI

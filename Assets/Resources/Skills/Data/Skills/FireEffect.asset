@@ -27,3 +27,4 @@ MonoBehaviour:
     burstInterval: 0
     useInterval: 0
     interval: 0
+  overrideDuration: 1

@@ -30,6 +30,7 @@ public class SkillObjectData : ScriptableObject
     public float autoExplosionTime = 5f;
     public float speed = 100f;
     public float explosionDelay = 0f;
+    public bool canOverrideDuration = false; // Nếu true, có thể override autoExplosionTime bằng duration từ SpawnManager
 
     public Vector3 scale = Vector3.one;
 }

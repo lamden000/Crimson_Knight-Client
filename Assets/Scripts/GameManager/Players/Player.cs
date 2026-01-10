@@ -18,6 +18,8 @@ public class Player : BasePlayer
 
     public long Exp;
 
+    public float effectDurration=5;
+
     public BaseObject objFocus;
 
 
@@ -83,7 +85,7 @@ public class Player : BasePlayer
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform, 5);
+            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform, effectDurration);
         }
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))

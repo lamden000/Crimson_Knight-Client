@@ -22,12 +22,15 @@ MonoBehaviour:
   - {fileID: 5318054973255599995, guid: 595da06acccc1ec4283021f350d33381, type: 3}
   - {fileID: -5951400094591129488, guid: 595da06acccc1ec4283021f350d33381, type: 3}
   mainFPS: 12
+  mainSortingOrder: 5
   sparkleFrames: []
   sparkleFPS: 12
+  sparkleSortingOrder: 5
   aftermathFrames: []
   aftermathPlayTime: 0
   aftermathLoop: 0
   aftermathFPS: 12
+  aftermathSortingOrder: 5
   explosionRotatesWithMovement: 1
   autoExplosionTime: 3
   speed: 0

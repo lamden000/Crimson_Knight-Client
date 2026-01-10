@@ -19,7 +19,9 @@ public class SkillObject : MonoBehaviour
     private bool isExplosive = false;
     public float skyHeight = 200f;
     public System.Action<SkillObject> onExplode;
-    public void Init(SkillObjectData d,Vector3 casterPos ,Vector3 mousePos, bool isExplosive,SkillMovementType movementType, Transform targetFollow = null)
+    private float actualExplosionTime; // Thời gian thực tế để nổ (có thể bị override)
+    
+    public void Init(SkillObjectData d,Vector3 casterPos ,Vector3 mousePos, bool isExplosive,SkillMovementType movementType, Transform targetFollow = null, float overrideDuration = -1f)
     {
         data = d;
         this.target = targetFollow;
@@ -28,6 +30,16 @@ public class SkillObject : MonoBehaviour
         this.isExplosive = isExplosive;
         this.movementType = movementType;
         transform.localScale= data.scale;
+
+        // Kiểm tra xem có thể override duration không
+        if (data.canOverrideDuration && overrideDuration >= 0f)
+        {
+            actualExplosionTime = overrideDuration;
+        }
+        else
+        {
+            actualExplosionTime = data.autoExplosionTime;
+        }
 
         StartCoroutine(RoutineLogic());
     }
@@ -226,7 +238,7 @@ public class SkillObject : MonoBehaviour
 
     IEnumerator AutoExplodeTimer()
     {
-        yield return new WaitForSeconds(data.autoExplosionTime);
+        yield return new WaitForSeconds(actualExplosionTime);
 
         if (!exploded)
             StartCoroutine(Explosion());
