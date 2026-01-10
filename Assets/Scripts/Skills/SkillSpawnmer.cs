@@ -14,6 +14,16 @@ public class SkillSpawnmer : MonoBehaviour
     public GameObject skillObjectPrefab;
     public float skyHeight = 200f;
     public int lineSpawnSpacing = 100;
+    
+    // Track tất cả skill object được spawn để có thể kiểm tra khi nào chúng explode
+    private List<SkillObject> allSpawnedObjects = new List<SkillObject>();
+    
+    public List<SkillObject> GetAllSpawnedObjects()
+    {
+        // Lọc ra các object còn tồn tại
+        allSpawnedObjects.RemoveAll(obj => obj == null);
+        return new List<SkillObject>(allSpawnedObjects);
+    }
 
     public void Init(
         SkillSpawnData spData,
@@ -62,7 +72,21 @@ public class SkillSpawnmer : MonoBehaviour
         foreach (var c in runningEntries)
             yield return c;
 
+        // Đợi đến khi TẤT CẢ skill object explode/destroy trước khi destroy spawner
+        yield return StartCoroutine(WaitForAllSpawnedObjectsDestroyed());
+
         Destroy(gameObject);
+    }
+
+    IEnumerator WaitForAllSpawnedObjectsDestroyed()
+    {
+        // Đợi đến khi tất cả skill object explode/destroy
+        while (allSpawnedObjects.Count > 0)
+        {
+            // Lọc ra các object đã explode hoặc destroy
+            allSpawnedObjects.RemoveAll(obj => obj == null || obj.gameObject == null || obj.exploded);
+            yield return null;
+        }
     }
 
 
@@ -328,6 +352,10 @@ public class SkillSpawnmer : MonoBehaviour
         // thay vì target.position (vị trí hiện tại có thể đã thay đổi)
         Transform targetToUse = (mtype == SkillMovementType.Projectile) ? null : target;
         sk.Init(data, casterPos, mousePos, isExplosive, mtype, targetToUse);
+        
+        // Thêm vào danh sách để track
+        allSpawnedObjects.Add(sk);
+        
         return sk;
     }
 

@@ -1001,29 +1001,32 @@ MonoBehaviour:
     spawnData: {fileID: 11400000, guid: 6ebe2bcff6510f140b6beaf0efeb1cdc, type: 2}
     cooldownTime: 10
     lastUsedTime: 0
-    warningTime: 1
+    warningTime: 0.5
     warningUIPrefab: {fileID: 6409412384523563550}
     attackRange: 200
     useDash: 0
     dashSpeed: 800
     dashDistance: 2
+    blockMovementWhileActive: 1
   - name: ThunderArrow
     spawnData: {fileID: 11400000, guid: bf779023a46f4a54ca0d6b913328736b, type: 2}
     cooldownTime: 5
     lastUsedTime: 0
-    warningTime: 0.8
+    warningTime: 0.5
     warningUIPrefab: {fileID: 3893938670200629798}
     attackRange: 800
     useDash: 1
     dashSpeed: 1000
     dashDistance: 10
+    blockMovementWhileActive: 0
   - name: ThunderStrike
     spawnData: {fileID: 11400000, guid: 01b8b101ea313374fa647bd6adce1dee, type: 2}
     cooldownTime: 10
     lastUsedTime: 0
-    warningTime: 1
+    warningTime: 0.5
     warningUIPrefab: {fileID: 7042359609930931522}
     attackRange: 200
     useDash: 0
     dashSpeed: 800
     dashDistance: 2
+    blockMovementWhileActive: 0

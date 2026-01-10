@@ -206,18 +206,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5487953078767387693, guid: 34a44d0afcb02dc499267912b006102c, type: 3}
-      propertyPath: skills.Array.data[0].warningTime
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5487953078767387693, guid: 34a44d0afcb02dc499267912b006102c, type: 3}
-      propertyPath: skills.Array.data[1].warningTime
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5487953078767387693, guid: 34a44d0afcb02dc499267912b006102c, type: 3}
-      propertyPath: skills.Array.data[2].warningTime
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 5825200219573609208, guid: 34a44d0afcb02dc499267912b006102c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1067
@@ -931,10 +919,42 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2706344747443052699, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 399.292
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706344747443052699, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 241.114
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706344747443052699, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 29.902
+      objectReference: {fileID: 0}
+    - target: {fileID: 2706344747443052699, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 31.467
+      objectReference: {fileID: 0}
     - target: {fileID: 2893697436898506962, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1341744493}
+    - target: {fileID: 4326779679716331715, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 416.426
+      objectReference: {fileID: 0}
+    - target: {fileID: 4326779679716331715, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 263.341
+      objectReference: {fileID: 0}
+    - target: {fileID: 4326779679716331715, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 21.334
+      objectReference: {fileID: 0}
+    - target: {fileID: 4326779679716331715, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 31.349
+      objectReference: {fileID: 0}
     - target: {fileID: 6414720007255027491, guid: cc7c200a00e1ead44992acd5a40ae196, type: 3}
       propertyPath: m_Name
       value: InGameUI

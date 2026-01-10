@@ -12,24 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee43a62a0218def45b760be1804dfab7, type: 3}
   m_Name: ShockWave
   m_EditorClassIdentifier: 
-  mainLoop: 0
-  autoDisableAfterMain: 1
-  mainFrames: []
-  mainFPS: 12
-  mainSortingOrder: 5
-  sparkleFrames: []
-  sparkleFPS: 12
-  sparkleSortingOrder: 5
-  aftermathFrames:
+  mainLoop: 1
+  autoDisableAfterMain: 0
+  mainFrames:
   - {fileID: -5721330849970236542, guid: 2794b753ba3a71440b65fe08759dd466, type: 3}
   - {fileID: 1800762964442079151, guid: 2794b753ba3a71440b65fe08759dd466, type: 3}
   - {fileID: 3923458764868403044, guid: 2794b753ba3a71440b65fe08759dd466, type: 3}
+  mainFPS: 8
+  mainSortingOrder: -1
+  sparkleFrames: []
+  sparkleFPS: 12
+  sparkleSortingOrder: 5
+  aftermathFrames: []
   aftermathPlayTime: 3
   aftermathLoop: 1
   aftermathFPS: 8
   aftermathSortingOrder: -1
   explosionRotatesWithMovement: 1
-  autoExplosionTime: 1
+  autoExplosionTime: 4
   speed: 0
   explosionDelay: 0
   scale: {x: 2, y: 2, z: 2}

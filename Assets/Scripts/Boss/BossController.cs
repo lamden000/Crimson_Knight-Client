@@ -28,6 +28,7 @@ public class BossController : MonoBehaviour
     private float normalAttackCooldownTimer = 0f; // Timer cho cooldown đánh thường
     private bool isAttacking = false; // Đang trong quá trình đánh thường
     private TrailRenderer trailRenderer; // Reference đến TrailRenderer để bật khi dash
+    private List<SkillObject> activeSkillObjects = new List<SkillObject>(); // Danh sách skill object đang active (nếu blockMovementWhileActive = true)
 
     [System.Serializable]
     public class BossSkillEntry
@@ -46,6 +47,9 @@ public class BossController : MonoBehaviour
         public bool useDash = false; // Có sử dụng dash trước khi cast skill không
         public float dashSpeed = 20f; // Tốc độ dash
         public float dashDistance = 2f; // Khoảng cách dash qua đằng sau target
+        
+        [Header("Movement Control")]
+        public bool blockMovementWhileActive = false; // Nếu true, boss sẽ không di chuyển khi skill này đang active
 
         public bool IsReady()
         {
@@ -107,12 +111,17 @@ public class BossController : MonoBehaviour
             normalAttackCooldownTimer -= Time.deltaTime;
         }
 
+        // Kiểm tra nếu skill đang active và block movement
+        // Lọc ra các object còn tồn tại
+        activeSkillObjects.RemoveAll(obj => obj == null || obj.gameObject == null);
+        bool isBlockedByActiveSkill = activeSkillObjects.Count > 0;
+
         // 1. Logic Timer
-        if (!isCasting && !isAttacking)
+        if (!isCasting && !isAttacking && !isBlockedByActiveSkill)
         {
             skillTimer -= Time.deltaTime;
             
-            // Di chuyển về phía player khi không cast và không đánh
+            // Di chuyển về phía player khi không cast, không đánh và không bị block bởi skill
             MoveTowardsPlayer();
 
             if (skillTimer <= 0)
@@ -123,6 +132,14 @@ public class BossController : MonoBehaviour
                 // MoveTowardsPlayer() đã xử lý việc đuổi và đánh thường
                 
                 skillTimer = skillCheckInterval; // Reset timer 4s
+            }
+        }
+        else if (isBlockedByActiveSkill)
+        {
+            // Nếu bị block bởi skill, đứng yên
+            if (monsterPrefab != null && monsterPrefab.currentState != MonsterState.Idle)
+            {
+                monsterPrefab.SetState(MonsterState.Idle);
             }
         }
     }
@@ -323,6 +340,33 @@ public class BossController : MonoBehaviour
         }
 
         isCasting = false;
+
+        // Nếu skill này block movement, đợi đến khi spawner destroy (tức là tất cả skill object đã explode)
+        if (skillEntry.blockMovementWhileActive)
+        {
+            // Lấy tất cả skill object từ spawner ngay sau khi spawn
+            List<SkillObject> spawnedObjects = spawner.GetAllSpawnedObjects();
+            activeSkillObjects.AddRange(spawnedObjects);
+            
+            // Đợi đến khi spawner destroy (tức là tất cả skill object đã explode/destroy)
+            yield return new WaitUntil(() => spawner == null || spawner.gameObject == null);
+            
+            // Đảm bảo tất cả skill object đã explode/destroy
+            activeSkillObjects.RemoveAll(obj => obj == null || obj.gameObject == null || obj.exploded);
+            
+            // Nếu vẫn còn object chưa explode, đợi thêm
+            if (activeSkillObjects.Count > 0)
+            {
+                yield return new WaitUntil(() => 
+                {
+                    activeSkillObjects.RemoveAll(obj => obj == null || obj.gameObject == null || obj.exploded);
+                    return activeSkillObjects.Count == 0;
+                });
+            }
+            
+            // Clear danh sách khi tất cả skill object đã explode
+            activeSkillObjects.Clear();
+        }
     }
 
     IEnumerator DashToBehindTarget(BossSkillEntry skillEntry, Vector3 targetPos)
