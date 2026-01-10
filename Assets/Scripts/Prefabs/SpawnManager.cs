@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -23,6 +25,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject pkIconPrefab;
 
+    [SerializeField]
+    private GameObject skillPrefab;
 
     private void Awake()
     {
@@ -147,6 +151,58 @@ public class SpawnManager : MonoBehaviour
             return null;
         }
         return Instantiate(pkIconPrefab, Vector3.zero, Quaternion.identity);
+    }
+
+    private static Dictionary<string, SkillSpawnData> spawnDatas= new Dictionary<string, SkillSpawnData>();
+
+    public void SpawnEffectPrefab(string effectName, Transform caster, Transform target, float duration)
+    {
+        if (caster == null)
+        {
+            Debug.LogError("Caster không được null!");
+            return;
+        }
+
+        if(!spawnDatas.TryGetValue(effectName,out SkillSpawnData spawnData))
+        {
+            string resourcePath = $"Skills/Data/Skills/{effectName}";
+            spawnData = Resources.Load<SkillSpawnData>(resourcePath);
+            if (spawnData == null)
+            {
+                Debug.LogError($"Không tìm thấy SkillSpawnData: {effectName} tại {resourcePath}");
+                return;
+            }
+            spawnDatas.TryAdd(effectName, spawnData);
+        }
+
+        if (skillPrefab == null)
+        {
+            Debug.LogError("Không tìm thấy Skill Prefab!");
+            return;
+        }
+
+        GameObject skillInstance = Instantiate(
+            skillPrefab,
+            caster.position,  
+            Quaternion.identity
+        );
+
+        var skillSpawner = skillInstance.GetComponent<SkillSpawnmer>();
+
+        if (skillSpawner != null)
+        {
+            skillSpawner.Init(
+                spawnData,           
+                caster.position,     
+                target != null ? target.position : caster.position,
+                target            
+            );
+        }
+        else
+        {
+            Debug.LogError("SkillSpawnmer component không tìm thấy!");
+            Destroy(skillInstance);
+        }
     }
 
 }

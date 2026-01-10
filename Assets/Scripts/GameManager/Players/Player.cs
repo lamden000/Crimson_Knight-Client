@@ -75,15 +75,17 @@ public class Player : BasePlayer
             RequestManager.ChangePkType((PkType)4);
         }
 
-        //if (Input.GetKeyDown(KeyCode.Z))
-        //{
-        //    this.objFocus.gameObject.SetActive(false);
-        //}
+        
     }
 
-
+    public string EffectName = "ConductedEffect";
     private void UpdateInput()
     {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform, 5);
+        }
+
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             Attack(-1, objFocus);
