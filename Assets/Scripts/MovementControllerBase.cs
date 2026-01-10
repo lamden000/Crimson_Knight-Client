@@ -210,7 +210,7 @@ public abstract class MovementControllerBase : MonoBehaviour
         followCoroutine = null;
     }
 
-    protected void ClearPath()
+    public void ClearPath()
     {
         currentPath?.Clear();
         pathIndex = 0;

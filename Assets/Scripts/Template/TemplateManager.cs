@@ -8,4 +8,6 @@ using System.Threading.Tasks;
 public class TemplateManager
 {
     public static List<MonsterTemplate> MonsterTemplates = new List<MonsterTemplate>();
+    public static List<NpcTemplate> NpcTemplates = new List<NpcTemplate>();
+    public static Dictionary<ClassType, List<SkillTemplate>> SkillTemplates = new Dictionary<ClassType, List<SkillTemplate>>();
 }

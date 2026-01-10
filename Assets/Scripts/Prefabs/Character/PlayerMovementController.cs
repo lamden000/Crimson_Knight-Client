@@ -6,17 +6,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerAnimationController))]
 public class PlayerMovementController : MovementControllerBase
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float attackRange = 1.2f;
-    [SerializeField] private float attackCooldown = 0.8f;
     private static long timeStartSendMove = 0;
-    private Transform targetEnemy;
-    private bool isMovingToEnemy = false;
 
     private bool isAttacking = false;
     private float attackTimer = 0f;
@@ -28,9 +22,7 @@ public class PlayerMovementController : MovementControllerBase
     private float attackAnimDuration = 0.4f;
     private Vector2 moveInput;
     private bool isGettingHit = false;
-    [Header("Interaction")]
-    [SerializeField] private float npcInteractRange = 1.2f;
-    private Coroutine npcTalkCoroutine;
+   
 
 
     public bool IsMainPlayer = false;
@@ -46,10 +38,7 @@ public class PlayerMovementController : MovementControllerBase
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnMove(InputValue input)
-    {
-        moveInput = input.Get<Vector2>();
-    }
+
 
     private void Update()
     {
@@ -58,98 +47,23 @@ public class PlayerMovementController : MovementControllerBase
             desiredVelocity = Vector2.zero;
             return;
         }
-        moveAxisInput = new Vector2(moveInput.x, moveInput.y);
 
         UpdateAttackTimers();
 
-        if (isMovingToEnemy && targetEnemy != null)
+        if (IsMainPlayer)
         {
-            if (moveAxisInput != Vector2.zero)
+            if (Main.IsMobile())
             {
-                CancelAutoFollow();
-                ManualMove();
-                return;
-            }
-
-            Monster enemy = targetEnemy.GetComponent<Monster>();
-            if (enemy == null)
-            {
-                CancelAutoFollow();
-                return;
-            }
-
-            AutoMoveToEnemyPath();
-            return;
-        }
-
-        if (npcTalkCoroutine != null)
-        {
-            if (moveAxisInput != Vector2.zero)
-            {
-                StopCoroutine(npcTalkCoroutine);
-                npcTalkCoroutine = null;
-                CancelAutoFollow();
-                ManualMove();
-                return;
-            }
-            return;
-        }
-        var mouse = Mouse.current;
-        var touchScreen = Touchscreen.current;
-
-        if (mouse != null && mouse.leftButton.wasPressedThisFrame ||
-                    touchScreen != null && touchScreen.primaryTouch.press.wasPressedThisFrame)
-        {
-            Camera cam = Camera.main;
-            Vector2 screenPos = Vector2.zero;
-            if (touchScreen == null)
-            {
-                screenPos = Mouse.current.position.ReadValue();
+                moveInput = MovementButtonManager.MovementInput;
             }
             else
             {
-                screenPos = touchScreen.position.ReadValue();
+                float horizontal = Input.GetAxisRaw("Horizontal"); 
+                float vertical = Input.GetAxisRaw("Vertical");    
+                moveInput = new Vector2(horizontal, vertical);
             }
-            Vector3 screenToWorld = cam.ScreenToWorldPoint(screenPos);
-            Vector2 worldPos = new Vector2(screenToWorld.x, screenToWorld.y);
-            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-
-            if (hit.collider != null)
-            {
-                if (hit.collider.CompareTag("Enemy"))
-                {
-                    ClearPath();
-                    targetEnemy = hit.transform;
-                    isMovingToEnemy = true;
-                }
-                else if (hit.collider.CompareTag("NPC"))
-                {
-                    var npc = hit.collider.GetComponent<NPCDialogueController>();
-                    if (npc == null) return;
-                    CancelAutoFollow();
-                    if (npcTalkCoroutine != null)
-                    {
-                        StopCoroutine(npcTalkCoroutine);
-                        npcTalkCoroutine = null;
-                    }
-
-                    Vector3 dirToNpc = (npc.transform.position - transform.position).normalized;
-                    Direction dir;
-                    if (Mathf.Abs(dirToNpc.x) > Mathf.Abs(dirToNpc.y))
-                        dir = dirToNpc.x > 0 ? Direction.Right : Direction.Left;
-                    else
-                        dir = dirToNpc.y > 0 ? Direction.Up : Direction.Down;
-
-                    anim.SetAnimation(dir, State.Walk);
-                    npcTalkCoroutine = StartCoroutine(MoveToNPCAndTalk(npc));
-                }
-                return;
-            }
-        }
-
-        if (IsMainPlayer)
-        {
-            moveAxisInput = new Vector2(moveInput.x, moveInput.y);
+            
+            moveAxisInput = moveInput;
             ManualMove();
         }
     }
@@ -229,54 +143,6 @@ public class PlayerMovementController : MovementControllerBase
     }
 
 
-    private void AutoMoveToEnemyPath()
-    {
-        if (targetEnemy == null)
-        {
-            Debug.LogWarning("[AutoMove] ❌ No target enemy!");
-            return;
-        }
-
-        Vector3 dir = targetEnemy.position - transform.position;
-
-        // Nếu trong tầm đánh
-        if (dir.magnitude <= attackRange)
-        {
-            desiredVelocity = Vector2.zero;
-            TryAttack(dir);
-            return;
-        }
-
-        // Nếu chưa có path hoặc đã đến node hiện tại → tìm lại đường và bắt đầu coroutine follow
-        if (currentPath == null || currentPath.Count == 0 || ReachedTargetTile() || pathfinder != null)
-        {
-            var startNode = pathfinder.GetTileFromWorld(transform.position);
-            var endNode = pathfinder.GetTileFromWorld(targetEnemy.position);
-
-            if (startNode == null || endNode == null)
-            {
-                Debug.LogWarning("[AutoMove] ❌ StartNode or EndNode is null!");
-                return;
-            }
-
-            // pass the agent's BoxCollider2D size to pathfinder so obstacles are considered with agent's size
-            var agentSize = GetAgentSizeFromCollider(boxCollider);
-            var path = pathfinder.FindPath(startNode, endNode, agentSize);
-            if (path == null || path.Count == 0)
-            {
-                return;
-            }
-
-            SetCurrentPathFromNodes(path);
-            pathIndex = 0;
-
-            // start base follow coroutine, but stop early when within attackRange of the enemy
-            StartFollow(1f, attackRange, targetEnemy);
-            return;
-        }
-    }
-
-
     override protected void MoveAlongPath()
     {
         if (currentPath == null || pathIndex >= currentPath.Count)
@@ -313,45 +179,6 @@ public class PlayerMovementController : MovementControllerBase
         }
     }
 
-    private bool ReachedTargetTile()
-    {
-        if (targetEnemy == null) return false;
-        if (!EnsurePathfinder()) return false;
-
-        var playerNode = pathfinder.GetTileFromWorld(transform.position);
-        var enemyNode = pathfinder.GetTileFromWorld(targetEnemy.position);
-        if (playerNode == null || enemyNode == null) return false;
-        return playerNode.gridPos == enemyNode.gridPos;
-    }
-
-    private void TryAttack(Vector3 dir)
-    {
-        if (isAttacking || attackCooldownTimer > 0) return;
-
-        isAttacking = true;
-        attackTimer = 0f;
-        attackCooldownTimer = attackCooldown;
-        desiredVelocity = Vector2.zero;
-
-        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-        {
-            Direction direction = (dir.x > 0)
-                ? Direction.Right
-                : Direction.Left; ;
-            anim.SetAnimation(direction, State.Attack);
-        }
-        else
-        {
-            if (dir.y > 0)
-                anim.SetAnimation(Direction.Up, State.Attack);
-            else
-                anim.SetAnimation(Direction.Down, State.Attack);
-        }
-        targetEnemy.gameObject.GetComponent<MonsterPrefab>().TakeDamage(100, gameObject);
-    }
-
-
-
     bool flag = false;
     private void ManualMove()
     {
@@ -362,12 +189,7 @@ public class PlayerMovementController : MovementControllerBase
         if (moving)
         {
             flag = true;
-            // manual input cancels any pending NPC interaction
-            if (npcTalkCoroutine != null)
-            {
-                StopCoroutine(npcTalkCoroutine);
-                npcTalkCoroutine = null;
-            }
+            
             if (Mathf.Abs(h) > Mathf.Abs(v))
             {
                 desiredVelocity = new Vector2(h * moveSpeed, 0);
@@ -391,7 +213,11 @@ public class PlayerMovementController : MovementControllerBase
         }
         else
         {
-            anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
+            PlayerAnimationController controller = gameObject.GetComponent<PlayerAnimationController>();
+            if(controller.currentState != State.Attack)
+            {
+                anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
+            }
             desiredVelocity = Vector2.zero;
             if (flag)
             {
@@ -403,47 +229,14 @@ public class PlayerMovementController : MovementControllerBase
 
     private void CancelAutoFollow()
     {
-        isMovingToEnemy = false;
-        targetEnemy = null;
-        // stop any running follow coroutine from base
         if (followCoroutine != null)
         {
             StopCoroutine(followCoroutine);
             followCoroutine = null;
         }
-        // stop any pending NPC interaction
-        if (npcTalkCoroutine != null)
-        {
-            StopCoroutine(npcTalkCoroutine);
-            npcTalkCoroutine = null;
-        }
+       
         ClearPath();
     }
-
-    private IEnumerator MoveToNPCAndTalk(NPCDialogueController npc)
-    {
-        if (npc == null) yield break;
-
-        if (Vector3.Distance(transform.position, npc.transform.position) <= npcInteractRange)
-        {
-            npc.StartDialogue();
-            npcTalkCoroutine = null;
-            yield break;
-        }
-
-        // use base MoveToTarget that stops when within npcInteractRange
-        yield return StartCoroutine(MoveToTarget(npc.transform, npcInteractRange, arrivalDistance));
-
-        // after arriving, ensure npc still exists then start dialogue
-        if (npc != null)
-        {
-            npc.StartDialogue();
-        }
-
-        npcTalkCoroutine = null;
-    }
-
-
 
     protected override void OnPathFinished()
     {

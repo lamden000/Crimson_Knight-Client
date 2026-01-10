@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Utils;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +14,8 @@ namespace Assets.Scripts.Networking
 {
     public static class Session
     {
-        public static string serverIp = "127.0.0.1";
-        public static int serverPort = 7679;
+        public static string serverIp = NetworkingUtil.GetBaseUri().Replace("http://", "").Replace("https://", "");
+        public static int serverPort = NetworkingUtil.GetPortTcp();
 
         private static TcpClient tcpClient;
         private static NetworkStream stream;
@@ -72,7 +73,7 @@ namespace Assets.Scripts.Networking
         }
         private static void SendTokenHandshake(string token)
         {
-            Message msg = new Message(MessageId.LOGIN);
+            Message msg = new Message(MessageId.CLIENT_LOGIN);
             msg.WriteString(token);
             SendMessage(msg);
         }

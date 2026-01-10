@@ -1,20 +1,15 @@
 ﻿using UnityEngine;
 
 public enum MonsterState { Idle, Walk, Attack, GetHit }
-//public enum MonsterName {Slime=1000,Snail=1001,Scorpion=1103,Bunny=1173,Frog=1215 }
 
 public class MonsterPrefab : MonoBehaviour
 {
     private MonsterMovementController movementController;
-    //private MonsterName monsterName=MonsterName.Slime;
-    public float damage { private set; get; } = 10f;
 
     public MonsterState currentState;
     private bool isDead=false;
-    [Tooltip("Tự động tấn công người chơi khi lại gần")]
-    public bool isHostile = false;
 
-    public bool IsDead { get { return isDead; } }
+
     public int ImageId;
     void Start()
     {
@@ -22,31 +17,38 @@ public class MonsterPrefab : MonoBehaviour
         currentState = MonsterState.Idle;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    //public MonsterName GetName()
-    //{ return monsterName; }
-    //public void SetName(MonsterName name)
-    //{
-    //    monsterName = name;
-    //}
-
     public void SetState(MonsterState state)
     {
         if (isDead) return;
         currentState = state;
     }
 
-    public void TakeDamage(int damage,GameObject attacker)
+    public void AniTakeDamage()
     {
         SetState(MonsterState.GetHit);
-        if (movementController != null && attacker != null)
+        if (movementController != null)
         {
-            movementController.HandleGetHit(attacker.transform);
+            movementController.HandleGetHit();
         }
+    }
+
+    public void AniAttack(GameObject target)
+    {
+        SetState(MonsterState.Attack);
+
+        if (movementController != null && target != null)
+        {
+            bool shouldFlipRight = target.transform.position.x > transform.position.x;
+            movementController.FlipSprite(shouldFlipRight);
+        }
+
+        StartCoroutine(ResetToIdleAfterAttack());
+    }
+    private System.Collections.IEnumerator ResetToIdleAfterAttack()
+    {
+        float delay = movementController != null ? movementController.animationDelay : 0.4f;
+        yield return new WaitForSeconds(delay);
+
+        SetState(MonsterState.Idle);
     }
 }

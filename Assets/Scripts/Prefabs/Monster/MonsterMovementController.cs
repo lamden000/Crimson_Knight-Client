@@ -4,28 +4,16 @@ using System.Collections;
 public class MonsterMovementController : MovementControllerBase
 {
     [Header("Patrol Area Settings")]
-    public int R = 5;
+    public int R = 2;
     public float waitTime = 1f;
-
-    [Header("Combat Settings")]
-    public float attackRange = 100f;
-    public float attackCooldown = 2f;
-    public float animationDelay = 0.2f;
-
-    private Transform playerTarget;
-    private bool isAttackOnCooldown = false;
-    private Coroutine chaseCoroutine;
-    private int chaseFailCount = 0;
-    private int maxChaseFail = 3;
 
     private TileNode centerNode;
     private MonsterPrefab enemy;
     private int minX, maxX, minZ, maxZ;
 
-    // dùng currentPath (List<Vector3>) và pathIndex từ base
     public bool isPatrolling = false;
     public bool isDebugging = false;
-
+    public float animationDelay = 0.2f;
     private Coroutine patrolCoroutine;
 
     override protected void Start()
@@ -41,117 +29,34 @@ public class MonsterMovementController : MovementControllerBase
         StartCoroutine(WaitForPathfinderInitialization());
     }
 
-    public void StartChase(Transform target)
+
+    public void HandleGetHit()
     {
         StopPatrol();
-        playerTarget = target;
-        chaseFailCount = 0;
-        if (isDebugging) Debug.Log($"[Chase] Bắt đầu truy đuổi mục tiêu: {target.name}");
-        if (chaseCoroutine != null) StopCoroutine(chaseCoroutine);
-        chaseCoroutine = StartCoroutine(ChaseRoutine());
-    }
 
-    public void HandleGetHit(Transform attacker)
-    {
-        StopPatrol();
-        if (chaseCoroutine != null) StopCoroutine(chaseCoroutine);
-
-        if (isDebugging) Debug.Log("[GetHit] Kẻ địch bị đánh. Dừng mọi Coroutine di chuyển.");
+        if (isDebugging) Debug.Log("[GetHit] Kẻ địch bị đánh. Dừng di chuyển.");
 
         enemy.SetState(MonsterState.GetHit);
 
-        StartCoroutine(GetHitDelay(attacker));
+        StartCoroutine(GetHitDelay());
     }
 
-    private IEnumerator GetHitDelay(Transform attacker)
+    private IEnumerator GetHitDelay()
     {
-        if (isDebugging) Debug.Log($"[GetHitDelay] Bắt đầu chờ animation GetHit ({animationDelay}s).");
-        yield return new WaitForSeconds(animationDelay);
+        yield return new WaitForSeconds(0.2f);
+
         StopMoving();
-        if (attacker != null)
+
+        if (isDebugging) Debug.Log("[GetHitDelay] Animation GetHit kết thúc. Quay lại Patrol.");
+        enemy.SetState(MonsterState.Idle);
+
+        if (!isPatrolling && patrolCoroutine == null)
         {
-            if (isDebugging) Debug.Log("[GetHitDelay] Animation GetHit kết thúc. Bắt đầu CHASE.");
-            StartChase(attacker);
-        }
-        else
-        {
-            if (isDebugging) Debug.Log("[GetHitDelay] Không có Attacker. Quay lại Patrol.");
             patrolCoroutine = StartCoroutine(PatrolRoutine());
         }
     }
 
-    private IEnumerator ChaseRoutine()
-    {
-        if (isDebugging) Debug.Log("[ChaseRoutine] Bắt đầu vòng lặp truy đuổi.");
 
-        while (playerTarget != null && enemy.currentState != MonsterState.GetHit)
-        {
-            float distance = Vector3.Distance(transform.position, playerTarget.position);
-
-            if (distance <= attackRange && !isAttackOnCooldown)
-            {
-                if (isDebugging) Debug.Log($"[ChaseRoutine] Khoảng cách {distance:F2} <= AttackRange. Bắt đầu TẤN CÔNG.");
-                yield return StartCoroutine(AttackAction());
-            }
-            else if (distance > attackRange)
-            {
-                if (isDebugging) Debug.Log($"[ChaseRoutine] Khoảng cách {distance:F2} > AttackRange. Bắt đầu DI CHUYỂN.");
-
-                // Check whether a path to the dynamic target exists before attempting to move.
-                var testPath = BuildPathToWorld(playerTarget.position);
-                if (testPath == null || testPath.Count == 0)
-                {
-                    chaseFailCount++;
-                    if (isDebugging) Debug.Log($"[ChaseRoutine] Không thể tìm đường tới mục tiêu (thất bại {chaseFailCount}/{maxChaseFail}).");
-                    if (chaseFailCount >= maxChaseFail)
-                    {
-                        // Return to center and resume patrol
-                        yield return StartCoroutine(ReturnToCenterAndResumePatrol());
-                        yield break;
-                    }
-                    // wait a bit before retrying
-                    yield return new WaitForSeconds(waitTime);
-                    continue;
-                }
-
-                // valid path found — reset fail counter and proceed with movement
-                chaseFailCount = 0;
-                enemy.SetState(MonsterState.Walk);
-                yield return StartCoroutine(MoveToTarget(playerTarget, attackRange, arrivalDistance));
-                StopMoving();
-            }
-            else
-            {
-                if (isDebugging) Debug.Log("[ChaseRoutine] Đang chờ Cooldown. Trạng thái Idle.");
-                StopMoving();
-                yield return null;
-            }
-            yield return null;
-        }
-        if (isDebugging) Debug.Log("[ChaseRoutine] Vòng lặp truy đuổi kết thúc.");
-    }
-
-    private IEnumerator AttackAction()
-    {
-        if (isDebugging) Debug.Log("[AttackAction] Thiết lập Attack. Cooldown BẮT ĐẦU.");
-
-        ClearPath();
-        enemy.SetState(MonsterState.Attack);
-        isAttackOnCooldown = true;
-
-        FlipSprite(playerTarget.position.x > transform.position.x);
-
-        yield return new WaitForSeconds(animationDelay);
-
-        playerTarget.gameObject.GetComponent<Character>().TakeDamage(enemy.damage,gameObject);
-
-        StopMoving();
-
-        yield return new WaitForSeconds(attackCooldown - animationDelay);
-        isAttackOnCooldown = false;
-    }
-
-    // NOTE: Uses MovementControllerBase.MoveToTarget coroutine now.
 
     IEnumerator WaitForPathfinderInitialization()
     {
@@ -169,30 +74,6 @@ public class MonsterMovementController : MovementControllerBase
         }
 
         CalculatePatrolBounds();
-        patrolCoroutine = StartCoroutine(PatrolRoutine());
-    }
-
-    private IEnumerator ReturnToCenterAndResumePatrol()
-    {
-        if (isDebugging) Debug.Log("[Chase] Quá nhiều lần không tìm thấy đường. Quay trở lại tâm để tuần tra.");
-
-        if (chaseCoroutine != null)
-        {
-            StopCoroutine(chaseCoroutine);
-            chaseCoroutine = null;
-        }
-
-        playerTarget = null;
-        ClearPath();
-        StopMoving();
-
-        if (centerNode != null)
-        {
-            // Move back to the spawn/center node, then resume patrol
-            yield return StartCoroutine(MoveToTarget(centerNode.worldPos, arrivalDistance, 0f));
-        }
-
-        isPatrolling = true;
         patrolCoroutine = StartCoroutine(PatrolRoutine());
     }
 
@@ -224,14 +105,16 @@ public class MonsterMovementController : MovementControllerBase
     {
         int centerX = centerNode.gridPos.x;
         int centerZ = centerNode.gridPos.y;
-        minX = centerX;
-        minZ = centerZ;
 
-        maxX = centerX + R - 1;
-        maxZ = centerZ + R - 1;
+        int halfR = R / 2;
+
+        minX = centerX - halfR;
+        minZ = centerZ - halfR;
+        maxX = centerX + halfR;
+        maxZ = centerZ + halfR;
 
         if (isDebugging)
-            Debug.Log($". Center Node: {centerX},{centerZ}; Khu vực tuần tra {R}x{R} đã thiết lập: X [{minX}, {maxX}], Z [{minZ}, {maxZ}]. Tổng số tile: {R * R}");
+            Debug.Log($"Center: ({centerX},{centerZ}); Patrol area {R}x{R} tiles: X [{minX}, {maxX}], Z [{minZ}, {maxZ}]");
     }
 
     TileNode GetRandomPatrolNode()
@@ -365,7 +248,7 @@ public class MonsterMovementController : MovementControllerBase
         enemy.SetState(MonsterState.Idle);
     }
 
-    private void FlipSprite(bool flip)
+    public void FlipSprite(bool flip)
     {
         Vector3 scale = transform.localScale;
         float targetScaleX = flip ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
@@ -399,5 +282,17 @@ public class MonsterMovementController : MovementControllerBase
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(targetPos, 5f);
         }    
+    }
+
+    protected void OnEnable()
+    {
+        ClearPath();
+        desiredVelocity = Vector2.zero;
+        StopAllCoroutines();
+        if (centerNode != null && pathfinder != null)
+        {
+            isPatrolling = true;
+            patrolCoroutine = StartCoroutine(PatrolRoutine());
+        }
     }
 }

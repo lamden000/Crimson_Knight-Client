@@ -9,12 +9,14 @@ public class Main : MonoBehaviour
 
     public CameraFollow cameraFollow;
 
+    private static bool isPC = true;
     void Awake()
     {
 
         if (Application.platform == RuntimePlatform.Android ||
             Application.platform == RuntimePlatform.IPhonePlayer)
         {
+            isPC = false;
             ConfigurePixelPerfectCameraForMobile();
         }
         else if (Application.isEditor ||
@@ -76,5 +78,16 @@ public class Main : MonoBehaviour
             ppc = Camera.main.gameObject.AddComponent<PixelPerfectCamera>();
         }
         return ppc;
+    }
+
+
+    public static bool IsPC()
+    {
+        return isPC;
+    }
+
+    public static bool IsMobile()
+    {
+        return !isPC;
     }
 }

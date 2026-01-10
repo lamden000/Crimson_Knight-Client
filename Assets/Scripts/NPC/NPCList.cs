@@ -1,1 +1,0 @@
-﻿public enum NPCName {Commander=4,Mom=34,Guard_1=32,Angel=39,Santa=42,Merchant=43,Waypoint=47,ChrismasTree=48 }

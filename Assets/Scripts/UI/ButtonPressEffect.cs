@@ -8,7 +8,7 @@ public class ButtonPressEffect : MonoBehaviour, IPointerDownHandler, IPointerUpH
     public float animationSpeed = 10f;
 
     private Vector3 originalScale;
-    private bool isPressed = false;
+    public bool isPressed = false; 
 
     void Start()
     {

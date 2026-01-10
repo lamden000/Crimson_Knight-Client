@@ -13,15 +13,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private DialogFactory dialogFactory;
 
-    public Canvas LoginScreenCanvas;
-    public Canvas LoadScreenCanvas;
-    public GameObject GameScreenCanvas;
-
-    #region login
-    public TMP_InputField inputUsername;
-    public TMP_InputField inputPassword;
-    public Button btnLogin;
-    #endregion
+    [SerializeField] private LoginScreenUIManager loginScreenUIManager;
+    [SerializeField] public GameScreenUIManager gameScreenUIManager;
+    [SerializeField] private LoadScreenUIManager loadScreenUIManager;
 
     void Awake()
     {
@@ -30,12 +24,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
-
-        btnLogin.onClick.RemoveAllListeners();
-        btnLogin.onClick.AddListener(onClickLogin);
-
         Debug.Log("[UIManager] Awake");
     }
 
@@ -80,9 +69,9 @@ public class UIManager : MonoBehaviour
     {
         UIManager.CurrentScreenType = ScreenType.LoginScreen;
 
-        this.LoginScreenCanvas.gameObject.SetActive(true);
-        this.LoadScreenCanvas.gameObject.SetActive(false);
-        this.GameScreenCanvas.SetActive(false);
+        this.loginScreenUIManager.ShowUI();
+        this.loadScreenUIManager.HideUI();
+        this.gameScreenUIManager.HideUI();
 
         Debug.Log("[UIManager] EnableLoginScreen");
         Debug.Log("[UIManager] Play Login Music");
@@ -92,7 +81,7 @@ public class UIManager : MonoBehaviour
 
     public void DisableLoginScreen()
     {
-        this.LoginScreenCanvas.gameObject.SetActive(false);
+        this.loginScreenUIManager.HideUI();
         Debug.Log("[UIManager] DisableLoginScreen");
     }
 
@@ -100,25 +89,25 @@ public class UIManager : MonoBehaviour
     {
         UIManager.CurrentScreenType = ScreenType.LoadScreen;
 
-        this.LoginScreenCanvas.gameObject.SetActive(false);
-        this.LoadScreenCanvas.gameObject.SetActive(true);
-        this.GameScreenCanvas.SetActive(false);
+        Debug.Log(loginScreenUIManager.gameObject.name);
+        this.loginScreenUIManager.HideUI();
+        this.loadScreenUIManager.ShowUI();
+        this.gameScreenUIManager.HideUI();
 
         Debug.Log("[UIManager] EnableLoadScreen (keep current music)");
-        // Không đổi nhạc vì AudioManager không có nhạc load
     }
 
     public void DisableLoadScreen()
     {
-        this.LoadScreenCanvas.gameObject.SetActive(false);
+        this.loadScreenUIManager.HideUI();
         Debug.Log("[UIManager] DisableLoadScreen");
     }
 
     public void EnableGameScreen()
     {
-        this.GameScreenCanvas.SetActive(true);
-        this.LoginScreenCanvas.gameObject.SetActive(false);
-        this.LoadScreenCanvas.gameObject.SetActive(false);
+        this.gameScreenUIManager.ShowUI();
+        this.loginScreenUIManager.HideUI();
+        this.loadScreenUIManager.HideUI();
 
         Debug.Log("[UIManager] EnableGameScreen");
         Debug.Log("[UIManager] Play Game Music");
@@ -128,34 +117,10 @@ public class UIManager : MonoBehaviour
 
     public void DisableGameScreen()
     {
-        this.GameScreenCanvas.SetActive(false);
+        this.gameScreenUIManager.HideUI();
         Debug.Log("[UIManager] DisableGameScreen");
     }
-
     #endregion
 
-    #region login logic
 
-    private async void onClickLogin()
-    {
-        Debug.Log("[UIManager] Login button clicked");
-
-        string username = inputUsername.text;
-        string password = inputPassword.text;
-
-        EnableLoadScreen();
-
-        if (!await TemplateService.LoadTemplatesAysnc())
-        {
-            Debug.LogError("[UIManager] LoadTemplatesAysnc failed");
-            UIManager.Instance.ShowOK("Vui lòng thử lại!");
-            EnableLoginScreen();
-            return;
-        }
-
-        Debug.Log("[UIManager] SendLoginRequest");
-        await LoginService.SendLoginRequest(username, password);
-    }
-
-    #endregion
 }

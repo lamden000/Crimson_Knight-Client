@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Networking.Dtos;
 using Assets.Scripts.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-
 namespace Assets.Scripts.Networking
 {
     public static class TemplateService
@@ -27,8 +27,10 @@ namespace Assets.Scripts.Networking
 
                     try
                     {
-                        LoadTemplateRespone res = JsonUtility.FromJson<LoadTemplateRespone>(responseJson);
+                        LoadTemplateRespone res = JsonConvert.DeserializeObject<LoadTemplateRespone>(responseJson);
                         TemplateManager.MonsterTemplates = res.MonsterTemplates;
+                        TemplateManager.NpcTemplates = res.NpcTemplates;
+                        TemplateManager.SkillTemplates = res.SkillTemplates;
                         flag = true;
                     }
                     catch (Exception ex)

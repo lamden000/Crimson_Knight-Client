@@ -1,16 +1,32 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject CharacterPrefab;
 
-    [SerializeField]
-    private GameObject OtherCharacterPrefab;
 
     [SerializeField]
     private GameObject monsterPrefab;
 
+    [SerializeField]
+    private GameObject npcPrefab;
+
+    [SerializeField]
+    private GameObject displayBaseObjectNamePrefab;
+
+    [SerializeField]
+    private GameObject txtDisplayTakeDamagePrefab;
+
+    [SerializeField]
+    private GameObject pkIconPrefab;
+
+    [SerializeField]
+    private GameObject skillPrefab;
 
     private void Awake()
     {
@@ -34,16 +50,6 @@ public class SpawnManager : MonoBehaviour
         return Instantiate(CharacterPrefab, new Vector3(x, y, 0), Quaternion.identity);
     }
 
-    public GameObject SpawnOtherCharacterPrefab(int x, int y)
-    {
-        if (OtherCharacterPrefab == null)
-        {
-            Debug.LogError("Lỗi: CharacterPrefab chưa được gán.");
-            return null;
-        }
-        return Instantiate(OtherCharacterPrefab, new Vector3(x, y, 0), Quaternion.identity);
-    }
-
 
     public GameObject SpawnMonsterPrefab(int x, int y, int templateId)
     {
@@ -57,6 +63,146 @@ public class SpawnManager : MonoBehaviour
         var monsterCtrl = monster.GetComponent<MonsterPrefab>();
         monsterCtrl.ImageId = TemplateManager.MonsterTemplates[templateId].ImageId;
         return monster;
+    }
+
+    public GameObject SpawnNpcPrefab(int x, int y, int templateId)
+    {
+        if (npcPrefab == null)
+        {
+            Debug.LogError("Npc prefab not assigned!");
+            return null;
+        }
+        GameObject npc = Instantiate(npcPrefab, new Vector2(x, y), Quaternion.identity);
+        var npcCtrl = npc.GetComponent<NPCPrefab>();
+        if (npcCtrl != null)
+        {
+            npcCtrl.Init(TemplateManager.NpcTemplates[templateId]);
+        }
+        return npc;
+    }
+
+    public GameObject SpawnDisplayBaseObjectNamePrefab(string name)
+    {
+        if (displayBaseObjectNamePrefab == null)
+        {
+            Debug.LogError("DisplayBaseObjectName prefab not assigned!");
+            return null;
+        }
+        GameObject displayObj = Instantiate(displayBaseObjectNamePrefab, Vector3.zero, Quaternion.identity);
+        TextMeshPro tmp = displayObj.GetComponent<TextMeshPro>();
+        if (tmp != null)
+        {
+            tmp.text = name;
+        }
+        else
+        {
+            Debug.LogError("TextMeshPro k tim thay!");
+        }
+        return displayObj;
+    }
+
+    public GameObject SpawnTxtDisplayTakeDamagePrefab(int x, int y, int dame)
+    {
+        IEnumerator MoveUpAndDestroy(GameObject obj, float lifeTime, float speed)
+        {
+            float timer = 0f;
+
+            while (timer < lifeTime)
+            {
+                if (obj == null)
+                    yield break;
+
+                obj.transform.position += Vector3.up * speed * Time.deltaTime;
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            Destroy(obj);
+        }
+
+        if (txtDisplayTakeDamagePrefab == null)
+        {
+            Debug.Log("TxtDisplayTakeDamagePrefab prefab not assigned!");
+            return null;
+        }
+
+        GameObject obj = Instantiate(
+            txtDisplayTakeDamagePrefab,
+            new Vector2(x, y),
+            Quaternion.identity
+        );
+
+        TextMeshPro tmp = obj.GetComponent<TextMeshPro>();
+        if (tmp != null)
+        {
+            tmp.text = "-" + dame;
+        }
+
+        StartCoroutine(MoveUpAndDestroy(obj, 1.0f, 20.0f));
+
+        return obj;
+    }
+
+    public GameObject SpawnPkIconPrefab()
+    {
+        if (pkIconPrefab == null)
+        {
+            Debug.LogError("pkIconPrefab prefab not assigned!");
+            return null;
+        }
+        return Instantiate(pkIconPrefab, Vector3.zero, Quaternion.identity);
+    }
+
+    private static Dictionary<string, SkillSpawnData> spawnDatas= new Dictionary<string, SkillSpawnData>();
+
+    public void SpawnEffectPrefab(string effectName, Transform caster, Transform target, float duration)
+    {
+        if (caster == null)
+        {
+            Debug.LogError("Caster không được null!");
+            return;
+        }
+
+        if(!spawnDatas.TryGetValue(effectName,out SkillSpawnData spawnData))
+        {
+            string resourcePath = $"Skills/Data/Skills/{effectName}";
+            spawnData = Resources.Load<SkillSpawnData>(resourcePath);
+            if (spawnData == null)
+            {
+                Debug.LogError($"Không tìm thấy SkillSpawnData: {effectName} tại {resourcePath}");
+                return;
+            }
+            spawnDatas.TryAdd(effectName, spawnData);
+        }
+
+        if (skillPrefab == null)
+        {
+            Debug.LogError("Không tìm thấy Skill Prefab!");
+            return;
+        }
+
+        GameObject skillInstance = Instantiate(
+            skillPrefab,
+            caster.position,  
+            Quaternion.identity
+        );
+
+        var skillSpawner = skillInstance.GetComponent<SkillSpawnmer>();
+
+        if (skillSpawner != null)
+        {
+            skillSpawner.Init(
+                spawnData,           
+                caster.position,     
+                target != null ? target.position : caster.position,
+                target            
+            );
+        }
+        else
+        {
+            Debug.LogError("SkillSpawnmer component không tìm thấy!");
+            Destroy(skillInstance);
+        }
     }
 
 }

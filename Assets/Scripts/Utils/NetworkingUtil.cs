@@ -8,15 +8,30 @@ namespace Assets.Scripts.Utils
 {
     public static class NetworkingUtil
     {
-        private const string base_url = "http://localhost:7678";
         public static string GetLoginApiUrl()
         {
-            return base_url + "/login";
+            return GetBaseUri() + ":" + GetPortHttp() + "/login";
         }
 
         public static string GetLoadTemplateApiUrl()
         {
-            return base_url + "/load-templates";
+            return GetBaseUri() + ":" + GetPortHttp() + "/load-templates";
+        }
+
+
+        public static string GetBaseUri()
+        {
+           return "http://localhost";
+        }
+
+        public static int GetPortHttp()
+        {
+            return 7678;
+        }
+
+        public static int GetPortTcp()
+        {
+            return 7679;
         }
     }
 

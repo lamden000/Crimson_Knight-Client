@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-[Serializable]
-public class MonsterTemplate
+﻿public class MonsterTemplate
 {
-    public int Id;
-    public string Name;
-    public int ImageId;
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int ImageId { get; set; }
+    public short Level { get; set; }
 }

@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Scripts.Networking
+﻿public enum MessageId : short
 {
-    public enum MessageId : short
-    {
-        LOGIN,
-        PLAYER_MOVE,
-        PLAYER_ENTER_MAP,
-        PLAYER_OTHERPLAYERS_IN_MAP,
-        PLAYER_MONSTERS_IN_MAP,
+    //client,
+    CLIENT_LOGIN,
+    CLIENT_PLAYER_MOVE,
+    CLIENT_ENTER_MAP,
+    CLIENT_SHOW_MENU,
+    CLIENT_SELECT_MENU_ITEM,
+    CLIENT_PLAYER_ATTACK,
+    CLIENT_PLAYER_CHANGE_PKTYPE,
 
-        //send other
-        OTHER_PLAYER_MOVE,
-        OTHER_PLAYER_ENTER_MAP,
-        OTHER_PLAYER_EXIT_MAP
-    }
+    //server
+    SERVER_LOGIN,
+    SERVER_PLAYER_MOVE,
+    SERVER_ENTER_MAP,
+    SERVER_SHOW_MENU,
+    SERVER_PLAYER_EXIT_MAP,
+    SERVER_MONSTERS_IN_MAP,
+    SERVER_NPCS_IN_MAP,
+    SERVER_OTHERPLAYERS_IN_MAP,
+    SERVER_PLAYER_BASE_INFO,
+    SERVER_PLAYER_SKILL_INFO,
+    SERVER_MONSTER_BASE_INFO,
+    SERVER_PLAYER_ATTACK,
+    SERVER_PLAYER_PKTYPE_INFO,
+    SERVER_MONSTER_ATTACK
 }
