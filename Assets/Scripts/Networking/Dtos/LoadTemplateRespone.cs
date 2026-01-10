@@ -11,5 +11,8 @@ namespace Assets.Scripts.Networking.Dtos
         public List<MonsterTemplate> MonsterTemplates;
         public List<NpcTemplate> NpcTemplates;
         public Dictionary<ClassType, List<SkillTemplate>> SkillTemplates;
+        public List<ItemEquipmentTemplate> ItemEquipmentTemplates;
+        public List<ItemConsumableTemplate> ItemConsumableTemplates;
+        public List<ItemMaterialTemplate> ItemMaterialTemplates;
     }
 }

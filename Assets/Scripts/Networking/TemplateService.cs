@@ -31,6 +31,9 @@ namespace Assets.Scripts.Networking
                         TemplateManager.MonsterTemplates = res.MonsterTemplates;
                         TemplateManager.NpcTemplates = res.NpcTemplates;
                         TemplateManager.SkillTemplates = res.SkillTemplates;
+                        TemplateManager.ItemEquipmentTemplates = res.ItemEquipmentTemplates;
+                        TemplateManager.ItemConsumableTemplates = res.ItemConsumableTemplates;
+                        TemplateManager.ItemMaterialTemplates = res.ItemMaterialTemplates;
                         flag = true;
                     }
                     catch (Exception ex)
