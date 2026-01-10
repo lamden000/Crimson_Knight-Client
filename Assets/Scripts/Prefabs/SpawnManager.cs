@@ -155,7 +155,7 @@ public class SpawnManager : MonoBehaviour
 
     private static Dictionary<string, SkillSpawnData> spawnDatas= new Dictionary<string, SkillSpawnData>();
 
-    public void SpawnEffectPrefab(string effectName, Transform caster, Transform target, float duration)
+    public void SpawnEffectPrefab(string effectName, Transform caster, Transform target, float duration = 0.5f)
     {
         if (caster == null)
         {

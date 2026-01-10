@@ -13,10 +13,11 @@ public class OtherPlayer : BasePlayer
 
     public Queue<Tuple<int,int>> Moves = new Queue<Tuple<int,int>>();
 
-    public static OtherPlayer Create(int id, string name, short x, short y)
+    public static OtherPlayer Create(int id, string name, short x, short y,ClassType classType)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(x, y);
         OtherPlayer otherPlayer = gameObject.AddComponent<OtherPlayer>();
+        otherPlayer.ClassType = classType;
         otherPlayer.SetupPrefab();
         //
         otherPlayer.Id = id;

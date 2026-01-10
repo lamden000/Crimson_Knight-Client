@@ -8,7 +8,7 @@ public class SkillTemplate
     public int LevelPlayerRequire { get; set; }
     public bool IsBuff { get; set; }
     public short IconId { get; set; }
-
+    public string EffectName { get; set; }
     public List<Variant> Variants { get; set; }
     public class Variant
     {

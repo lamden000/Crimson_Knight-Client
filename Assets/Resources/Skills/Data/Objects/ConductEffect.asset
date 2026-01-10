@@ -35,4 +35,5 @@ MonoBehaviour:
   autoExplosionTime: 3
   speed: 0
   explosionDelay: 0
+  canOverrideDuration: 1
   scale: {x: 1, y: 1, z: 1}

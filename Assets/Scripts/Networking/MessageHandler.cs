@@ -18,7 +18,7 @@ namespace Assets.Scripts.Networking
                     int playerId = msg.ReadInt();
                     string name = msg.ReadString();
                     ClassType classType = (ClassType)msg.ReadByte();
-                    Player player = Player.Create(playerId, name);
+                    Player player = Player.Create(playerId, name,classType);
                     ClientReceiveMessageHandler.Player = player;
                     ClientReceiveMessageHandler.Player.ClassType = classType;
                     CameraFollow.GI().target = player.transform;

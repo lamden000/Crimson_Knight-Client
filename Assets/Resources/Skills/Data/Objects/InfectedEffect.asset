@@ -21,14 +21,18 @@ MonoBehaviour:
   - {fileID: 1659231836, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
   - {fileID: 325026941, guid: 29e3f414a12f76947a7e91466e159b1f, type: 3}
   mainFPS: 8
+  mainSortingOrder: 5
   sparkleFrames: []
   sparkleFPS: 12
+  sparkleSortingOrder: 5
   aftermathFrames: []
   aftermathPlayTime: 0
   aftermathLoop: 0
   aftermathFPS: 12
+  aftermathSortingOrder: 5
   explosionRotatesWithMovement: 1
   autoExplosionTime: 1
   speed: 100
   explosionDelay: 0
+  canOverrideDuration: 1
   scale: {x: 1, y: 1, z: 1}

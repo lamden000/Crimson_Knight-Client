@@ -17,8 +17,10 @@ MonoBehaviour:
   mainFrames:
   - {fileID: 21300000, guid: 88afaf79c8914564c9dc100e7b191b3d, type: 3}
   mainFPS: 12
+  mainSortingOrder: 5
   sparkleFrames: []
   sparkleFPS: 12
+  sparkleSortingOrder: 5
   aftermathFrames:
   - {fileID: 21300000, guid: ed3c9e25db1535846a3e1b7d2d9bfb92, type: 3}
   - {fileID: 21300000, guid: 4da41c26cf2456c42ae1803a09587115, type: 3}
@@ -26,8 +28,10 @@ MonoBehaviour:
   aftermathPlayTime: 0
   aftermathLoop: 0
   aftermathFPS: 12
+  aftermathSortingOrder: 5
   explosionRotatesWithMovement: 0
   autoExplosionTime: 2
   speed: 0
   explosionDelay: 0
+  canOverrideDuration: 1
   scale: {x: 1, y: 1, z: 1}

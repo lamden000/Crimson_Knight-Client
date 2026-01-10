@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 
 public class Player : BasePlayer
@@ -18,7 +19,6 @@ public class Player : BasePlayer
 
     public long Exp;
 
-    public float effectDurration=5;
 
     public BaseObject objFocus;
 
@@ -29,10 +29,11 @@ public class Player : BasePlayer
 
     private float lastClickTime = 0f;
 
-    public static Player Create(int id, string name)
+    public static Player Create(int id, string name, ClassType classType)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
         Player player = gameObject.AddComponent<Player>();
+        player.ClassType = classType;
         player.SetupPrefab(true);
         player.Id = id;
         player.Name = name;
@@ -85,7 +86,7 @@ public class Player : BasePlayer
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform, effectDurration);
+            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform, 1);
         }
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
@@ -358,7 +359,7 @@ public class Player : BasePlayer
                 this.CurrentMp -= skillUse.GetMpLost();
                 Debug.Log("Send attack " + skillUse.TemplateId);
 
-
+                SpawnManager.GI().SpawnEffectPrefab(skillUse.GetTemplate().EffectName, this.transform, target.transform);
                 AniAttack(target);
             }
             else

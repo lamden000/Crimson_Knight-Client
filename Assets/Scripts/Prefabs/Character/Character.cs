@@ -1,3 +1,4 @@
+using Assets.Scripts.GameManager.Players;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
@@ -5,22 +6,24 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-
-    [SerializeField]
-    private ClassType m_Class;
+    private ClassType classType;
 
     private PlayerMovementController m_Controller;
 
     private void Start()
     {
         m_Controller = GetComponent<PlayerMovementController>();
-        m_Class = ClassType.XA_THU;
+    }
+
+    public void SetUp(ClassType classType)
+    {
+        this.classType = classType;
     }
 
     public CharacterPart getWeaponType()
     {
         CharacterPart weapon = CharacterPart.Gun;
-        switch (m_Class)
+        switch (this.classType)
         {
             case ClassType.SAT_THU:
                 weapon = CharacterPart.Knive;

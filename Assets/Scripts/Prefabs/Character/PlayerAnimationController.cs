@@ -74,9 +74,14 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Start()
     {
+        
+    }
+
+    public void SetUp()
+    {
         database = CharacterSpriteDatabase.Instance;
         character = gameObject.GetComponent<Character>();
-        currentDir=Direction.Down;
+        currentDir = Direction.Down;
         currentState = State.Idle;
 
         weaponType = character.getWeaponType();
@@ -85,8 +90,8 @@ public class PlayerAnimationController : MonoBehaviour
             attackAnimation.SetWeaponType(weaponType);
         }
 
-        partVariants[weaponType]=weaponVariant;
-        spriteRenderers[weaponType]=weaponSpriteRenderer;
+        partVariants[weaponType] = weaponVariant;
+        spriteRenderers[weaponType] = weaponSpriteRenderer;
 
         LoadSprites();
     }

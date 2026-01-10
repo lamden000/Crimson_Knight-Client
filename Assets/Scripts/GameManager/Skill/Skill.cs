@@ -13,7 +13,7 @@ public class Skill
         this.playerClassType = playerClassType;
     }
 
-    private SkillTemplate GetTemplate()
+    public SkillTemplate GetTemplate()
     {
         return TemplateManager.SkillTemplates[playerClassType][TemplateId];
     }
@@ -56,5 +56,11 @@ public class Skill
             return true;
         }
         return false;
+    }
+
+
+    public static SkillTemplate GetSkillTemplate(int id, ClassType classType)
+    {
+        return TemplateManager.SkillTemplates[classType][id];
     }
 }

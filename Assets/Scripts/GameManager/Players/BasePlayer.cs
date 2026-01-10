@@ -19,7 +19,9 @@ namespace Assets.Scripts.GameManager.Players
         {
             playerMovementControllerPrefab = this.GetComponent<PlayerMovementController>();
             characterPrefab = this.GetComponent<Character>();
+            characterPrefab.SetUp(this.ClassType);
             playerAnimationControllerPrefab = this.GetComponent<PlayerAnimationController>();
+            playerAnimationControllerPrefab.SetUp();
             playerMovementControllerPrefab.IsMainPlayer = isMainPlayer;
         }
 

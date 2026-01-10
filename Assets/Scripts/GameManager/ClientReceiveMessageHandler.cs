@@ -71,9 +71,10 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             string otherPlayerName = msg.ReadString();
             short otherX = msg.ReadShort();
             short otherY = msg.ReadShort();
+            ClassType classType = (ClassType)msg.ReadByte();
             if (!OtherPlayers.ContainsKey(otherPlayerId))
             {
-                OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY);
+                OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY, classType);
                 OtherPlayers.Add(otherPlayerId, player);
             }
         }
@@ -124,7 +125,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             {
                 continue;
             }
-            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO);
+            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO,classType);
             player.ClassType = classType;
             if (!OtherPlayers.TryAdd(id, player))
             {
@@ -254,6 +255,12 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             if (firstTarget == null)
             {
                 firstTarget = target;
+            }
+
+            if(target!=null && attacker != null && attacker.IsOtherPlayer())
+            {
+                OtherPlayer otherPlayer = attacker as OtherPlayer;
+                SpawnManager.GI().SpawnEffectPrefab(Skill.GetSkillTemplate(skillUseId, otherPlayer.ClassType).EffectName, otherPlayer.transform, target.transform);
             }
         }
 
