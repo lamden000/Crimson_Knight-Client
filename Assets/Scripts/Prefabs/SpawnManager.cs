@@ -7,8 +7,6 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject CharacterPrefab;
 
-    [SerializeField]
-    private GameObject OtherCharacterPrefab;
 
     [SerializeField]
     private GameObject monsterPrefab;
@@ -46,16 +44,6 @@ public class SpawnManager : MonoBehaviour
             return null;
         }
         return Instantiate(CharacterPrefab, new Vector3(x, y, 0), Quaternion.identity);
-    }
-
-    public GameObject SpawnOtherCharacterPrefab(int x, int y)
-    {
-        if (OtherCharacterPrefab == null)
-        {
-            Debug.LogError("Lỗi: CharacterPrefab chưa được gán.");
-            return null;
-        }
-        return Instantiate(OtherCharacterPrefab, new Vector3(x, y, 0), Quaternion.identity);
     }
 
 

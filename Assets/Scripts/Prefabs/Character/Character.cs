@@ -39,23 +39,10 @@ public class Character : MonoBehaviour
         return weapon;
     }
 
-    public void AniTakeDamage(GameObject attacker)
+    public void AniTakeDamage()
     {
         m_Controller.HandleGetHit();        
     }
 
-    void Update()
-    {
-      
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                Vector3 targetPosition = new Vector3(1034.6f, 481.5147f, transform.position.z);
-                transform.position = targetPosition;
-            }
-        }
-    }
   
 }

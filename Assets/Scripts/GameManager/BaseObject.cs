@@ -124,5 +124,8 @@ public abstract class BaseObject : MonoBehaviour
     {
         return CurrentHp <= 0;
     }
+
+    public virtual void AniAttack(BaseObject target = null) { }
+    public virtual void AniTakeDamage(int dam, BaseObject attacker) { }
 }
 

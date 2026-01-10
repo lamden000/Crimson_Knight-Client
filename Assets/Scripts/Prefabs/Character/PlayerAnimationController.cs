@@ -45,8 +45,8 @@ public class PlayerAnimationController : MonoBehaviour
     private float blinkDuration = 0.2f;
     private float blinkInterval = 2f;
 
-    private Direction currentDir;
-    private State currentState;
+    public Direction currentDir;
+    public State currentState;
 
     private CharacterSpriteDatabase database;
     public GameObject minimapIndicator;
@@ -257,12 +257,30 @@ public class PlayerAnimationController : MonoBehaviour
             attackAnimation.PlayAttackAnimation(currentDir);
 
             StartCoroutine(ResetAttackAnimation(0.5f));
+           // StartCoroutine(ResetAttackAnimation(2));
         } 
         else
         {
             attackAnimation.gameObject.SetActive(false);
             spriteRenderers[weaponType].gameObject.SetActive(true);
             currentEyeState = EyeState.Idle;
+            PlayerMovementController movementController = GetComponent<PlayerMovementController>();
+
+            if (movementController != null)
+            {
+                if (movementController.rb != null && movementController.rb.linearVelocity.magnitude > 0.1f)
+                {
+                    currentState = State.Walk;
+                }
+                else
+                {
+                    currentState = State.Idle; 
+                }
+            }
+            else
+            {
+                currentState = State.Idle;
+            }
         }
     }
 

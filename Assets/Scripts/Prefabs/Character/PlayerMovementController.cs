@@ -218,7 +218,11 @@ public class PlayerMovementController : MovementControllerBase
         }
         else
         {
-            anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
+            PlayerAnimationController controller = gameObject.GetComponent<PlayerAnimationController>();
+            if(controller.currentState != State.Attack)
+            {
+                anim.SetAnimation(anim.GetCurrentDirection(), State.Idle);
+            }
             desiredVelocity = Vector2.zero;
             if (flag)
             {

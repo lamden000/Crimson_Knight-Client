@@ -205,7 +205,7 @@ public class BossController : MonoBehaviour
             Character character = targetPlayer.GetComponent<Character>();
             if (character != null)
             {
-                character.AniTakeDamage(gameObject);
+                //character.AniTakeDamage(gameObject);
             }
         }
 

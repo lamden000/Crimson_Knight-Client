@@ -99,7 +99,7 @@ public class Player : BaseObject
         PkIconOriginalScale = PkIcon.transform.localScale;
         PkIconOriginalRotation = PkIcon.transform.localRotation;
     }
-    
+
 
     protected override void LateUpdate()
     {
@@ -128,7 +128,7 @@ public class Player : BaseObject
             PkIcon.transform.localRotation = targetRotation;
         }
     }
-   
+
 
     private void UpdateInput()
     {
@@ -202,7 +202,7 @@ public class Player : BaseObject
     {
         int maxTargetDistance = 300;
 
-        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.GetObjectType()==ObjectType.Monster && objFocus.IsDie()))
+        if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.GetObjectType() == ObjectType.Monster && objFocus.IsDie()))
         {
             BaseObject newTarget = FindNearestTarget();
 
@@ -228,8 +228,23 @@ public class Player : BaseObject
         }
 
         float offsetY = objFocus.GetTopOffsetY();
-        arrowIndicator.position = objFocus.transform.position + Vector3.up * offsetY;
+        if (objFocus.GetObjectType() == ObjectType.OtherPlayer)
+        {
+            PlayerAnimationController playerAnimationController = objFocus.GetComponent<PlayerAnimationController>();
+            if (playerAnimationController != null)
+            {
+                if (playerAnimationController.currentDir == Direction.Down || playerAnimationController.currentDir == Direction.Up)
+                {
+                    offsetY -= 10;
+                }
+                else
+                {
+                    offsetY += 5;
+                }
+            }
+        }
 
+        arrowIndicator.position = objFocus.transform.position + new Vector3(0, offsetY);
         this.objFocus = objFocus;
     }
 
@@ -280,7 +295,7 @@ public class Player : BaseObject
 
     public void Attack(int skillId, BaseObject target)
     {
-        if(target == null)
+        if (target == null)
         {
             return;
         }
@@ -290,7 +305,7 @@ public class Player : BaseObject
         }
         else
         {
-            Debug.Log("objfocus: "+ target.GetX() + "-"+ target.GetY());
+            Debug.Log("objfocus: " + target.GetX() + "-" + target.GetY());
             Skill skillUse = Skills[0];
             if (skillUse != null && skillUse.CanAttack())
             {
@@ -299,7 +314,7 @@ public class Player : BaseObject
                     Debug.Log("chua hoc skill");
                     return;
                 }
-                if(this.CurrentMp <= skillUse.GetMpLost())
+                if (this.CurrentMp <= skillUse.GetMpLost())
                 {
                     Debug.Log("khong du mp");
                     return;
@@ -308,10 +323,10 @@ public class Player : BaseObject
                 int range = skillUse.GetRange();
 
                 List<BaseObject> targets = new List<BaseObject>();
-                if(target.GetObjectType() == ObjectType.OtherPlayer)
+                if (target.GetObjectType() == ObjectType.OtherPlayer)
                 {
                     OtherPlayer otherPlayer = (OtherPlayer)target;
-                    if(otherPlayer.PkType == this.PkType)
+                    if (otherPlayer.PkType == this.PkType)
                     {
                         Debug.Log("cung type pk");
                         return;
@@ -319,7 +334,7 @@ public class Player : BaseObject
                 }
                 targets.Add(target);
                 int remainSlot = targetCount - targets.Count;
-                if(remainSlot > 0)
+                if (remainSlot > 0)
                 {
                     int ranPlayer = MathUtil.RandomInt(0, remainSlot);
                     foreach (var otherPlayer in ClientReceiveMessageHandler.OtherPlayers.Values)
@@ -362,7 +377,7 @@ public class Player : BaseObject
                         targets.Add(monster);
                     }
                 }
-               
+
                 if (targets.Count == 0)
                 {
                     Debug.Log("khong co target trong range");
@@ -372,7 +387,7 @@ public class Player : BaseObject
                 int[] targetIds = new int[targets.Count];
                 for (int i = 0; i < targets.Count; i++)
                 {
-                    if(targets[i].GetObjectType() == ObjectType.Player || targets[i].GetObjectType() == ObjectType.OtherPlayer)
+                    if (targets[i].GetObjectType() == ObjectType.Player || targets[i].GetObjectType() == ObjectType.OtherPlayer)
                     {
                         isPlayers[i] = true;
                     }
@@ -386,6 +401,9 @@ public class Player : BaseObject
                 skillUse.StartTimeAttack = SystemUtil.CurrentTimeMillis();
                 this.CurrentMp -= skillUse.GetMpLost();
                 Debug.Log("Send attack " + skillUse.TemplateId);
+
+
+                AniAttack(target);
             }
             else
             {
@@ -394,7 +412,7 @@ public class Player : BaseObject
         }
     }
 
-   
+
 
     public void LoadPlayerSkillInfoFromServer(Message msg)
     {
@@ -418,5 +436,53 @@ public class Player : BaseObject
         {
             pkIconManager.SetPkState(this.PkType);
         }
+    }
+
+    private Character GetCharacterPrefab()
+    {
+        return this.GetComponent<Character>();
+    }
+
+    private PlayerAnimationController GetPlayerAnimationController()
+    {
+        return this.GetComponent<PlayerAnimationController>();
+    }
+
+    public override void AniTakeDamage(int dam, BaseObject attacker)
+    {
+        GetCharacterPrefab().AniTakeDamage();
+        SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(this.GetX(), this.GetY() + (int)this.GetTopOffsetY(), dam);
+    }
+
+    public override void AniAttack(BaseObject target = null)
+    {
+        PlayerAnimationController playerAnimation = GetPlayerAnimationController();
+        Direction dirToTarget = playerAnimation.GetCurrentDirection();
+
+        if (target != null)
+        {
+            int x1 = target.GetX();
+            int y1 = target.GetY();
+            int x2 = this.GetX();
+            int y2 = this.GetY();
+            int deltaX = x1 - x2;
+            int deltaY = y1 - y2;
+            if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+            {
+                if (deltaX > 0)
+                    dirToTarget = Direction.Right;
+                else
+                    dirToTarget = Direction.Left;
+            }
+            else
+            {
+                if (deltaY > 0)
+                    dirToTarget = Direction.Up;
+                else
+                    dirToTarget = Direction.Down;
+            }
+
+        }
+        playerAnimation.SetAnimation(dirToTarget, State.Attack);
     }
 }

@@ -229,9 +229,11 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         {
             OtherPlayers.TryGetValue(playerId, out var value);
             attacker = value;
+          
         }
 
         int targetSize = msg.ReadByte();
+        BaseObject firstTarget = null;
         for (int i = 0; i < targetSize; i++)
         {
             bool isPlayer = msg.ReadBool();
@@ -242,6 +244,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 if (ClientReceiveMessageHandler.Player.Id == targetId)
                 {
                     target = ClientReceiveMessageHandler.Player;
+                    
                 }
                 else
                 {
@@ -253,6 +256,10 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                         }
                     }
                 }
+                if (target != null && !target.IsDie() && attacker != null)
+                {
+                    target.AniTakeDamage(dam, attacker);
+                }
             }
             else
             {
@@ -263,15 +270,21 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                         target = monster;
                         if (attacker != null)
                         {
-                            monster.StartAniTakeDamage(attacker);
+                            monster.AniTakeDamage(dam,attacker);
                         }
                     }
                 }
             }
-            if (target != null)
+
+            if (firstTarget == null)
             {
-                SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(target.GetX(), target.GetY() + (int)target.GetTopOffsetY(), dam);
+                firstTarget = target;
             }
+        }
+
+        if (attacker != null)
+        {
+            attacker.AniAttack(firstTarget);
         }
     }
 
@@ -328,6 +341,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int monsterId = msg.ReadInt();
         int dam = msg.ReadInt();
         byte count = msg.ReadByte();
+        Monsters.TryGetValue(monsterId, out Monster attacker);
         for (int i = 0; i < count; i++)
         {
             int playerId = msg.ReadInt();
@@ -335,17 +349,25 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             if (playerId == Player.Id)
             {
                 target = Player;
+                Player.AniTakeDamage(dam,attacker);
             }
             else
             {
                 OtherPlayers.TryGetValue(playerId, out var value);
                 target = value;
+                if(value != null)
+                {
+                    value.AniTakeDamage(dam, attacker);
+                }
             }
             if (target == null || target.IsDie())
             {
                 return;
             }
-            SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(target.GetX(), target.GetY() + (int)target.GetTopOffsetY(), dam);
+            if (attacker != null && !attacker.IsDie())
+            {
+                attacker.AniAttack(target);
+            }
         }
     }
 }

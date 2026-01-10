@@ -1,5 +1,6 @@
 using Assets.Scripts.Networking;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -64,8 +65,15 @@ public class Monster : BaseObject
         return this.GetComponent<MonsterPrefab>();
     }
 
-    public void StartAniTakeDamage(BaseObject attacker)
+    public override void AniAttack(BaseObject target)
     {
-        this.GetMonsterPrefab().AniTakeDamage(attacker.gameObject);
+        if (target == null) return;
+        GetMonsterPrefab().AniAttack(target.gameObject);
+    }
+
+    public override void AniTakeDamage(int dam, BaseObject attacker)
+    {
+        this.GetMonsterPrefab().AniTakeDamage();
+        SpawnManager.GI().SpawnTxtDisplayTakeDamagePrefab(this.GetX(), this.GetY() + (int)this.GetTopOffsetY(), dam);
     }
 }
