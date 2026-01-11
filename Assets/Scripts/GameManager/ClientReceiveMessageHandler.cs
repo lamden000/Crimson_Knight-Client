@@ -10,6 +10,11 @@ using UnityEngine;
 
 public class ClientReceiveMessageHandler : MonoBehaviour
 {
+    public static ClientReceiveMessageHandler Instance { get; private set; }
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         StartCoroutine(DelayedStart());
@@ -49,22 +54,24 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         {
             UIManager.Instance.DisableGameScreen();
             UIManager.Instance.EnableLoadScreen();
-            //map
-            MapManager.MapId = msg.ReadShort();
-            MapManager.LoadMapById(MapManager.MapId);
 
+            MapManager.MapId = msg.ReadShort();
             MapManager.MapName = msg.ReadString();
 
-
-            //player
             short x = msg.ReadShort();
             short y = msg.ReadShort();
 
-            Player.SetPosition(x, y);
-
-
-            UIManager.Instance.DisableLoadScreen();
-            UIManager.Instance.EnableGameScreen();
+            MapManager.LoadMapById(MapManager.MapId, () =>
+            {
+                if (Instance != null)
+                {
+                    Instance.StartCoroutine(SystemUtil.Delay(0.2f, () => {
+                        Player.SetPosition(x, y);
+                        UIManager.Instance.DisableLoadScreen();
+                        UIManager.Instance.EnableGameScreen();
+                    }));
+                }
+            });
         }
         else
         {

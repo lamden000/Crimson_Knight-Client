@@ -23,9 +23,9 @@ namespace Assets.Scripts.Map
         {
             _gridmapLoader.LoadMapByName("Map1.json", "Default");
         }
-        public static void LoadMapById(int id)
+        public static void LoadMapById(int id, Action onLoadComplete = null)
         {
-            _gridmapLoader.LoadMapByName($"map{id}.json", "Default");
+            _gridmapLoader.LoadMapByName($"map{id}.json", "Default", onLoadComplete);
         }
     }
 }

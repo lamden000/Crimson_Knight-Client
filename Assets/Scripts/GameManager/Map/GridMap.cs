@@ -389,7 +389,7 @@ public class GridmapLoader : MonoBehaviour
     }
 
     // Public helper to unload current map then load a different map by json filename (e.g. \"Map01.json\").
-    public void LoadMapByName(String newJsonFileName, string origin)
+    public void LoadMapByName(String newJsonFileName, string origin, Action onLoadComplete = null)
     {
         currentOrigin = origin; 
         if (!newJsonFileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
@@ -398,11 +398,11 @@ public class GridmapLoader : MonoBehaviour
         // NOTE: UnloadCurrentMap is deferred until the overlay has fully faded in
         // to prevent showing unload/load artifacts to the player.
         // Start a coroutine that fades the overlay in, unloads+loads the map, then fades out.
-        if (Application.isPlaying || loadInEditMode)
-            StartCoroutine(LoadMapWithOverlay(newJsonFileName));
+        //if (Application.isPlaying || loadInEditMode)
+            StartCoroutine(LoadMapWithOverlay(newJsonFileName, onLoadComplete));
     }
 
-    IEnumerator LoadMapWithOverlay(string newJsonFileName)
+    IEnumerator LoadMapWithOverlay(string newJsonFileName, Action onLoadComplete = null)
     {
         // Show overlay and fade to 1
         if (loadingOverlay != null)
@@ -427,6 +427,7 @@ public class GridmapLoader : MonoBehaviour
             yield return StartCoroutine(FadeImageAlpha(1f, 0f, overlayFadeDuration));
             loadingOverlay.gameObject.SetActive(false);
         }
+        onLoadComplete?.Invoke();
     }
 
     IEnumerator FadeImageAlpha(float from, float to, float duration)
