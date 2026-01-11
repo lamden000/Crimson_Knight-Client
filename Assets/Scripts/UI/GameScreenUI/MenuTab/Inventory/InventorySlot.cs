@@ -5,10 +5,9 @@ using UnityEngine.EventSystems;
 public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image iconImage;
+    [SerializeField] private Image backgroundImage; 
 
     public BaseItem Item;
-
- 
     private void Awake()
     {
         if (iconImage == null)
@@ -41,13 +40,31 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //Debug.Log($"[INV][CLICK] Slot={slotIndex}");
+        if (Item == null)
+        {
+            InventoryManager.Instance.ClearInfoCur();
+            return;
+        }
 
-        //if (itemData == null)
-        //{
-        //    InventoryManager.Instance.ClearInfo();
-        //    return;
-        //}
-        InventoryManager.Instance.ShowInfo(this);
+        InventoryManager.Instance.SelectSlot(this);
     }
+
+    public void SetSelected(bool selected)
+    {
+        if (backgroundImage != null)
+        {
+            Color color;
+            if (selected)
+            {
+                ColorUtility.TryParseHtmlString("#7D5745", out color);
+            }
+            else
+            {
+                // Nhạt hơn khi không chọn (ví dụ xanh nhạt)
+                ColorUtility.TryParseHtmlString("#A87A64", out color);
+            }
+            backgroundImage.color = color;
+        }
+    }
+
 }
