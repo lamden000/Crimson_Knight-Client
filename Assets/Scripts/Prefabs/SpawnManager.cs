@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -31,15 +31,16 @@ public class SpawnManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        ResourceManager.Load();
     }
 
     public static SpawnManager Instance;
+
+
     public static SpawnManager GI()
     {
         return Instance;
     }
-
-
     public GameObject SpawnCharacterPrefab(int x, int y)
     {
         if (CharacterPrefab == null)
@@ -153,69 +154,56 @@ public class SpawnManager : MonoBehaviour
         return Instantiate(pkIconPrefab, Vector3.zero, Quaternion.identity);
     }
 
-    private static Dictionary<string, SkillSpawnData> spawnDatas= new Dictionary<string, SkillSpawnData>();
+    private static Dictionary<string, SkillSpawnData> spawnDatas = new Dictionary<string, SkillSpawnData>();
 
-    public GameObject SpawnItem(int templateId, ItemType type, Vector2 pos, int quantity = 1)
+    public GameObject SpawnPickItem(int templateId, ItemType type, Vector2 pos)
     {
-        // Equipment không stackable, quantity luôn = 1
-        if (type == ItemType.Equipment)
-        {
-            quantity = 1;
-        }
 
-        // Tạo GameObject mới cho item
         GameObject itemObj = new GameObject($"Item_{templateId}_{type}");
         itemObj.transform.position = pos;
 
-        // Tạo BaseItem tương ứng
-        BaseItem item = null;
-        int iconId = 0;
-        
+        int iconId = -1;
+
         switch (type)
         {
             case ItemType.Equipment:
-                item = new ItemEquipment(templateId.ToString(), templateId);
                 iconId = TemplateManager.ItemEquipmentTemplates[templateId].IconId;
                 break;
             case ItemType.Consumable:
-                item = new ItemConsumable(templateId, quantity);
                 iconId = TemplateManager.ItemConsumableTemplates[templateId].IconId;
                 break;
             case ItemType.Material:
-                item = new ItemMaterial(templateId, quantity);
                 iconId = TemplateManager.ItemMaterialTemplates[templateId].IconId;
                 break;
         }
 
-        if (item == null)
+        if (iconId == -1)
         {
             Debug.LogError($"Không thể tạo item với type: {type}");
             Destroy(itemObj);
             return null;
         }
 
-        // Thêm SpriteRenderer
         SpriteRenderer sr = itemObj.AddComponent<SpriteRenderer>();
-        
-        // Load sprite dựa vào type
-        string folderPath = "";
+
+        Sprite sprite = null;
+
         switch (type)
         {
             case ItemType.Equipment:
-                folderPath = "Items/Equipments";
+                ResourceManager.ItemEquipmentIconSprites.TryGetValue(iconId, out sprite);
                 break;
             case ItemType.Consumable:
-                folderPath = "Items/Consumables";
+                ResourceManager.ItemConsumableIconSprites.TryGetValue(iconId, out sprite);
                 break;
             case ItemType.Material:
-                folderPath = "Items/Materials";
+                ResourceManager.ItemMaterialsIconSprites.TryGetValue(iconId, out sprite);
                 break;
         }
 
-        Sprite sprite = Resources.Load<Sprite>($"{folderPath}/{iconId}");
         if (sprite == null)
         {
-            Debug.LogWarning($"Không tìm thấy sprite item: {folderPath}/{iconId}");
+            Debug.LogWarning($"Không tìm thấy sprite item iconId={iconId}, type={type}");
         }
         else
         {
@@ -233,7 +221,7 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
-        if(!spawnDatas.TryGetValue(effectName,out SkillSpawnData spawnData))
+        if (!spawnDatas.TryGetValue(effectName, out SkillSpawnData spawnData))
         {
             string resourcePath = $"Skills/Data/Skills/{effectName}";
             spawnData = Resources.Load<SkillSpawnData>(resourcePath);
@@ -253,7 +241,7 @@ public class SpawnManager : MonoBehaviour
 
         GameObject skillInstance = Instantiate(
             skillPrefab,
-            caster.position,  
+            caster.position,
             Quaternion.identity
         );
 
@@ -262,8 +250,8 @@ public class SpawnManager : MonoBehaviour
         if (skillSpawner != null)
         {
             skillSpawner.Init(
-                spawnData,           
-                caster.position,     
+                spawnData,
+                caster.position,
                 target != null ? target.position : caster.position,
                 target,
                 null, // spawnPositions - giữ null vì không có từ warning ở đây

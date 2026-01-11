@@ -77,8 +77,8 @@ public class Player : BasePlayer
             }
             return;
         }
-            
-       
+
+
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();
@@ -103,44 +103,16 @@ public class Player : BasePlayer
             RequestManager.ChangePkType((PkType)4);
         }
 
-        // Phím F để spawn item trước mặt (để test)
         if (Input.GetKeyDown(KeyCode.F))
         {
-            PlayerAnimationController animController = GetComponent<PlayerAnimationController>();
-            if (animController != null)
-            {
-                Vector2 spawnOffset = Vector2.zero;
-                float offsetDistance = 30f; // Khoảng cách spawn item trước mặt
-
-                switch (animController.currentDir)
-                {
-                    case Direction.Down:
-                        spawnOffset = new Vector2(0, -offsetDistance);
-                        break;
-                    case Direction.Up:
-                        spawnOffset = new Vector2(0, offsetDistance);
-                        break;
-                    case Direction.Left:
-                        spawnOffset = new Vector2(-offsetDistance, 0);
-                        break;
-                    case Direction.Right:
-                        spawnOffset = new Vector2(offsetDistance, 0);
-                        break;
-                }
-
-                Vector2 spawnPos = (Vector2)transform.position + spawnOffset;
-                // Spawn item test (templateId = 1, type = Equipment, quantity = 1)
-                SpawnManager.GI().SpawnItem(1, ItemType.Equipment, spawnPos, 1);
-            }
+            SpawnManager.GI().SpawnPickItem(2, ItemType.Consumable, new Vector2(this.GetX(),this.GetY()));
         }
-
-        
     }
 
     public string EffectName = "ConductedEffect";
     private void UpdateInput()
     {
-      
+
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
