@@ -16,7 +16,8 @@ public class InventoryManager : MonoBehaviour
     public Image infoIconCur;
     public TextMeshProUGUI infoNameCur;
     public TextMeshProUGUI infoDescriptionCur;
-
+    [Header("Info Panel Buttons")]
+    public TextMeshProUGUI useButtonText;
     private List<InventorySlot> slots = new List<InventorySlot>();
 
     private void Awake()
@@ -120,16 +121,49 @@ public class InventoryManager : MonoBehaviour
 
         BaseItem item = slot.Item;
         Sprite sprite = slot.GetSprite();
-
         infoIconCur.enabled = sprite != null;
         infoIconCur.sprite = sprite;
-
         infoNameCur.text = item.GetName();
-
-
         infoDescriptionCur.text = $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
+        UpdateUseButtonText(item);
     }
 
+    private InventorySlot selectedSlot;
+
+    public void SelectSlot(InventorySlot slot)
+    {
+        if (selectedSlot != null)
+            selectedSlot.SetSelected(false);
+        selectedSlot = slot;
+        selectedSlot.SetSelected(true);
+
+        ShowInfo(slot);
+    }
+
+    private void UpdateUseButtonText(BaseItem item)
+    {
+        if (item == null || useButtonText == null)
+        {
+            useButtonText.text = "";
+            return;
+        }
+
+        ItemType type = item.GetItemType();
+
+        switch (type)
+        {
+            case ItemType.Equipment:
+                useButtonText.text = "Trang bị";
+                break;
+            case ItemType.Consumable:
+            case ItemType.Material:
+                useButtonText.text = "Sử dụng";
+                break;
+            default:
+                useButtonText.text = "Dùng";
+                break;
+        }
+    }
 
 
     public void ClearInfoCur()
