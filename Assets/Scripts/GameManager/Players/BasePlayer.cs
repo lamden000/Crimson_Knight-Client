@@ -23,11 +23,12 @@ namespace Assets.Scripts.GameManager.Players
             playerAnimationControllerPrefab = this.GetComponent<PlayerAnimationController>();
             playerAnimationControllerPrefab.SetUp();
             playerMovementControllerPrefab.IsMainPlayer = isMainPlayer;
+            LoadBasePart();
         }
 
         public ClassType ClassType;
         public PkType PkType;
-
+        public Gender Gender;
 
         protected GameObject PkIcon;
         protected Vector3 PkIconOriginalScale;
@@ -120,6 +121,40 @@ namespace Assets.Scripts.GameManager.Players
 
             }
             playerAnimation.SetAnimation(dirToTarget, State.Attack);
+        }
+
+
+        private void LoadBasePart()
+        {
+            if(this.Gender == Gender.Male)
+            {
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Hair, 0);
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Body, 0);
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Legs, 0);
+            }
+            else
+            {
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Hair, 41);
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Body, 3);
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Legs, 3);
+            }
+
+            if(this.ClassType == ClassType.CHIEN_BINH)
+            {
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Sword, 0);
+            }
+            else if(this.ClassType == ClassType.SAT_THU)
+            {
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Knive, 0);
+            }
+            else if(this.ClassType == ClassType.PHAP_SU)
+            {
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Staff, 0);
+            }
+            else
+            {
+                playerAnimationControllerPrefab.LoadPart(CharacterPart.Gun, 0);
+            }
         }
     }
 }

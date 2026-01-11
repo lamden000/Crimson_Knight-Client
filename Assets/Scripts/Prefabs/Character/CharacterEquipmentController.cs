@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Assets.Scripts.GameManager.Players;
 
 public class CharacterEquipmentController : MonoBehaviour
 {
@@ -13,13 +14,13 @@ public class CharacterEquipmentController : MonoBehaviour
     public TMP_InputField hatInput;
     public TMP_InputField eyesInput;
 
-    private Character character;
 
-    private PlayerAnimationController characterLoader; // script cũ của cậu để load sprites
+
+    [SerializeField]
+    private BasePlayer basePlayer;
 
     void Update()
     {
-        // Nhấn Enter để apply
         if (Input.GetKeyDown(KeyCode.Return))
         {
             ApplyVariants();
@@ -28,11 +29,10 @@ public class CharacterEquipmentController : MonoBehaviour
 
     void ApplyVariants()
     {
-        if(character == null)
-        {
-            character=FindAnyObjectByType<Character>();
-            characterLoader = character.GetComponent<PlayerAnimationController>();
-        }
+        PlayerAnimationController characterLoader = basePlayer.GetComponent<PlayerAnimationController>();
+        Character character = basePlayer.GetComponent<Character>();
+
+
         if (!string.IsNullOrEmpty(outfitInput.text))
         {
             if (int.TryParse(outfitInput.text, out int bodyVariant))

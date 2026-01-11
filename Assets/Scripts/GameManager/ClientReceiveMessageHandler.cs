@@ -72,9 +72,10 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             short otherX = msg.ReadShort();
             short otherY = msg.ReadShort();
             ClassType classType = (ClassType)msg.ReadByte();
+            Gender gender = (Gender)msg.ReadByte();
             if (!OtherPlayers.ContainsKey(otherPlayerId))
             {
-                OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY, classType);
+                OtherPlayer player = OtherPlayer.Create(otherPlayerId, otherPlayerName, otherX, otherY, classType, gender);
                 OtherPlayers.Add(otherPlayerId, player);
             }
         }
@@ -121,11 +122,12 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             ClassType classType = (ClassType)msg.ReadByte();
             short xO = msg.ReadShort();
             short yO = msg.ReadShort();
+            Gender gender = (Gender)msg.ReadByte();
             if (id == Player.Id)
             {
                 continue;
             }
-            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO,classType);
+            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO,classType, gender);
             player.ClassType = classType;
             if (!OtherPlayers.TryAdd(id, player))
             {

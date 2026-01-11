@@ -29,15 +29,16 @@ public class Player : BasePlayer
 
     private float lastClickTime = 0f;
 
-    public static Player Create(int id, string name, ClassType classType)
+    public static Player Create(int id, string name, ClassType classType, Gender gender)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);
         Player player = gameObject.AddComponent<Player>();
         player.ClassType = classType;
-        player.SetupPrefab(true);
+        player.Gender = gender;
         player.Id = id;
         player.Name = name;
 
+        player.SetupPrefab(true);
         GameObject pkicon = SpawnManager.GI().SpawnPkIconPrefab();
         pkicon.transform.SetParent(player.transform);
         pkicon.transform.localPosition = new Vector3(0, player.GetTopOffsetY() - 5, 0);
