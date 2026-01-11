@@ -18,6 +18,7 @@ namespace Assets.Scripts.GameManager.Players
         public void SetupPrefab(bool isMainPlayer = false)
         {
             playerMovementControllerPrefab = this.GetComponent<PlayerMovementController>();
+            playerMovementControllerPrefab.SetUp(this);
             characterPrefab = this.GetComponent<Character>();
             characterPrefab.SetUp(this.ClassType);
             playerAnimationControllerPrefab = this.GetComponent<PlayerAnimationController>();
@@ -43,6 +44,28 @@ namespace Assets.Scripts.GameManager.Players
         public override void AutoMoveToXY(int x, int y)
         {
             playerMovementControllerPrefab.MoveToXY(x, y);
+        }
+
+
+        bool isAnimationDie = false;
+        protected override void CheckCurrentHp()
+        {
+            if (IsDie())
+            {
+                if (!isAnimationDie)
+                {
+                    isAnimationDie = true;
+                    playerAnimationControllerPrefab.SetDeadState();
+                }
+            }
+            else
+            {
+                if (isAnimationDie)
+                {
+                    isAnimationDie = false;
+                    playerAnimationControllerPrefab.SetAliveState();
+                }
+            }
         }
 
         protected override void LateUpdate()
@@ -93,6 +116,11 @@ namespace Assets.Scripts.GameManager.Players
 
         public override void AniAttack(BaseObject target = null)
         {
+            if (IsDie())
+            {
+                return;
+            }
+
             PlayerAnimationController playerAnimation = playerAnimationControllerPrefab;
             Direction dirToTarget = playerAnimation.GetCurrentDirection();
 

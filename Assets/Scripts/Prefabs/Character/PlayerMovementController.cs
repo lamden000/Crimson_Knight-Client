@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Networking;
+﻿using Assets.Scripts.GameManager.Players;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using NavMeshPlus.Components;
 using System.Collections;
@@ -10,6 +11,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(PlayerAnimationController))]
 public class PlayerMovementController : MovementControllerBase
 {
+    private BasePlayer player;
     private static long timeStartSendMove = 0;
 
     private bool isAttacking = false;
@@ -38,10 +40,17 @@ public class PlayerMovementController : MovementControllerBase
         rb = GetComponent<Rigidbody2D>();
     }
 
-
+    public void SetUp(BasePlayer player)
+    {
+        this.player = player;
+    }
 
     private void Update()
     {
+        if (this.player.IsDie())
+        {
+            return;
+        }
         if (isGettingHit)
         {
             desiredVelocity = Vector2.zero;

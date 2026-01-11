@@ -54,31 +54,13 @@ public class Player : BasePlayer
         targetMask = LayerMask.GetMask("Player", "Monster", "Npc");
     }
 
-    private bool isDead = false;
 
     void Update()
     {
-        // Phím Z để toggle dead state (để test)
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (IsDie())
         {
-            PlayerAnimationController animController = GetComponent<PlayerAnimationController>();
-            if (animController != null)
-            {
-                if (isDead)
-                {
-                    animController.SetAliveState();
-                    isDead = false;
-                }
-                else
-                {
-                    animController.SetDeadState();
-                    isDead = true;
-                }
-            }
             return;
         }
-
-
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();

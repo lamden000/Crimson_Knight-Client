@@ -41,7 +41,11 @@ public class OtherPlayer : BasePlayer
    
     private void FixedUpdate()
     {
-        if(Moves.TryDequeue(out Tuple<int,int> move))
+        if (IsDie())
+        {
+            return;
+        }
+        if (Moves.TryDequeue(out Tuple<int,int> move))
         {
             this.AutoMoveToXY(move.Item1, move.Item2);
         }
