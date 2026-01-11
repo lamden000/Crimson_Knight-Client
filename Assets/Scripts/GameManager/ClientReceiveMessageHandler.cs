@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class ClientReceiveMessageHandler : MonoBehaviour
 {
@@ -391,6 +392,40 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         if (player != null)
         {
             player.LoadPartWearing(items);
+        }
+    }
+
+    public static void InventoryItems(Message msg)
+    {
+        byte size = msg.ReadByte();
+        Player.InventoryItems = new BaseItem[size];
+        for(int i = 0;i< size; i++)
+        {
+            BaseItem item = null;
+            bool has = msg.ReadBool();
+            if (has)
+            {
+                string id = msg.ReadString();
+                int templateId = msg.ReadInt();
+                ItemType type = (ItemType)msg.ReadByte();
+                if (type == ItemType.Equipment)
+                {
+                    item = new ItemEquipment(id, templateId);
+                }
+                else
+                {
+                    int quantity = msg.ReadInt();
+                    if(type == ItemType.Consumable)
+                    {
+                        item = new ItemConsumable(templateId, quantity);
+                    }
+                    else
+                    {
+                        item = new ItemMaterial(templateId, quantity);
+                    }
+                }
+            }
+            Player.InventoryItems[i] = item;
         }
     }
 }

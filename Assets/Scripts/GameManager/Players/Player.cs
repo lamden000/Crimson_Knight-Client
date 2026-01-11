@@ -13,6 +13,7 @@ using UnityEngine.Rendering;
 
 public class Player : BasePlayer
 {
+    public BaseItem[] InventoryItems;
     public List<Skill> Skills = new List<Skill>();
     public int CurrentMp { get; set; }
     public int MaxMp { get; set; }
@@ -55,6 +56,16 @@ public class Player : BasePlayer
 
     void Update()
     {
+        if (IsDie())
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+
+            }
+            return;
+        }
+       
+
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();
@@ -85,10 +96,7 @@ public class Player : BasePlayer
     public string EffectName = "ConductedEffect";
     private void UpdateInput()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform, 1);
-        }
+      
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {

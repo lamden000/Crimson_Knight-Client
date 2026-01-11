@@ -75,6 +75,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_PLAYER_WEARING_ITEMS_INFO:
                     ClientReceiveMessageHandler.PlayerWearingItems(msg);
                     break;
+                case MessageId.SERVER_PLAYER_INVENTORY_ITEMS_INFO:
+                    ClientReceiveMessageHandler.InventoryItems(msg);
+                    break;
                 default:
                     break;
             }
