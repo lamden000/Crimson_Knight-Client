@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 
 public class HUDManager : BaseUIManager
 {
@@ -8,6 +9,10 @@ public class HUDManager : BaseUIManager
 
     private float maxHPWidth;
     private float maxMPWidth;
+
+    [Header("HP / MP Text")]
+    public TextMeshProUGUI hpText;
+    public TextMeshProUGUI mpText;
 
     [Header("Skill Slots")]
     public SkillSlot[] skillSlots = new SkillSlot[8];
@@ -34,13 +39,20 @@ public class HUDManager : BaseUIManager
     {
         Player player = ClientReceiveMessageHandler.Player;
         if (player == null) return;
-        if(player.MaxHp<=0 || player.MaxMp<=0) return;
-        float hpRatio = player.CurrentHp / player.MaxHp;
+        if (player.MaxHp <= 0 || player.MaxMp <= 0) return;
+
+        float hpRatio = (float)player.CurrentHp / (float)player.MaxHp;
+        hpRatio = Mathf.Clamp01(hpRatio);
         hpBar.sizeDelta = new Vector2(maxHPWidth * hpRatio, hpBar.sizeDelta.y);
 
-        float mpRatio = player.CurrentMp / player.MaxMp;
+        float mpRatio = (float)player.CurrentMp / (float)player.MaxMp;
+        mpRatio = Mathf.Clamp01(mpRatio);
         mpBar.sizeDelta = new Vector2(maxMPWidth * mpRatio, mpBar.sizeDelta.y);
-        //Debug.Log(player.CurrentHp + "/" + player.MaxHp +"-"+player.CurrentMp + "/" + player.MaxMp);
+
+        if (hpText != null)
+            hpText.text = $"{player.CurrentHp}/{player.MaxHp}";
+        if (mpText != null)
+            mpText.text = $"{player.CurrentMp}/{player.MaxMp}";
     }
 
     void UpdateSkillHotkeys()
@@ -55,7 +67,6 @@ public class HUDManager : BaseUIManager
         if (Input.GetKeyDown(KeyCode.Alpha8)) skillSlots[7].TryUseSkill();
     }
 
-    // Cho game gán skill
     public void SetSkill(int slot, int skillId, Sprite icon)
     {
         if (slot < 1 || slot > 8)

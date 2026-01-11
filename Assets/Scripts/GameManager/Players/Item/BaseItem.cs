@@ -4,6 +4,7 @@
     public int TemplateId { get; set; }
     public abstract ItemType GetItemType();
 
+    public string GetItemId() { return Id; }
     public int GetIcon()
     {
         if (GetItemType() == ItemType.Equipment)
