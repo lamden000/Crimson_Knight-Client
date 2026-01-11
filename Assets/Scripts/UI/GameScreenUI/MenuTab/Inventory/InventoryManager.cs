@@ -13,74 +13,41 @@ public class InventoryManager : MonoBehaviour
     public InventorySlot slotPrefab;
 
     [Header("Info Panel")]
-    public Image infoIcon;
-    public TextMeshProUGUI infoName;
-    public TextMeshProUGUI infoDescription;
+    public Image infoIconCur;
+    public TextMeshProUGUI infoNameCur;
+    public TextMeshProUGUI infoDescriptionCur;
 
     private List<InventorySlot> slots = new List<InventorySlot>();
-    private bool initialized = false;
-
-    private static Dictionary<int, ItemType> templateTypeMap;
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private static bool isInit = false;
     private void OnEnable()
     {
-        Debug.Log("[INV] Inventory Open");
-
-        if (!initialized)
-        {
-            InitSlots();
-            BuildTemplateTypeMap();
-            initialized = true;
-        }
-
+        InitSlots();
         LoadFromPlayerInventory();
     }
 
-
+    private static readonly int SIZE_INVEN = 48;
     private void InitSlots()
     {
+        if (isInit)
+        {
+            return;
+        }
+        isInit = true;
         slots.Clear();
-
-        for (int i = 0; i < 48; i++)
+        for (int i = 0; i < SIZE_INVEN; i++)
         {
             InventorySlot slot = Instantiate(slotPrefab, slotParent);
-            slot.Init(i);
-            slot.Clear();
             slots.Add(slot);
         }
-
-        ClearInfo();
+        ClearInfoCur();
     }
 
-    private void BuildTemplateTypeMap()
-    {
-        templateTypeMap = new Dictionary<int, ItemType>();
-
-        for (int i = 0; i < TemplateManager.ItemEquipmentTemplates.Count; i++)
-            templateTypeMap[i] = ItemType.Equipment;
-
-        for (int i = 0; i < TemplateManager.ItemConsumableTemplates.Count; i++)
-            templateTypeMap[i] = ItemType.Consumable;
-
-        for (int i = 0; i < TemplateManager.ItemMaterialTemplates.Count; i++)
-            templateTypeMap[i] = ItemType.Material;
-
-        Debug.Log($"[INV] TemplateTypeMap built: {templateTypeMap.Count}");
-    }
-
-    private ItemType GetItemType(int templateId)
-    {
-        if (templateTypeMap.TryGetValue(templateId, out var type))
-            return type;
-
-        Debug.LogError($"[INV] Unknown templateId={templateId}");
-        return ItemType.Material;
-    }
 
     public void LoadFromPlayerInventory()
     {
@@ -96,7 +63,7 @@ public class InventoryManager : MonoBehaviour
         foreach (var slot in slots)
             slot.Clear();
 
-        ClearInfo();
+        ClearInfoCur();
 
         BaseItem[] items = ClientReceiveMessageHandler.Player.InventoryItems;
 
@@ -112,45 +79,15 @@ public class InventoryManager : MonoBehaviour
 
     private void SetItemToSlot(int slotIndex, BaseItem item)
     {
-        int templateId = item.TemplateId;
         ItemType type = item.GetItemType();
 
-        int iconId = -1;
-        string name = "";
-        string desc = "";
-
-        switch (type)
-        {
-            case ItemType.Equipment:
-                iconId = TemplateManager.ItemEquipmentTemplates[templateId].IconId;
-                name = TemplateManager.ItemEquipmentTemplates[templateId].Name;
-                desc = TemplateManager.ItemEquipmentTemplates[templateId].Description;
-                break;
-
-            case ItemType.Consumable:
-                iconId = TemplateManager.ItemConsumableTemplates[templateId].IconId;
-                name = TemplateManager.ItemConsumableTemplates[templateId].Name;
-                desc = TemplateManager.ItemConsumableTemplates[templateId].Description;
-                break;
-
-            case ItemType.Material:
-                iconId = TemplateManager.ItemMaterialTemplates[templateId].IconId;
-                name = TemplateManager.ItemMaterialTemplates[templateId].Name;
-                desc = TemplateManager.ItemMaterialTemplates[templateId].Description;
-                break;
-        }
-
-        // ...
-        Sprite sprite = GetSprite(iconId, type);
+        Sprite sprite = GetSprite(item.GetIcon(), type);
         if (sprite == null)
         {
-            Debug.LogWarning($"[INV] Missing sprite iconId={iconId}");
+            Debug.LogWarning($"[INV] Missing sprite iconId={item.GetIcon()}");
             return;
         }
-
-        ItemData data = new ItemData(templateId, iconId, name, desc);
-        slots[slotIndex].SetItem(data, sprite);
-
+        slots[slotIndex].SetItem(item, sprite);
     }
 
     private Sprite GetSprite(int iconId, ItemType type)
@@ -175,48 +112,31 @@ public class InventoryManager : MonoBehaviour
 
     public void ShowInfo(InventorySlot slot)
     {
-        if (slot == null || slot.GetItemData() == null)
+        if (slot == null || slot.Item == null)
         {
-            ClearInfo();
+            ClearInfoCur();
             return;
         }
 
-        ItemData item = slot.GetItemData();
+        BaseItem item = slot.Item;
         Sprite sprite = slot.GetSprite();
 
-        infoIcon.enabled = sprite != null;
-        infoIcon.sprite = sprite;
+        infoIconCur.enabled = sprite != null;
+        infoIconCur.sprite = sprite;
 
-        infoName.text = item.name;
+        infoNameCur.text = item.GetName();
 
-        int levelRequire = 0;
-        ItemType type = GetItemType(item.itemId);
 
-        switch (type)
-        {
-            case ItemType.Equipment:
-                levelRequire = TemplateManager.ItemEquipmentTemplates[item.itemId].LevelRequire;
-                break;
-            case ItemType.Consumable:
-                levelRequire = TemplateManager.ItemConsumableTemplates[item.itemId].LevelRequire;
-                break;
-            case ItemType.Material:
-                levelRequire = TemplateManager.ItemMaterialTemplates[item.itemId].LevelRequire;
-                break;
-        }
-
-        infoDescription.text = $"Cấp yêu cầu: {levelRequire}\n{item.description}";
-
-        Debug.Log($"[INV][INFO] template={item.itemId} iconId={item.spriteId} level={levelRequire}");
+        infoDescriptionCur.text = $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
     }
 
 
 
-    public void ClearInfo()
+    public void ClearInfoCur()
     {
-        infoIcon.enabled = false;
-        infoIcon.sprite = null;
-        infoName.text = "";
-        infoDescription.text = "";
+        infoIconCur.enabled = false;
+        infoIconCur.sprite = null;
+        infoNameCur.text = "";
+        infoDescriptionCur.text = "";
     }
 }

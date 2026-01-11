@@ -2446,7 +2446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9019608, g: 0.83137256, b: 0.74509805, a: 1}
+  m_Color: {r: 0.5943396, g: 0.54668033, b: 0.48500353, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8239,9 +8239,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotParent: {fileID: 1042817125}
   slotPrefab: {fileID: 4260612051480559083, guid: 151259ce7965068478ea656c3e86594d, type: 3}
-  infoIcon: {fileID: 1773208798}
-  infoName: {fileID: 1280119888}
-  infoDescription: {fileID: 857286987}
+  infoIconCur: {fileID: 1773208798}
+  infoNameCur: {fileID: 1280119888}
+  infoDescriptionCur: {fileID: 857286987}
 --- !u!1 &1341744489
 GameObject:
   m_ObjectHideFlags: 0

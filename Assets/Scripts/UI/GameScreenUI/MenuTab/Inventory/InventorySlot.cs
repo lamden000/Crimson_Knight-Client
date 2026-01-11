@@ -6,14 +6,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image iconImage;
 
-    private ItemData itemData;
-    private int slotIndex;
+    public BaseItem Item;
 
-    public void Init(int index)
-    {
-        slotIndex = index;
-    }
-
+ 
     private void Awake()
     {
         if (iconImage == null)
@@ -22,22 +17,19 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         Clear();
     }
 
-    public void SetItem(ItemData data, Sprite sprite)
+    public void SetItem(BaseItem data, Sprite sprite)
     {
-        itemData = data;
+        Item = data;
 
         iconImage.sprite = sprite;
         iconImage.enabled = true;
         iconImage.raycastTarget = true;
         iconImage.color = Color.white;
-
-        Debug.Log($"[INV][LOAD] Slot={slotIndex} name={data.name}");
     }
 
     public void Clear()
     {
-        itemData = null;
-
+        Item = null;
         if (iconImage != null)
         {
             iconImage.sprite = null;
@@ -45,18 +37,17 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public ItemData GetItemData() => itemData;
     public Sprite GetSprite() => iconImage.sprite;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log($"[INV][CLICK] Slot={slotIndex}");
+        //Debug.Log($"[INV][CLICK] Slot={slotIndex}");
 
-        if (itemData == null)
-        {
-            InventoryManager.Instance.ClearInfo();
-            return;
-        }
+        //if (itemData == null)
+        //{
+        //    InventoryManager.Instance.ClearInfo();
+        //    return;
+        //}
         InventoryManager.Instance.ShowInfo(this);
     }
 }

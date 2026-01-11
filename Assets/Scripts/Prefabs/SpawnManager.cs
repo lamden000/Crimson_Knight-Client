@@ -179,7 +179,7 @@ public class SpawnManager : MonoBehaviour
 
         if (iconId == -1)
         {
-            Debug.LogError($"Không thể tạo item với type: {type}");
+            Debug.LogError($"Không thể tạo Item với type: {type}");
             Destroy(itemObj);
             return null;
         }
@@ -203,7 +203,7 @@ public class SpawnManager : MonoBehaviour
 
         if (sprite == null)
         {
-            Debug.LogWarning($"Không tìm thấy sprite item iconId={iconId}, type={type}");
+            Debug.LogWarning($"Không tìm thấy sprite Item iconId={iconId}, type={type}");
         }
         else
         {
