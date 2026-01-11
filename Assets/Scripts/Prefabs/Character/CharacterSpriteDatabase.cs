@@ -18,6 +18,8 @@ public class CharacterSpriteDatabase : MonoBehaviour
     
     private HashSet<(CharacterPart, int)> loadedVariants = new HashSet<(CharacterPart, int)>();
 
+    private Sprite deadBodySprite = null; // Cache sprite dead (một sprite duy nhất cho tất cả người chơi)
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -300,6 +302,32 @@ public class CharacterSpriteDatabase : MonoBehaviour
         AddSprite(weapon, weaponVariant, (int)WeaponState.Left, Direction.Left, State.Idle);
 
         loadedVariants.Add((weapon, weaponVariant));
+    }
+
+    // Load sprite dead body (một sprite duy nhất cho tất cả người chơi)
+    public Sprite GetDeadBodySprite()
+    {
+        if (deadBodySprite != null)
+            return deadBodySprite;
+
+        // Tên sprite có thể là "DeadBody" trong thư mục "Character Sprites"
+        // Thử load từ file riêng hoặc từ một sheet
+        string spriteName = "die_char";
+        deadBodySprite = Resources.Load<Sprite>(folderPath + "/" + spriteName);
+
+        if (deadBodySprite == null)
+        {
+            // Nếu không tìm thấy file riêng, thử tìm trong sheet
+            Sprite[] all = Resources.LoadAll<Sprite>(folderPath);
+            deadBodySprite = System.Array.Find(all, s => s.name == spriteName || s.name.ToLower().Contains("dead"));
+        }
+
+        if (deadBodySprite == null)
+        {
+            Debug.LogWarning($"Dead body sprite not found: {spriteName} in {folderPath}");
+        }
+
+        return deadBodySprite;
     }
 
 }

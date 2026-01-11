@@ -155,6 +155,76 @@ public class SpawnManager : MonoBehaviour
 
     private static Dictionary<string, SkillSpawnData> spawnDatas= new Dictionary<string, SkillSpawnData>();
 
+    public GameObject SpawnItem(int templateId, ItemType type, Vector2 pos, int quantity = 1)
+    {
+        // Equipment không stackable, quantity luôn = 1
+        if (type == ItemType.Equipment)
+        {
+            quantity = 1;
+        }
+
+        // Tạo GameObject mới cho item
+        GameObject itemObj = new GameObject($"Item_{templateId}_{type}");
+        itemObj.transform.position = pos;
+
+        // Tạo BaseItem tương ứng
+        BaseItem item = null;
+        int iconId = 0;
+        
+        switch (type)
+        {
+            case ItemType.Equipment:
+                item = new ItemEquipment(templateId.ToString(), templateId);
+                iconId = TemplateManager.ItemEquipmentTemplates[templateId].IconId;
+                break;
+            case ItemType.Consumable:
+                item = new ItemConsumable(templateId, quantity);
+                iconId = TemplateManager.ItemConsumableTemplates[templateId].IconId;
+                break;
+            case ItemType.Material:
+                item = new ItemMaterial(templateId, quantity);
+                iconId = TemplateManager.ItemMaterialTemplates[templateId].IconId;
+                break;
+        }
+
+        if (item == null)
+        {
+            Debug.LogError($"Không thể tạo item với type: {type}");
+            Destroy(itemObj);
+            return null;
+        }
+
+        // Thêm SpriteRenderer
+        SpriteRenderer sr = itemObj.AddComponent<SpriteRenderer>();
+        
+        // Load sprite dựa vào type
+        string folderPath = "";
+        switch (type)
+        {
+            case ItemType.Equipment:
+                folderPath = "Items/Equipments";
+                break;
+            case ItemType.Consumable:
+                folderPath = "Items/Consumables";
+                break;
+            case ItemType.Material:
+                folderPath = "Items/Materials";
+                break;
+        }
+
+        Sprite sprite = Resources.Load<Sprite>($"{folderPath}/{iconId}");
+        if (sprite == null)
+        {
+            Debug.LogWarning($"Không tìm thấy sprite item: {folderPath}/{iconId}");
+        }
+        else
+        {
+            sr.sprite = sprite;
+        }
+
+        return itemObj;
+    }
+
     public void SpawnEffectPrefab(string effectName, Transform caster, Transform target, float duration = 0.5f)
     {
         if (caster == null)

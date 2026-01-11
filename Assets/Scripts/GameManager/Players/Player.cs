@@ -54,18 +54,31 @@ public class Player : BasePlayer
         targetMask = LayerMask.GetMask("Player", "Monster", "Npc");
     }
 
+    private bool isDead = false;
+
     void Update()
     {
-        if (IsDie())
+        // Phím Z để toggle dead state (để test)
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            if (Input.GetKeyDown(KeyCode.Z))
+            PlayerAnimationController animController = GetComponent<PlayerAnimationController>();
+            if (animController != null)
             {
-
+                if (isDead)
+                {
+                    animController.SetAliveState();
+                    isDead = false;
+                }
+                else
+                {
+                    animController.SetDeadState();
+                    isDead = true;
+                }
             }
             return;
         }
+            
        
-
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();
@@ -88,6 +101,37 @@ public class Player : BasePlayer
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             RequestManager.ChangePkType((PkType)4);
+        }
+
+        // Phím F để spawn item trước mặt (để test)
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            PlayerAnimationController animController = GetComponent<PlayerAnimationController>();
+            if (animController != null)
+            {
+                Vector2 spawnOffset = Vector2.zero;
+                float offsetDistance = 30f; // Khoảng cách spawn item trước mặt
+
+                switch (animController.currentDir)
+                {
+                    case Direction.Down:
+                        spawnOffset = new Vector2(0, -offsetDistance);
+                        break;
+                    case Direction.Up:
+                        spawnOffset = new Vector2(0, offsetDistance);
+                        break;
+                    case Direction.Left:
+                        spawnOffset = new Vector2(-offsetDistance, 0);
+                        break;
+                    case Direction.Right:
+                        spawnOffset = new Vector2(offsetDistance, 0);
+                        break;
+                }
+
+                Vector2 spawnPos = (Vector2)transform.position + spawnOffset;
+                // Spawn item test (templateId = 1, type = Equipment, quantity = 1)
+                SpawnManager.GI().SpawnItem(1, ItemType.Equipment, spawnPos, 1);
+            }
         }
 
         

@@ -53,6 +53,10 @@ public class PlayerAnimationController : MonoBehaviour
     public AttackAnimationController attackAnimation;
     Character character;
 
+    // Lưu trạng thái renderer trước khi chết để khôi phục sau này
+    private Dictionary<CharacterPart, bool> savedRendererStates = new Dictionary<CharacterPart, bool>();
+    private bool isDead = false;
+
     public Direction GetCurrentDirection()
     { return currentDir; }
 
@@ -98,6 +102,9 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Không cập nhật animation nếu đã chết
+        if (isDead) return;
+
         PlayAnimation(currentDir, currentState,currentEyeState);
         Blink();
     }
@@ -379,6 +386,83 @@ public class PlayerAnimationController : MonoBehaviour
                 spriteRenderers[CharacterPart.Eyes].sprite = null;
                 database.LoadEyes(variant);
                 break;
+        }
+    }
+
+    // Set trạng thái chết
+    public void SetDeadState()
+    {
+        if (isDead) return; // Đã chết rồi thì không làm gì
+
+        isDead = true;
+        
+        // Lưu trạng thái enabled của các renderer (trừ Eyes và Body)
+        savedRendererStates.Clear();
+        foreach (var part in spriteRenderers.Keys)
+        {
+            if (part != CharacterPart.Eyes && part != CharacterPart.Body && spriteRenderers.ContainsKey(part))
+            {
+                savedRendererStates[part] = spriteRenderers[part].enabled;
+                spriteRenderers[part].enabled = false; // Tắt renderer
+            }
+        }
+
+        // Tắt attack animation nếu đang bật
+        if (attackAnimation != null)
+        {
+            attackAnimation.gameObject.SetActive(false);
+        }
+
+        // Set dead sprite vào body
+        Sprite deadSprite = database.GetDeadBodySprite();
+        if (deadSprite != null && spriteRenderers.ContainsKey(CharacterPart.Body))
+        {
+            spriteRenderers[CharacterPart.Body].sprite = deadSprite;
+        }
+
+        // Set eye state = Beaten
+        currentEyeState = EyeState.Beaten;
+        // Cập nhật mắt ngay lập tức
+        if (spriteRenderers.ContainsKey(CharacterPart.Eyes))
+        {
+            var eyeFrames = database.GetEyeSprites(partVariants[CharacterPart.Eyes], currentDir, EyeState.Beaten);
+            if (eyeFrames != null && eyeFrames.Count > 0)
+            {
+                spriteRenderers[CharacterPart.Eyes].sprite = eyeFrames[0];
+            }
+        }
+
+        // Set state = Dead
+        currentState = State.Dead;
+    }
+
+    // Khôi phục trạng thái sống
+    public void SetAliveState()
+    {
+        if (!isDead) return; // Đang sống rồi thì không làm gì
+
+        isDead = false;
+
+        // Khôi phục trạng thái enabled của các renderer
+        foreach (var kvp in savedRendererStates)
+        {
+            if (spriteRenderers.ContainsKey(kvp.Key))
+            {
+                spriteRenderers[kvp.Key].enabled = kvp.Value;
+            }
+        }
+        savedRendererStates.Clear();
+
+        // Set eye state = Idle
+        currentEyeState = EyeState.Idle;
+
+        // Set state = Idle
+        currentState = State.Idle;
+
+        // Load lại sprites bình thường (chỉ cần đảm bảo body được load lại)
+        if (spriteRenderers.ContainsKey(CharacterPart.Body))
+        {
+            spriteRenderers[CharacterPart.Body].sprite = null; // Reset để PlayAnimation sẽ load lại
         }
     }
 
