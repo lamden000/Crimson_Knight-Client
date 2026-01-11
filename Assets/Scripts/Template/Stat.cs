@@ -17,3 +17,10 @@ public enum StatId : byte
     PERCENT_ATK = 6,
     PERCENT_DEF = 7
 }
+
+public class StatDefinition
+{
+    public StatId StatId { get; set; }
+    public string Name { get; set; }
+    public bool IsPercent { get; set; }
+}

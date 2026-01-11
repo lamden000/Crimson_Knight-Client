@@ -34,6 +34,7 @@ namespace Assets.Scripts.Networking
                         TemplateManager.ItemEquipmentTemplates = res.ItemEquipmentTemplates;
                         TemplateManager.ItemConsumableTemplates = res.ItemConsumableTemplates;
                         TemplateManager.ItemMaterialTemplates = res.ItemMaterialTemplates;
+                        TemplateManager.StatDefinitions = res.StatDefinitions;
                         flag = true;
                     }
                     catch (Exception ex)

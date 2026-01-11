@@ -13,4 +13,5 @@ public class TemplateManager
     public static List<ItemEquipmentTemplate> ItemEquipmentTemplates = new List<ItemEquipmentTemplate>();
     public static List<ItemConsumableTemplate> ItemConsumableTemplates = new List<ItemConsumableTemplate>();
     public static List<ItemMaterialTemplate> ItemMaterialTemplates = new List<ItemMaterialTemplate>();
+    public static Dictionary<StatId, StatDefinition> StatDefinitions = new Dictionary<StatId, StatDefinition>();
 }
