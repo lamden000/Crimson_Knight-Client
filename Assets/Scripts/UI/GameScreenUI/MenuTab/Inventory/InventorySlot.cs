@@ -4,35 +4,59 @@ using UnityEngine.EventSystems;
 
 public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
-    public ItemData item; 
-    public Image icon;
+    [SerializeField] private Image iconImage;
 
-    public void SetItem(ItemData newItem)
+    private ItemData itemData;
+    private int slotIndex;
+
+    public void Init(int index)
     {
-        item = newItem;
-
-        if (item == null)
-        {
-            icon.enabled = false;
-            icon.sprite = null;
-            return;
-        }
-
-        icon.enabled = true;
-        icon.sprite = InventoryManager.Instance.LoadIconById(item.spriteId);
+        slotIndex = index;
     }
+
+    private void Awake()
+    {
+        if (iconImage == null)
+            iconImage = GetComponentInChildren<Image>(true);
+
+        Clear();
+    }
+
+    public void SetItem(ItemData data, Sprite sprite)
+    {
+        itemData = data;
+
+        iconImage.sprite = sprite;
+        iconImage.enabled = true;
+        iconImage.raycastTarget = true;
+        iconImage.color = Color.white;
+
+        Debug.Log($"[INV][LOAD] Slot={slotIndex} name={data.name}");
+    }
+
+    public void Clear()
+    {
+        itemData = null;
+
+        if (iconImage != null)
+        {
+            iconImage.sprite = null;
+            iconImage.enabled = false;
+        }
+    }
+
+    public ItemData GetItemData() => itemData;
+    public Sprite GetSprite() => iconImage.sprite;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (item == null)
+        Debug.Log($"[INV][CLICK] Slot={slotIndex}");
+
+        if (itemData == null)
         {
-            Debug.Log("Slot trống");
             InventoryManager.Instance.ClearInfo();
+            return;
         }
-        else
-        {
-            Debug.Log($"Click item → ItemID = {item.itemId}, SpriteID = {item.spriteId}");
-            InventoryManager.Instance.ShowInfo(item);
-        }
+        InventoryManager.Instance.ShowInfo(this);
     }
 }
