@@ -40,7 +40,7 @@ public class HUDManager : BaseUIManager
 
         float mpRatio = player.CurrentMp / player.MaxMp;
         mpBar.sizeDelta = new Vector2(maxMPWidth * mpRatio, mpBar.sizeDelta.y);
-        Debug.Log(player.CurrentHp + "/" + player.MaxHp +"-"+player.CurrentMp + "/" + player.MaxMp);
+        //Debug.Log(player.CurrentHp + "/" + player.MaxHp +"-"+player.CurrentMp + "/" + player.MaxMp);
     }
 
     void UpdateSkillHotkeys()

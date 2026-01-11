@@ -1,7 +1,7 @@
 public class ItemData
 {
     public int itemId;
-    public int spriteId;     // ID icon
+    public int spriteId;     
     public string name;
     public string description;
 
