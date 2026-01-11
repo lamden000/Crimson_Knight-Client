@@ -1,12 +1,13 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image iconImage;
-    [SerializeField] private Image backgroundImage; 
-
+    [SerializeField] private Image backgroundImage;
+    [SerializeField] private TextMeshProUGUI quantityText;
     public BaseItem Item;
     private void Awake()
     {
@@ -24,7 +25,18 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         iconImage.enabled = true;
         iconImage.raycastTarget = true;
         iconImage.color = Color.white;
+        int quantity = 1;
+        if (Item.GetItemType() == ItemType.Consumable)
+            quantity = ((ItemConsumable)Item).Quantity;
+        else if (Item.GetItemType() == ItemType.Material)
+            quantity = ((ItemMaterial)Item).Quantity;
+
+        if (quantityText != null)
+        {
+            quantityText.text = quantity > 1 ? quantity.ToString() : "";
+        }
     }
+
 
     public void Clear()
     {
@@ -60,7 +72,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
             }
             else
             {
-                // Nhạt hơn khi không chọn (ví dụ xanh nhạt)
                 ColorUtility.TryParseHtmlString("#A87A64", out color);
             }
             backgroundImage.color = color;

@@ -20,6 +20,7 @@ public class InventoryManager : MonoBehaviour
     public TextMeshProUGUI useButtonText;
     private List<InventorySlot> slots = new List<InventorySlot>();
 
+
     private void Awake()
     {
         Instance = this;
@@ -126,6 +127,7 @@ public class InventoryManager : MonoBehaviour
         infoNameCur.text = item.GetName();
         infoDescriptionCur.text = $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
         UpdateUseButtonText(item);
+
     }
 
     private InventorySlot selectedSlot;
@@ -168,6 +170,11 @@ public class InventoryManager : MonoBehaviour
 
     public void ClearInfoCur()
     {
+        if (selectedSlot != null)
+        {
+            selectedSlot.SetSelected(false);
+            selectedSlot = null;
+        }
         infoIconCur.enabled = false;
         infoIconCur.sprite = null;
         infoNameCur.text = "";
