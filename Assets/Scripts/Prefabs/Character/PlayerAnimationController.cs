@@ -308,6 +308,28 @@ public class PlayerAnimationController : MonoBehaviour
         SetAttackAnimation(false);
     }
 
+
+    public void LoadPartVuKhi(ClassType classType, int variant)
+    {
+        if (classType == ClassType.CHIEN_BINH)
+        {
+            this.LoadPart(CharacterPart.Sword, variant);
+        }
+        else if (classType == ClassType.SAT_THU)
+        {
+            this.LoadPart(CharacterPart.Knive, variant);
+        }
+        else if (classType == ClassType.PHAP_SU)
+        {
+            this.LoadPart(CharacterPart.Staff, variant);
+        }
+        else
+        {
+            this.LoadPart(CharacterPart.Gun, variant);
+        }
+    }
+
+
     public void LoadPart(CharacterPart part, int variant)
     {
         partVariants[part] = variant;

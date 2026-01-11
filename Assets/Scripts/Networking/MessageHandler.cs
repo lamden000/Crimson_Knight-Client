@@ -72,6 +72,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_MONSTER_ATTACK:
                     ClientReceiveMessageHandler.MonsterAttackInfo(msg);
                     break;
+                case MessageId.SERVER_PLAYER_WEARING_ITEMS_INFO:
+                    ClientReceiveMessageHandler.PlayerWearingItems(msg);
+                    break;
                 default:
                     break;
             }

@@ -1,6 +1,6 @@
 ﻿public enum EquipmentType : byte
 {
-    Weapon = 1,
-    Armor = 2,
-    Pants = 3
+    Weapon = 0,
+    Armor = 1,
+    Pants = 2
 }

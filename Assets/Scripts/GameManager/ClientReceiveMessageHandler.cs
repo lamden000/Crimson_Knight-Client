@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Map;
+﻿using Assets.Scripts.GameManager.Players;
+using Assets.Scripts.Map;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
@@ -352,6 +353,44 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             {
                 attacker.AniAttack(target);
             }
+        }
+    }
+
+    public static void PlayerWearingItems(Message msg)
+    {
+        int playerId = msg.ReadInt();
+        byte size = msg.ReadByte();
+        ItemEquipment[] items = new ItemEquipment[size];
+        if(size != 3)
+        {
+            Debug.LogError("PlayerWearingItems quen sua roi kia");
+            return;
+        }
+        for(int i = 0;i< size;i++)
+        {
+            bool has = msg.ReadBool();
+            if (has)
+            {
+                string id = msg.ReadString();
+                int templateId = msg.ReadInt();
+                items[i] = new ItemEquipment(id, templateId);
+            }
+        }
+
+        BasePlayer player = null;
+
+        if(playerId == Player.Id)
+        {
+            player = Player;
+        }
+        else
+        {
+            OtherPlayers.TryGetValue(playerId, out var value);
+            player = value;
+        }
+        if (player != null)
+        {
+            player.LoadPartWearing(items);
         }
     }
 }

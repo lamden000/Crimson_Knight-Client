@@ -7,13 +7,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.GameManager.Players
 {
-    public abstract class BasePlayer: BaseObject
+    public abstract class BasePlayer : BaseObject
     {
         private PlayerMovementController playerMovementControllerPrefab;
         private Character characterPrefab;
         private PlayerAnimationController playerAnimationControllerPrefab;
 
-
+        public readonly ItemEquipment[] WearingItems = new ItemEquipment[3];
 
         public void SetupPrefab(bool isMainPlayer = false)
         {
@@ -44,7 +44,7 @@ namespace Assets.Scripts.GameManager.Players
         {
             playerMovementControllerPrefab.MoveToXY(x, y);
         }
-   
+
         protected override void LateUpdate()
         {
             base.LateUpdate();
@@ -126,7 +126,7 @@ namespace Assets.Scripts.GameManager.Players
 
         private void LoadBasePart()
         {
-            if(this.Gender == Gender.Male)
+            if (this.Gender == Gender.Male)
             {
                 playerAnimationControllerPrefab.LoadPart(CharacterPart.Hair, 0);
                 playerAnimationControllerPrefab.LoadPart(CharacterPart.Body, 0);
@@ -139,22 +139,78 @@ namespace Assets.Scripts.GameManager.Players
                 playerAnimationControllerPrefab.LoadPart(CharacterPart.Legs, 3);
             }
 
-            if(this.ClassType == ClassType.CHIEN_BINH)
+            playerAnimationControllerPrefab.LoadPartVuKhi(this.ClassType, 0);
+        }
+
+        public void LoadPartWearing(ItemEquipment[] items)
+        {
+            for (int i = 0; i < items.Length; i++)
             {
-                playerAnimationControllerPrefab.LoadPart(CharacterPart.Sword, 0);
+                this.WearingItems[i] = items[i];
             }
-            else if(this.ClassType == ClassType.SAT_THU)
+
+            //load
+            ItemEquipment vukhi = GetVuKhi();
+            int partVk = -1;
+            if (vukhi != null)
             {
-                playerAnimationControllerPrefab.LoadPart(CharacterPart.Knive, 0);
+                partVk = TemplateManager.ItemEquipmentTemplates[vukhi.TemplateId].PartId;
             }
-            else if(this.ClassType == ClassType.PHAP_SU)
+            playerAnimationControllerPrefab.LoadPartVuKhi(this.ClassType, partVk);
+
+            ItemEquipment ao = GetAo();
+            int partAo = -1;
+            if (ao == null)
             {
-                playerAnimationControllerPrefab.LoadPart(CharacterPart.Staff, 0);
+                if (this.Gender == Gender.Male)
+                {
+                    partAo = 0;
+                }
+                else
+                {
+                    partAo = 3;
+                }
             }
             else
             {
-                playerAnimationControllerPrefab.LoadPart(CharacterPart.Gun, 0);
+                partAo = TemplateManager.ItemEquipmentTemplates[ao.TemplateId].PartId;
             }
+            playerAnimationControllerPrefab.LoadPart(CharacterPart.Body, partAo);
+
+            ItemEquipment quan = GetQuan();
+            int partQuan = -1;
+            if(quan == null)
+            {
+                if (this.Gender == Gender.Male)
+                {
+                    partQuan = 0;
+                }
+                else
+                {
+                    partQuan = 3;
+                }
+            }
+            else
+            {
+                partQuan = TemplateManager.ItemEquipmentTemplates[quan.TemplateId].PartId;
+            }
+            playerAnimationControllerPrefab.LoadPart(CharacterPart.Legs, partQuan);
+        }
+
+
+        public ItemEquipment GetVuKhi()
+        {
+            return this.WearingItems[(int)EquipmentType.Weapon];
+        }
+
+        public ItemEquipment GetAo()
+        {
+            return this.WearingItems[(int)EquipmentType.Armor];
+        }
+
+        public ItemEquipment GetQuan()
+        {
+            return this.WearingItems[(int)EquipmentType.Pants];
         }
     }
 }
