@@ -483,4 +483,14 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         }
        
     }
+
+    public static void RemoveItemPick(Message msg)
+    {
+        string idItem = msg.ReadString();
+        if (ItemPicks.TryGetValue(idItem, out var item))
+        {
+            item.DestroyObject();
+            ItemPicks.Remove(idItem);
+        }
+    }
 }

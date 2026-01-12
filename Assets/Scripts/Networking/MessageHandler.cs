@@ -84,6 +84,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_PLAYER_PICK_ITEM:
                     ClientReceiveMessageHandler.PlayerPickItem(msg);
                     break;
+                case MessageId.SERVER_REMOVE_ITEM_PICK:
+                    ClientReceiveMessageHandler.RemoveItemPick(msg);
+                    break;
                 default:
                     break;
             }
