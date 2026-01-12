@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.GameManager.Players;
+﻿using Assets.Scripts.GameManager.Map;
+using Assets.Scripts.GameManager.Players;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
@@ -158,6 +159,8 @@ public class Player : BasePlayer
 
         foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);
+        foreach (var item in ClientReceiveMessageHandler.ItemPicks.Values)
+            Check(item);
 
         return result;
     }
@@ -242,6 +245,8 @@ public class Player : BasePlayer
 
         foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);
+        foreach(var item in ClientReceiveMessageHandler.ItemPicks.Values)
+            Check(item);
 
         return result;
 
@@ -257,6 +262,7 @@ public class Player : BasePlayer
         return true;
     }
 
+    private static long startTimePickItem = 0;
     public void Attack(int skillId, BaseObject target)
     {
         if (target == null)
@@ -266,6 +272,19 @@ public class Player : BasePlayer
         if (target.IsNpc())
         {
             UIManager.Instance.gameScreenUIManager.ShowTalking(target);
+        }
+        else if (target.IsItemPick())
+        {
+            if(SystemUtil.CurrentTimeMillis() - startTimePickItem > 3000)
+            {
+                Debug.Log("item pick " + ((ItemPick)target).IdItemPick);
+                startTimePickItem = SystemUtil.CurrentTimeMillis();
+                RequestManager.PickItem(((ItemPick)target).IdItemPick);
+            }
+            else
+            {
+                Debug.Log("thao tac qua nhanh");
+            }
         }
         else
         {

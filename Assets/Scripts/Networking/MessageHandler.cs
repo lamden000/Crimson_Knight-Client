@@ -81,6 +81,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_ITEM_DROP:
                     ClientReceiveMessageHandler.DropItem(msg);
                     break;
+                case MessageId.SERVER_PLAYER_PICK_ITEM:
+                    ClientReceiveMessageHandler.PlayerPickItem(msg);
+                    break;
                 default:
                     break;
             }

@@ -60,5 +60,12 @@ namespace Assets.Scripts.Networking
             msg.WriteByte((byte)pkType);
             Session.AddMessage(msg);
         }
+
+        public static void PickItem(string id)
+        {
+            Message msg = new Message(MessageId.CLIENT_PICK_ITEM);
+            msg.WriteString(id);
+            Session.AddMessage(msg);
+        }
     }
 }

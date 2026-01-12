@@ -133,5 +133,6 @@ public abstract class BaseObject : MonoBehaviour
     public virtual bool IsNpc() { return false; }
     public virtual bool IsPlayer() { return false; }
     public virtual bool IsOtherPlayer() { return false; }
+    public virtual bool IsItemPick() {  return false; }
 }
 

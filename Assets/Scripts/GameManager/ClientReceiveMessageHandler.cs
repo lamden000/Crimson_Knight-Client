@@ -1,10 +1,12 @@
-﻿using Assets.Scripts.GameManager.Players;
+﻿using Assets.Scripts.GameManager.Map;
+using Assets.Scripts.GameManager.Players;
 using Assets.Scripts.Map;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -40,7 +42,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     public static Dictionary<int, OtherPlayer> OtherPlayers = new Dictionary<int, OtherPlayer>();
     public static Dictionary<int, Monster> Monsters = new Dictionary<int, Monster>();
     public static Dictionary<int, Npc> Npcs = new Dictionary<int, Npc>();
-
+    public static Dictionary<string, ItemPick> ItemPicks = new Dictionary<string, ItemPick>();
 
 
     private void LateUpdate()
@@ -442,6 +444,43 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         ItemType itemType = (ItemType)msg.ReadByte();
         short x = msg.ReadShort();
         short y = msg.ReadShort();
-        SpawnManager.GI().SpawnPickItem(templateId, itemType, new Vector2(x + MathUtil.RandomInt(-50,50), y + MathUtil.RandomInt(-50, 50)));
+        ItemPicks.TryAdd(id,ItemPick.Create(id,templateId,itemType,x,y));
+    }
+
+    public static void PlayerPickItem(Message msg)
+    {
+        bool isPicked = msg.ReadBool();
+        string idItem = msg.ReadString();
+        if (!isPicked)
+        {
+            int playerId = msg.ReadInt();
+            if (ItemPicks.TryGetValue(idItem, out var item))
+            {
+                if (playerId == Player.Id)
+                {
+                    Player.AniPickupItem(item);
+                }
+                else
+                {
+                    if(OtherPlayers.TryGetValue(playerId, out var player))
+                    {
+                        player.AniPickupItem(item);
+
+                    }
+                }
+                item.DestroyObject();
+                ItemPicks.Remove(idItem);
+            }
+
+        }
+        else
+        {
+            if (ItemPicks.TryGetValue(idItem, out var item))
+            {
+                item.DestroyObject();
+                ItemPicks.Remove(idItem);
+            }
+        }
+       
     }
 }

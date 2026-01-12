@@ -240,5 +240,10 @@ namespace Assets.Scripts.GameManager.Players
         {
             return this.WearingItems[(int)EquipmentType.Pants];
         }
+
+
+        public void AniPickupItem(BaseObject item)
+        {
+        }
     }
 }
