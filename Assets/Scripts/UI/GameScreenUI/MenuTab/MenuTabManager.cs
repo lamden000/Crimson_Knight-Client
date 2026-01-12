@@ -12,8 +12,8 @@ public class MenuTabManager : BaseUIManager
     }
 
     public List<Tab> tabs = new List<Tab>();
-    public Button closeButton;
-
+    [SerializeField]
+    private Button btnClose;
     private int currentIndex = -1;
 
     void Start()
@@ -23,10 +23,9 @@ public class MenuTabManager : BaseUIManager
             int id = i;
             tabs[i].button.onClick.AddListener(() => OpenTab(id));
         }
-
-        if (closeButton != null)
-            closeButton.onClick.AddListener(CloseMenu);
-
+        btnClose?.onClick.AddListener(() => {
+            UIManager.Instance.gameScreenUIManager.ShowHUD();
+        });
         CloseAllTabs();
         OpenTab(0);
     }
@@ -43,15 +42,9 @@ public class MenuTabManager : BaseUIManager
     {
         foreach (var t in tabs)
             t.panel.SetActive(false);
-
         currentIndex = -1;
     }
-
-    public void CloseMenu()
-    {
-        this.gameObject.SetActive(false);
-    }
-
+   
     public override void ShowUI()
     {
         base.ShowUI();

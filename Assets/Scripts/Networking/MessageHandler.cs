@@ -87,6 +87,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_REMOVE_ITEM_PICK:
                     ClientReceiveMessageHandler.RemoveItemPick(msg);
                     break;
+                case MessageId.SERVER_CENTER_NOTIFICATION_VIEW:
+                    ClientReceiveMessageHandler.CenterNotification(msg);
+                    break;
                 default:
                     break;
             }

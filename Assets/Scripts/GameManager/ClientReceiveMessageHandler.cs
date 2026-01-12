@@ -5,6 +5,7 @@ using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -43,7 +44,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     public static Dictionary<int, Monster> Monsters = new Dictionary<int, Monster>();
     public static Dictionary<int, Npc> Npcs = new Dictionary<int, Npc>();
     public static Dictionary<string, ItemPick> ItemPicks = new Dictionary<string, ItemPick>();
-
+    public static ConcurrentQueue<string> CenterNotifications = new ConcurrentQueue<string>();
 
     private void LateUpdate()
     {
@@ -492,5 +493,11 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             item.DestroyObject();
             ItemPicks.Remove(idItem);
         }
+    }
+
+    public static void CenterNotification(Message msg)
+    {
+        string content = msg.ReadString();
+        CenterNotifications.Enqueue(content);
     }
 }

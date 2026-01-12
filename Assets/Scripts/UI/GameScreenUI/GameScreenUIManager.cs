@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
 using System;
+using TMPro;
 using UnityEngine;
 
 public class GameScreenUIManager : BaseUIManager
@@ -7,6 +9,26 @@ public class GameScreenUIManager : BaseUIManager
     [SerializeField] private HUDManager hudManager;
     [SerializeField] private MenuTabManager menuTabManager;
     [SerializeField] private TalkingUIManager talkingUIManager;
+
+    [SerializeField] private TextMeshProUGUI txtCenterNotification;
+    private static long startTimeShowTxtCenterNotification;
+
+    private void Update()
+    {
+        if(SystemUtil.CurrentTimeMillis() - startTimeShowTxtCenterNotification > 2000)
+        {
+            if (ClientReceiveMessageHandler.CenterNotifications.TryDequeue(out var msg))
+            {
+                txtCenterNotification.text = msg;
+                startTimeShowTxtCenterNotification = SystemUtil.CurrentTimeMillis();
+            }
+            else
+            {
+                txtCenterNotification.text = "";
+            }
+        }
+    }
+
     public override void ShowUI()
     {
         base.ShowUI();
