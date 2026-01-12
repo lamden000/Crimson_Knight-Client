@@ -434,4 +434,14 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             Player.InventoryItems[i] = item;
         }
     }
+
+    public static void DropItem(Message msg)
+    {
+        string id = msg.ReadString();
+        int templateId = msg.ReadInt();
+        ItemType itemType = (ItemType)msg.ReadByte();
+        short x = msg.ReadShort();
+        short y = msg.ReadShort();
+        SpawnManager.GI().SpawnPickItem(templateId, itemType, new Vector2(x + MathUtil.RandomInt(-50,50), y + MathUtil.RandomInt(-50, 50)));
+    }
 }

@@ -78,6 +78,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_PLAYER_INVENTORY_ITEMS_INFO:
                     ClientReceiveMessageHandler.InventoryItems(msg);
                     break;
+                case MessageId.SERVER_ITEM_DROP:
+                    ClientReceiveMessageHandler.DropItem(msg);
+                    break;
                 default:
                     break;
             }
