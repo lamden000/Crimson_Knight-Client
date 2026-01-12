@@ -126,6 +126,24 @@ public class InventoryManager : MonoBehaviour
         infoIconCur.sprite = sprite;
         infoNameCur.text = item.GetName();
         infoDescriptionCur.text = $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
+        if(slot.Item.GetItemType() == ItemType.Equipment)
+        {
+            var stats = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Stats;
+            foreach(var stat in stats.Values)
+            {
+                StatDefinition statDefinition = TemplateManager.StatDefinitions[stat.Id];
+                string content = statDefinition.Name+": ";
+                if (statDefinition.IsPercent)
+                {
+                    content += MathUtil.ToPercentString(stat.Value);
+                }
+                else
+                {
+                    content += stat.Value;
+                }
+                infoDescriptionCur.text += "\n" + content;
+            }
+        }
         UpdateUseButtonText(item);
 
     }

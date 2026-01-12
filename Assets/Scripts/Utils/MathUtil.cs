@@ -34,4 +34,11 @@ public static class MathUtil
         return ran.Next(a, b + 1);
     }
 
+    public static string ToPercentString(int value)
+    {
+        float percent = value / 10000f * 100f;
+        return percent.ToString("0.##") + "%";
+    }
+
+
 }
