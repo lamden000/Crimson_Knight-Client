@@ -68,6 +68,7 @@ public class Monster : BaseObject
     {
         if (target == null) return;
         GetMonsterPrefab().AniAttack(target.gameObject);
+        SpawnManager.GI().SpawnEffectPrefab("DartRed", this.transform, target.transform);
     }
 
     public override void AniTakeDamage(int dam, BaseObject attacker)
