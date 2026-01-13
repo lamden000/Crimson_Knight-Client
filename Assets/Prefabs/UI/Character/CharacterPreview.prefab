@@ -803,8 +803,8 @@ GameObject:
   - component: {fileID: 5789496537744389210}
   - component: {fileID: 2268284115112252076}
   - component: {fileID: 9084923521688581085}
-  m_Layer: 6
-  m_Name: Character
+  m_Layer: 3
+  m_Name: CharacterPreview
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -819,7 +819,7 @@ Transform:
   m_GameObject: {fileID: 8350450418846385827}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -136.73, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -991,7 +991,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_SortAtRoot: 0
 --- !u!1001 &7112369714016672295
 PrefabInstance:
