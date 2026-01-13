@@ -275,7 +275,7 @@ public class Player : BasePlayer
         }
         else if (target.IsItemPick())
         {
-            if(SystemUtil.CurrentTimeMillis() - startTimePickItem > 3000)
+            if(SystemUtil.CurrentTimeMillis() - startTimePickItem > 500)
             {
                 Debug.Log("item pick " + ((ItemPick)target).IdItemPick);
                 startTimePickItem = SystemUtil.CurrentTimeMillis();
@@ -283,7 +283,7 @@ public class Player : BasePlayer
             }
             else
             {
-                Debug.Log("thao tac qua nhanh");
+                ClientReceiveMessageHandler.CenterNotifications.Enqueue("Thao tác quá nhanh");
             }
         }
         else
@@ -409,5 +409,20 @@ public class Player : BasePlayer
             Skill skill = new Skill(templateId, variant, this.ClassType);
             Skills.Add(skill);
         }
+    }
+
+    public BaseItem GetItemInventoty(int templateId, ItemType type)
+    {
+        foreach(var item in this.InventoryItems)
+        {
+            if(item != null)
+            {
+                if(item.TemplateId == templateId && item.GetItemType() == type)
+                {
+                    return item;
+                }
+            }
+        }
+        return null;
     }
 }

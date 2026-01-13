@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using TMPro;
 using Assets.Scripts;
+using System;
+using Assets.Scripts.Networking;
 
 public class ConsumableButton : MonoBehaviour
 {
@@ -9,16 +11,17 @@ public class ConsumableButton : MonoBehaviour
     [SerializeField] private Button useButton;
     [SerializeField] private Image cooldownOverlay;
     [SerializeField] private TextMeshProUGUI quantityText;
+    [SerializeField] private bool isBtnHp;
 
-    [Header("Item Settings")]
-    [SerializeField] private string itemId; 
-
-    [Header("Cooldown Settings")]
-    [SerializeField] private float cooldownTime = 5f;
+    [SerializeField] private Image img;
 
     private bool isCooldown = false;
     private float cooldownTimer = 0f;
-    private void Start() { LoadQuantity(); }
+
+    private float cooldown = 2f;
+    private int quantity = 0;
+
+    private string idItem = "";
     private void Awake()
     {
         if (useButton != null)
@@ -29,28 +32,15 @@ public class ConsumableButton : MonoBehaviour
             cooldownOverlay.enabled = false;
             cooldownOverlay.fillAmount = 0f;
         }
-
-        LoadQuantity();
     }
-
-    private bool hasLoadedQuantity = false;
     private void Update()
     {
-        if (!hasLoadedQuantity)
-        {
-            int quantity = GetQuantityByItemId(itemId);
-            if (quantity > 0)
-            {
-                LoadQuantity();
-                hasLoadedQuantity = true;
-            }
-        }
-
+        CheckInventory();
         if (isCooldown)
         {
             cooldownTimer -= Time.deltaTime;
             if (cooldownOverlay != null)
-                cooldownOverlay.fillAmount = cooldownTimer / cooldownTime;
+                cooldownOverlay.fillAmount = cooldownTimer / cooldown;
 
             if (cooldownTimer <= 0f)
             {
@@ -64,60 +54,73 @@ public class ConsumableButton : MonoBehaviour
         }
     }
 
-    private void OnUseClicked()
+    private void CheckInventory()
     {
-        if (isCooldown) return;
-
-        int quantity = GetQuantityByItemId(itemId);
-        if (quantity <= 0)
+        if (ClientReceiveMessageHandler.Player == null || ClientReceiveMessageHandler.Player.InventoryItems == null)
         {
-            Debug.LogWarning("[ConsumableButton] Không còn consumable để dùng!");
+            quantity = 0;
             return;
         }
+        ItemConsumable item = null;
 
+        if (isBtnHp)
+        {
+            item = (ItemConsumable)ClientReceiveMessageHandler.Player.GetItemInventoty(0, ItemType.Consumable);
+            if (item == null)
+            {
+                item = (ItemConsumable)ClientReceiveMessageHandler.Player.GetItemInventoty(2, ItemType.Consumable);
+            }
+        }
+        else
+        {
+            item = (ItemConsumable)ClientReceiveMessageHandler.Player.GetItemInventoty(1, ItemType.Consumable);
+            if (item == null)
+            {
+                item = (ItemConsumable)ClientReceiveMessageHandler.Player.GetItemInventoty(3, ItemType.Consumable);
+            }
+        }
+
+        if (item == null)
+        {
+            quantity = 0;
+            if (isBtnHp)
+            {
+                img.sprite = ResourceManager.ItemConsumableIconSprites[0];
+            }
+            else
+            {
+                img.sprite = ResourceManager.ItemConsumableIconSprites[1];
+            }
+            idItem = "";
+        }
+        else
+        {
+            idItem = item.Id;
+            quantity = item.GetQuantity();
+            cooldown = (float)(TemplateManager.ItemConsumableTemplates[item.TemplateId].Cooldown)/1000;
+            img.sprite = ResourceManager.ItemConsumableIconSprites[item.GetIcon()];
+        }
+        quantityText.text = quantity.ToString();
+    }
+
+    private void OnUseClicked()
+    {
+        if (quantity == 0 || idItem == "")
+        {
+            string name = isBtnHp ? "Hp" : "Mp";
+            ClientReceiveMessageHandler.CenterNotifications.Enqueue("Đã hết bình " + name);
+            return;
+        }
+        if (isCooldown) return;
+
+        RequestManager.UseItem(idItem, ItemType.Consumable);
         isCooldown = true;
-        cooldownTimer = cooldownTime;
+        cooldownTimer = cooldown + 0.3f;
 
         if (cooldownOverlay != null)
         {
             cooldownOverlay.enabled = true;
             cooldownOverlay.fillAmount = 1f;
         }
-
-        Debug.Log($"[ConsumableButton] Item {itemId} used, quantity left={quantity - 1}, cooldown started.");
-
-        LoadQuantity();
     }
-
-    private int GetQuantityByItemId(string id)
-    {
-        if (ClientReceiveMessageHandler.Player == null ||
-            ClientReceiveMessageHandler.Player.InventoryItems == null)
-            return 0;
-
-        foreach (BaseItem item in ClientReceiveMessageHandler.Player.InventoryItems)
-        {
-            if (item == null) continue;
-            if (item.Id == id && item.GetItemType() == ItemType.Consumable)
-            {
-                return ((ItemConsumable)item).Quantity;
-            }
-        }
-        return 0;
-    }
-
-    public void LoadQuantity()
-    {
-        if (ClientReceiveMessageHandler.Player == null ||
-            ClientReceiveMessageHandler.Player.InventoryItems == null)
-        {
-            Debug.Log("[ConsumableButton] Inventory chưa sẵn sàng");
-            return;
-        }
-
-        int quantity = GetQuantityByItemId(itemId);
-        if (quantityText != null)
-            quantityText.text = quantity > 0 ? quantity.ToString() : "";
-    }
-    
 }

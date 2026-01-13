@@ -63,4 +63,18 @@
 
         return TemplateManager.ItemMaterialTemplates[TemplateId].LevelRequire;
     }
+
+    public int GetQuantity()
+    {
+        if (GetItemType() == ItemType.Consumable)
+        {
+            return ((ItemConsumable)this).Quantity;
+        }
+        else if (GetItemType() == ItemType.Material)
+        {
+            return ((ItemMaterial)this).Quantity;
+        }
+        return 1;
+
+    }
 }

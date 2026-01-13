@@ -67,5 +67,13 @@ namespace Assets.Scripts.Networking
             msg.WriteString(id);
             Session.AddMessage(msg);
         }
+
+        public static void UseItem(string id, ItemType type)
+        {
+            Message msg = new Message(MessageId.CLIENT_USE_ITEM);
+            msg.WriteString(id);
+            msg.WriteByte((byte)type);
+            Session.AddMessage(msg);
+        }
     }
 }

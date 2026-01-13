@@ -63,7 +63,16 @@ public class ClientReceiveMessageHandler : MonoBehaviour
 
             short x = msg.ReadShort();
             short y = msg.ReadShort();
+            CenterNotifications.Clear();
 
+            foreach(var item in ItemPicks.Values)
+            {
+                if(item != null)
+                {
+                    item.DestroyObject();
+                }
+            }
+            ItemPicks.Clear();
             MapManager.LoadMapById(MapManager.MapId, () =>
             {
                 if (Instance != null)

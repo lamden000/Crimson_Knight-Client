@@ -105,7 +105,6 @@ public class UIManager : MonoBehaviour
 
     public void EnableGameScreen()
     {
-        ClientReceiveMessageHandler.CenterNotifications.Clear();
         this.gameScreenUIManager.ShowUI();
         this.loginScreenUIManager.HideUI();
         this.loadScreenUIManager.HideUI();
