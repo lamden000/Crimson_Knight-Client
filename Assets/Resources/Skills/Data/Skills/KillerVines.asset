@@ -16,12 +16,12 @@ MonoBehaviour:
   - skillToSpawn: {fileID: 11400000, guid: f48130fa92cf17c47a6ad05595f9306c, type: 2}
     chainEntry: 0
     pattern: 5
-    count: 5
+    count: 1
     radius: 200
     angleOffset: 0
-    origin: 1
+    origin: 2
     allObjectsExplode: 0
-    movementType: 0
+    movementType: 6
     useBurst: 0
     burstSize: 0
     burstInterval: 0

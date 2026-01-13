@@ -1953,10 +1953,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 1032521050}
   cooldownTime: 3
+  icon: {fileID: 533375674}
 --- !u!114 &222123672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2636,10 +2635,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 21300000, guid: b6f74d520439e2e47823c017309fad35, type: 3}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 194809342}
   cooldownTime: 3
+  icon: {fileID: 761066541}
 --- !u!1001 &464319415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3194,7 +3192,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b6f74d520439e2e47823c017309fad35, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3267,10 +3265,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 2117835548}
   cooldownTime: 3
+  icon: {fileID: 221510368}
 --- !u!114 &555636962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3621,10 +3618,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 702080521}
   cooldownTime: 3
+  icon: {fileID: 1207988883}
 --- !u!114 &620145248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4771,7 +4767,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b6f74d520439e2e47823c017309fad35, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5873,10 +5869,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 163381383}
   cooldownTime: 3
+  icon: {fileID: 1594258313}
 --- !u!114 &875252884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11934,10 +11929,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 1269320930}
   cooldownTime: 3
+  icon: {fileID: 607439622}
 --- !u!114 &1845726728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12197,10 +12191,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 1255613848}
   cooldownTime: 3
+  icon: {fileID: 617683479}
 --- !u!114 &1863213287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14015,10 +14008,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   skillId: -1
-  skillIcon: {fileID: 0}
-  icon: {fileID: 0}
-  cooldownOverlay: {fileID: 0}
+  cooldownOverlay: {fileID: 1888804668}
   cooldownTime: 3
+  icon: {fileID: 2043826823}
 --- !u!114 &2075970132
 MonoBehaviour:
   m_ObjectHideFlags: 0

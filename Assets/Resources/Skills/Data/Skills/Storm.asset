@@ -15,13 +15,13 @@ MonoBehaviour:
   spawnEntries:
   - skillToSpawn: {fileID: 11400000, guid: 5c0ec2ba820b2a54491d295ef4426f6d, type: 2}
     chainEntry: 0
-    pattern: 3
-    count: 7
+    pattern: 0
+    count: 1
     radius: 200
     angleOffset: 0
-    origin: 1
+    origin: 2
     allObjectsExplode: 0
-    movementType: 0
+    movementType: 6
     useBurst: 0
     burstSize: 0
     burstInterval: 0

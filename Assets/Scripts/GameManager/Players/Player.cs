@@ -86,21 +86,33 @@ public class Player : BasePlayer
             RequestManager.ChangePkType((PkType)4);
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            SpawnManager.GI().SpawnPickItem(2, ItemType.Consumable, new Vector2(this.GetX(),this.GetY()));
-        }
+       
     }
 
     public string EffectName = "ConductedEffect";
     private void UpdateInput()
     {
-
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            SpawnManager.GI().SpawnEffectPrefab(EffectName, this.transform, objFocus.transform);
+        }
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            Attack(-1, objFocus);
+            Attack(GetSkillIdCanAttack(), objFocus);
         }
+    }
+
+    private int GetSkillIdCanAttack()
+    {
+        foreach(var skill in Skills)
+        {
+            if (skill.IsLearned && skill.CanAttack())
+            {
+                return skill.TemplateId;
+            }
+        }
+        return -1;
     }
 
     private void UpdateMouse()
@@ -120,7 +132,7 @@ public class Player : BasePlayer
                 float timeSinceLastClick = Time.time - lastClickTime;
                 if (timeSinceLastClick <= 0.3f)
                 {
-                    Attack(-1, objFocus);
+                    Attack(GetSkillIdCanAttack(), objFocus);
                 }
                 lastClickTime = Time.time;
             }
@@ -289,7 +301,7 @@ public class Player : BasePlayer
         else
         {
             Debug.Log("objfocus: " + target.GetX() + "-" + target.GetY());
-            Skill skillUse = Skills[0];
+            Skill skillUse = Skills[skillId];
             if (skillUse != null && skillUse.CanAttack())
             {
                 if (!skillUse.IsLearned)
@@ -385,7 +397,10 @@ public class Player : BasePlayer
                 this.CurrentMp -= skillUse.GetMpLost();
                 Debug.Log("Send attack " + skillUse.TemplateId);
 
-                SpawnManager.GI().SpawnEffectPrefab(skillUse.GetTemplate().EffectName, this.transform, target.transform);
+                foreach(var t in targets)
+                {
+                    SpawnManager.GI().SpawnEffectPrefab(skillUse.GetTemplate().EffectName, this.transform, t.transform);
+                }
                 AniAttack(target);
             }
             else

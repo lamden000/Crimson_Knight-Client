@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GameScreenUIManager : BaseUIManager
 {
-    [SerializeField] private HUDManager hudManager;
+    [SerializeField] public HUDManager hudManager;
     [SerializeField] private MenuTabManager menuTabManager;
     [SerializeField] private TalkingUIManager talkingUIManager;
 

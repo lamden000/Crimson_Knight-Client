@@ -1,77 +1,64 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Assets.Scripts.Utils;
 
 public class SkillSlot : MonoBehaviour, IPointerClickHandler
 {
     [Header("Skill Data")]
     public int slotIndex;         
-    public int skillId = -1;      
-    public Sprite skillIcon;
 
     [Header("UI")]
-    public Image icon;
     public Image cooldownOverlay;
 
-    [Header("Cooldown")]
-    public float cooldownTime = 3f;
-    private float cooldownRemaining = 0;
+    Skill skill;
+
+    [SerializeField] private Image icon;
+
     public void Init(int index)
     {
-        if(icon == null)
-        {
-            return;
-        }
         slotIndex = index;
-
-        if (skillId < 0)
-        {
-            icon.sprite = null;
-            cooldownOverlay.fillAmount = 0;
-            return;
-        }
-
-        icon.sprite = skillIcon;
         cooldownOverlay.fillAmount = 0;
     }
 
     // Gán skill
-    public void AssignSkill(int newSkillId, Sprite newIcon)
+    public void AssignSkill(Skill skill, Sprite newIcon)
     {
-        skillId = newSkillId;
-        skillIcon = newIcon;
+        this.skill = skill;
         icon.sprite = newIcon;
-
-        Debug.Log($"[HUD] Đã gán skill {skillId} vào ô {slotIndex}");
     }
-
+    private float cooldownRemaining;
+    private float cooldownTime;
     void Update()
     {
-        if (cooldownRemaining > 0)
+        if (skill != null && !skill.CanAttack())
         {
-            cooldownRemaining -= Time.deltaTime;
+            long elapsed = SystemUtil.CurrentTimeMillis() - skill.StartTimeAttack;
+            cooldownTime = skill.GetCooldown() / 1000f;
+            cooldownRemaining = (skill.GetCooldown() - elapsed) / 1000f;
+
             cooldownOverlay.fillAmount = cooldownRemaining / cooldownTime;
+        }
+        else
+        {
+            cooldownOverlay.fillAmount = 0;
         }
     }
 
     public void TryUseSkill()
     {
-        if (skillId < 0)
+        if (skill == null)
         {
             Debug.Log($"Ô skill {slotIndex} chưa gán skill!");
             return;
         }
 
-        if (cooldownRemaining > 0)
+        if (!skill.CanAttack()) 
         {
-            Debug.Log($"Skill {skillId} (slot {slotIndex}) đang hồi ({cooldownRemaining:F1}s)");
+            Debug.Log("Đang hồi chiêu");
             return;
         }
-
-        Debug.Log($"DÙNG skill id {skillId} từ ô {slotIndex}");
-
-        cooldownRemaining = cooldownTime;
-        cooldownOverlay.fillAmount = 1;
+        ClientReceiveMessageHandler.Player.Attack(skill.TemplateId, ClientReceiveMessageHandler.Player.objFocus);
     }
 
     public void OnPointerClick(PointerEventData eventData)

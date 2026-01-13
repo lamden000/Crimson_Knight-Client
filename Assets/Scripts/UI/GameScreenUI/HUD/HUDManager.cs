@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts;
 using TMPro;
+using UnityEngine;
 
 public class HUDManager : BaseUIManager
 {
@@ -23,10 +24,16 @@ public class HUDManager : BaseUIManager
         maxMPWidth = mpBar.sizeDelta.x;
 
         for (int i = 0; i < skillSlots.Length; i++)
-            skillSlots[i] = new SkillSlot();
-
-        for (int i = 0; i < skillSlots.Length; i++)
             skillSlots[i].Init(i + 1);
+
+        for (int i = 0; i < ClientReceiveMessageHandler.Player.Skills.Count; i++)
+        {
+            Skill skill = ClientReceiveMessageHandler.Player.Skills[i];
+            if (skill.IsLearned)
+            {
+                UIManager.Instance.gameScreenUIManager.hudManager.SetSkill(i + 1,skill);
+            }
+        }
     }
 
     void Update()
@@ -67,14 +74,14 @@ public class HUDManager : BaseUIManager
         if (Input.GetKeyDown(KeyCode.Alpha8)) skillSlots[7].TryUseSkill();
     }
 
-    public void SetSkill(int slot, int skillId, Sprite icon)
+    public void SetSkill(int slot, Skill skill)
     {
         if (slot < 1 || slot > 8)
         {
             Debug.LogError("Slot phải từ 1–8");
             return;
         }
-
-        skillSlots[slot - 1].AssignSkill(skillId, icon);
+        Sprite icon = ResourceManager.SkillIcons[skill.GetTemplate().IconId];
+        skillSlots[slot - 1].AssignSkill(skill, icon);
     }
 }
