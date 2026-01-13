@@ -163,44 +163,46 @@ public class SpawnManager : MonoBehaviour
         itemObj.transform.position = pos;
 
         int iconId = -1;
-
-        switch (type)
-        {
-            case ItemType.Equipment:
-                iconId = TemplateManager.ItemEquipmentTemplates[templateId].IconId;
-                break;
-            case ItemType.Consumable:
-                iconId = TemplateManager.ItemConsumableTemplates[templateId].IconId;
-                break;
-            case ItemType.Material:
-                iconId = TemplateManager.ItemMaterialTemplates[templateId].IconId;
-                break;
-        }
-
-        if (iconId == -1)
-        {
-            Debug.LogError($"Không thể tạo Item với type: {type}");
-            Destroy(itemObj);
-            return null;
-        }
-
+        Sprite sprite = null;
         SpriteRenderer sr = itemObj.AddComponent<SpriteRenderer>();
 
-        Sprite sprite = null;
-
-        switch (type)
+        if (templateId != -1)
         {
-            case ItemType.Equipment:
-                ResourceManager.ItemEquipmentIconSprites.TryGetValue(iconId, out sprite);
-                break;
-            case ItemType.Consumable:
-                ResourceManager.ItemConsumableIconSprites.TryGetValue(iconId, out sprite);
-                break;
-            case ItemType.Material:
-                ResourceManager.ItemMaterialsIconSprites.TryGetValue(iconId, out sprite);
-                break;
+            switch (type)
+            {
+                case ItemType.Equipment:
+                    iconId = TemplateManager.ItemEquipmentTemplates[templateId].IconId;
+                    break;
+                case ItemType.Consumable:
+                    iconId = TemplateManager.ItemConsumableTemplates[templateId].IconId;
+                    break;
+                case ItemType.Material:
+                    iconId = TemplateManager.ItemMaterialTemplates[templateId].IconId;
+                    break;
+            }
+            if (iconId == -1)
+            {
+                Debug.LogError($"Không thể tạo Item với type: {type}");
+                Destroy(itemObj);
+                return null;
+            }
+            switch (type)
+            {
+                case ItemType.Equipment:
+                    ResourceManager.ItemEquipmentIconSprites.TryGetValue(iconId, out sprite);
+                    break;
+                case ItemType.Consumable:
+                    ResourceManager.ItemConsumableIconSprites.TryGetValue(iconId, out sprite);
+                    break;
+                case ItemType.Material:
+                    ResourceManager.ItemMaterialsIconSprites.TryGetValue(iconId, out sprite);
+                    break;
+            }
         }
-
+        else
+        {
+            sprite = ResourceManager.SpriteGold;
+        }
         if (sprite == null)
         {
             Debug.LogWarning($"Không tìm thấy sprite Item iconId={iconId}, type={type}");

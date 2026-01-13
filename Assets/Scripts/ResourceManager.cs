@@ -20,6 +20,8 @@ namespace Assets.Scripts
 
         public static Dictionary<int,Sprite> SkillIcons = new Dictionary<int, Sprite>();
 
+        public static Sprite SpriteGold;
+
         private static void LoadItemSprites()
         {
             LoadSprites("Items/Equipments", ItemEquipmentIconSprites);
@@ -29,6 +31,8 @@ namespace Assets.Scripts
             Debug.Log($"[ItemSpriteLoader] Equip={ItemEquipmentIconSprites.Count}, " +
                       $"Consumable={ItemConsumableIconSprites.Count}, " +
                       $"Material={ItemMaterialsIconSprites.Count}");
+
+            SpriteGold = Resources.Load<Sprite>("Items/gold");
         }
 
         private static void LoadSkillIcons()

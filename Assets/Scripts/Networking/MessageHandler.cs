@@ -90,6 +90,10 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_CENTER_NOTIFICATION_VIEW:
                     ClientReceiveMessageHandler.CenterNotification(msg);
                     break;
+                case MessageId.SERVER_PLAYER_GOLD_INFO:
+                    long gold = msg.ReadLong();
+                    ClientReceiveMessageHandler.Player.Gold = gold;
+                    break;
                 default:
                     break;
             }

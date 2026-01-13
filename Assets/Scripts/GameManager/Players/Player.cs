@@ -20,7 +20,7 @@ public class Player : BasePlayer
     public int MaxMp { get; set; }
 
     public long Exp;
-
+    public long Gold;
 
     public BaseObject objFocus;
 

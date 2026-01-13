@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class MenuTabManager : BaseUIManager
 {
@@ -16,6 +17,8 @@ public class MenuTabManager : BaseUIManager
     private Button btnClose;
     private int currentIndex = -1;
 
+    [SerializeField]
+    private TextMeshProUGUI txtGold;
     void Start()
     {
         for (int i = 0; i < tabs.Count; i++)
@@ -28,6 +31,17 @@ public class MenuTabManager : BaseUIManager
         });
         CloseAllTabs();
         OpenTab(0);
+    }
+
+    private void Update()
+    {
+        if(txtGold != null)
+        {
+            if (ClientReceiveMessageHandler.Player != null)
+            {
+                txtGold.text = Helpers.MoneyToString(ClientReceiveMessageHandler.Player.Gold);
+            }
+        }
     }
 
     public void OpenTab(int index)

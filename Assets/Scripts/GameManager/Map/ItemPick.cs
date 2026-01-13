@@ -11,7 +11,7 @@ namespace Assets.Scripts.GameManager.Map
     public class ItemPick : BaseObject
     {
         public string IdItemPick { get; set; }
-        public static ItemPick Create(string id,int templateId, ItemType itemType, short x, short y)
+        public static ItemPick Create(string id, int templateId, ItemType itemType, short x, short y)
         {
             x += (short)MathUtil.RandomInt(-50, 50);
             y += (short)MathUtil.RandomInt(-50, 50);
@@ -21,21 +21,28 @@ namespace Assets.Scripts.GameManager.Map
             itemPick.IdItemPick = id;
             itemPick.SetPosition(x, y);
             string name = "";
-            short lv = 0;
-            if (itemType == ItemType.Equipment)
+            short lv = 1;
+            if (templateId == -1)
             {
-                name = TemplateManager.ItemEquipmentTemplates[templateId].Name;
-                lv = TemplateManager.ItemEquipmentTemplates[templateId].LevelRequire;
-            }
-            else if (itemType == ItemType.Consumable)
-            {
-                name = TemplateManager.ItemConsumableTemplates[templateId].Name;
-                lv = TemplateManager.ItemConsumableTemplates[templateId].LevelRequire;
+                name = "Vàng";
             }
             else
             {
-                name = TemplateManager.ItemMaterialTemplates[templateId].Name;
-                lv = TemplateManager.ItemConsumableTemplates[templateId].LevelRequire;
+                if (itemType == ItemType.Equipment)
+                {
+                    name = TemplateManager.ItemEquipmentTemplates[templateId].Name;
+                    lv = TemplateManager.ItemEquipmentTemplates[templateId].LevelRequire;
+                }
+                else if (itemType == ItemType.Consumable)
+                {
+                    name = TemplateManager.ItemConsumableTemplates[templateId].Name;
+                    lv = TemplateManager.ItemConsumableTemplates[templateId].LevelRequire;
+                }
+                else
+                {
+                    name = TemplateManager.ItemMaterialTemplates[templateId].Name;
+                    lv = TemplateManager.ItemConsumableTemplates[templateId].LevelRequire;
+                }
             }
             itemPick.Level = lv;
             itemPick.Name = name;
