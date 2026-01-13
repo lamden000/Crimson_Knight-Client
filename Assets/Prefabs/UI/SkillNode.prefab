@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 1717949837171230356}
   - component: {fileID: 7262143430794658639}
   - component: {fileID: 6924950550651624420}
-  - component: {fileID: 6689415351923268284}
+  - component: {fileID: 7511068797394381872}
   m_Layer: 5
   m_Name: SkillNode
   m_TagString: Untagged
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.47450984, g: 0.31764707, b: 0.2392157, a: 1}
+  m_Color: {r: 0.7132075, g: 0.5382698, b: 0.45080096, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6689415351923268284
+--- !u!114 &7511068797394381872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3175155697661809756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a30e7097664cd4d41a844ba3bc25cdc6, type: 3}
+  m_Script: {fileID: 11500000, guid: 670cdec2e7aa9d247a84cefb61310c4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 6924950550651624420}

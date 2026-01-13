@@ -1,45 +1,39 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+using Assets.Scripts;
 
-public class SkillNode : MonoBehaviour
+public class SkillNode : MonoBehaviour, IPointerClickHandler
 {
-    public Button button;
     public Image icon;
-    public TMP_Text levelText;
+    public TextMeshProUGUI levelText;
 
-    public SkillData data;
-    public SkillInfoPanel infoPanel;
+    private Skill skill;
 
-    public void Load(SkillData skill, SkillInfoPanel panel)
+    public void Init(Skill skill)
     {
-        data = skill;
-        infoPanel = panel;
+        this.skill = skill;
 
-        icon.sprite = Resources.Load<Sprite>($"UI/Skills/{skill.spriteId}");
-        levelText.text = "Lv " + skill.level;
+        SkillTemplate template = skill.GetTemplate();
 
-        // GẮN CLICK NGAY TẠI ĐÂY
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(OnClick);
-
-        Debug.Log($"SkillNode LOAD: {skill.id} - {skill.name}");
-    }
-
-    void OnClick()
-    {
-        if (data == null)
+        if (ResourceManager.SkillIcons.TryGetValue(template.IconId, out Sprite sp))
         {
-            Debug.LogError("SkillNode click nhưng data = NULL");
-            return;
+            icon.sprite = sp;
+            icon.enabled = true;
+            icon.color = Color.white;
+        }
+        else
+        {
+            icon.enabled = false;
         }
 
-        Debug.Log($"CLICK SKILL NODE ID = {data.id}");
+        levelText.text = $"Lv {skill.VariantId + 1}";
+    }
 
-        if (infoPanel != null)
-            infoPanel.ShowSkill(data);
-        else
-            Debug.LogError("SkillInfoPanel chưa được gán");
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        SkillUIManager.Instance.ShowSkillInfo(skill);
+        Debug.Log($"[SKILL][CLICK] {skill.GetTemplate().Name}");
     }
 }
-

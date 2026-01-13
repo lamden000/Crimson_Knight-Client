@@ -8,17 +8,17 @@ public class MenuTabManager : BaseUIManager
     [System.Serializable]
     public class Tab
     {
-        public Button button;     
-        public GameObject panel;  
+        public Button button;
+        public GameObject panel;
     }
 
     public List<Tab> tabs = new List<Tab>();
-    [SerializeField]
-    private Button btnClose;
+
+    [SerializeField] private Button btnClose;
+    [SerializeField] private TextMeshProUGUI txtGold;
+
     private int currentIndex = -1;
 
-    [SerializeField]
-    private TextMeshProUGUI txtGold;
     void Start()
     {
         for (int i = 0; i < tabs.Count; i++)
@@ -26,39 +26,51 @@ public class MenuTabManager : BaseUIManager
             int id = i;
             tabs[i].button.onClick.AddListener(() => OpenTab(id));
         }
-        btnClose?.onClick.AddListener(() => {
+
+        btnClose?.onClick.AddListener(() =>
+        {
             UIManager.Instance.gameScreenUIManager.ShowHUD();
         });
-        CloseAllTabs();
+
         OpenTab(0);
     }
 
     private void Update()
     {
-        if(txtGold != null)
+        if (txtGold != null && ClientReceiveMessageHandler.Player != null)
         {
-            if (ClientReceiveMessageHandler.Player != null)
-            {
-                txtGold.text = Helpers.MoneyToString(ClientReceiveMessageHandler.Player.Gold);
-            }
+            txtGold.text = Helpers.MoneyToString(ClientReceiveMessageHandler.Player.Gold);
         }
     }
 
     public void OpenTab(int index)
     {
-        CloseAllTabs();
+        if (currentIndex == index)
+            return;
+
+        if (currentIndex >= 0 && currentIndex < tabs.Count)
+        {
+            tabs[currentIndex].panel.SetActive(false);
+        }
 
         tabs[index].panel.SetActive(true);
         currentIndex = index;
+
+        SkillUIManager skillUI = tabs[index].panel.GetComponent<SkillUIManager>();
+        if (skillUI != null)
+        {
+            skillUI.EnsureLoaded();
+        }
     }
 
     public void CloseAllTabs()
     {
         foreach (var t in tabs)
             t.panel.SetActive(false);
+
         currentIndex = -1;
     }
-   
+
     public override void ShowUI()
     {
         base.ShowUI();
