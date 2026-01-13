@@ -14,4 +14,5 @@ public class TemplateManager
     public static List<ItemConsumableTemplate> ItemConsumableTemplates = new List<ItemConsumableTemplate>();
     public static List<ItemMaterialTemplate> ItemMaterialTemplates = new List<ItemMaterialTemplate>();
     public static Dictionary<StatId, StatDefinition> StatDefinitions = new Dictionary<StatId, StatDefinition>();
+    public static List<int> Levels = new List<int>();
 }

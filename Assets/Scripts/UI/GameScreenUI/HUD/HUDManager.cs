@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -17,6 +19,14 @@ public class HUDManager : BaseUIManager
 
     [Header("Skill Slots")]
     public SkillSlot[] skillSlots = new SkillSlot[8];
+
+
+    [SerializeField]
+    private TextMeshProUGUI txtLevel;
+
+    [SerializeField]
+    private TextMeshProUGUI txtPtLevel;
+
 
     void Start()
     {
@@ -40,7 +50,40 @@ public class HUDManager : BaseUIManager
     {
         UpdateHPMP();
         UpdateSkillHotkeys();
+        UpdateLevelInfo();
     }
+
+    private void UpdateLevelInfo()
+    {
+        Player p = ClientReceiveMessageHandler.Player;
+        if (p == null) return;
+
+        float percent = GetLevelPercent(p.Level, p.Exp);
+        string textLv = $"Lv {p.Level}";
+        string textPtLv = $"{(percent * 100f):0.##}%";
+        txtLevel.text = textLv;
+        txtPtLevel.text = textPtLv;
+    }
+
+    float GetLevelPercent(int level, long totalExp)
+    {
+        int maxLevel = TemplateManager.Levels.Count - 1;
+
+        level = Mathf.Clamp(level, 1, maxLevel);
+
+        if (level >= maxLevel)
+            return 1f;
+
+        int curExp = TemplateManager.Levels[level];
+        int nextExp = TemplateManager.Levels[level + 1];
+
+        totalExp = Math.Clamp(totalExp, curExp, TemplateManager.Levels[maxLevel]);
+
+        return Mathf.Clamp01((float)(totalExp - curExp) / (float)(nextExp - curExp));
+    }
+
+
+
 
     void UpdateHPMP()
     {

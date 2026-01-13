@@ -216,7 +216,6 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     {
         int playerId = msg.ReadInt();
         int skillUseId = msg.ReadInt();
-        int dam = msg.ReadInt();
 
         BaseObject attacker = null;
         if (playerId == Player.Id)
@@ -234,6 +233,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         BaseObject firstTarget = null;
         for (int i = 0; i < targetSize; i++)
         {
+            int dam = msg.ReadInt();
             bool isPlayer = msg.ReadBool();
             int targetId = msg.ReadInt();
             BaseObject target = null;
