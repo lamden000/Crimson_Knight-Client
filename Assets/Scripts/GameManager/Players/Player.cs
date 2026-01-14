@@ -420,7 +420,7 @@ public class Player : BasePlayer
         for (int i = 0; i < size; i++)
         {
             int templateId = msg.ReadInt();
-            byte variant = msg.ReadByte();
+            sbyte variant = msg.ReadSByte();
             Skill skill = new Skill(templateId, variant, this.ClassType);
             Skills.Add(skill);
         }

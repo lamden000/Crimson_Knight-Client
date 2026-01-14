@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+﻿using Assets.Scripts;
 using System.Text;
-using Assets.Scripts;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class SkillUIManager : MonoBehaviour
 {
@@ -66,10 +67,7 @@ public class SkillUIManager : MonoBehaviour
     public void ShowSkillInfo(Skill skill)
     {
         currentSkill = skill;
-
-        SkillTemplate template = skill.GetTemplate();
-        SkillTemplate.Variant variant = template.Variants[skill.VariantId];
-
+        var template = skill.GetTemplate();
         // ICON
         if (ResourceManager.SkillIcons.TryGetValue(template.IconId, out Sprite sp))
         {
@@ -86,20 +84,44 @@ public class SkillUIManager : MonoBehaviour
         infoDesc.text = template.Description;
 
         StringBuilder sb = new StringBuilder();
-
-        sb.AppendLine($"MP tiêu hao: {variant.MpLost}");
-        sb.AppendLine($"Hồi chiêu: {variant.Cooldown / 1000f:0.0} giây");
-        sb.AppendLine($"Tầm đánh: {variant.Range}");
-        sb.AppendLine($"Số mục tiêu: {variant.TargetCount}");
-
-        if (variant.Stats != null)
+        bool isLearned = skill.IsLearned;
+        if (!isLearned)
         {
-            foreach (var stat in variant.Stats)
+            sb.AppendLine($"Chưa học kỹ năng này");
+            sb.AppendLine($"Level yêu cầu: {skill.GetTemplate().LevelPlayerRequire}");
+        }
+        else
+        {
+            int lvCur = 1 + skill.VariantId;
+            sb.Append($"Cấp độ skill hiện tại {lvCur}");
+            if(skill.VariantId == template.Variants.Count - 1)
             {
-                sb.AppendLine(GetStatText(stat.Key, stat.Value.Value));
+                sb.AppendLine(" (Đã tối đa)");
+            }
+            else
+            {
+                sb.AppendLine();
+            }
+            sb.AppendLine($"MP tiêu hao: {skill.GetMpLost()}");
+            sb.AppendLine($"Hồi chiêu: {skill.GetCooldown() / 1000f:0.0} giây");
+            sb.AppendLine($"Tầm đánh: {skill.GetRange()}");
+            sb.AppendLine($"Số mục tiêu: {skill.GetTargetCount()}");
+            var stats = skill.GetStats();
+            foreach (var stat in stats.Values)
+            {
+                StatDefinition statDefinition = TemplateManager.StatDefinitions[stat.Id];
+                string content = statDefinition.Name + ": ";
+                if (statDefinition.IsPercent)
+                {
+                    content += MathUtil.ToPercentString(stat.Value);
+                }
+                else
+                {
+                    content += stat.Value;
+                }
+                sb.AppendLine(content);
             }
         }
-
         infoDetail.text = sb.ToString();
 
         Debug.Log($"[SKILL][INFO] {template.Name}");

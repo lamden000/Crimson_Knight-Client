@@ -27,8 +27,9 @@ public class SkillNode : MonoBehaviour, IPointerClickHandler
         {
             icon.enabled = false;
         }
+        levelText.text = "";
 
-        levelText.text = $"Lv {skill.VariantId + 1}";
+        //levelText.text = $"Lv {skill.VariantId + 1}";
     }
 
     public void OnPointerClick(PointerEventData eventData)
