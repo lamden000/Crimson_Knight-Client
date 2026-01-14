@@ -72,13 +72,13 @@ public class SkillSpawnmer : MonoBehaviour
         }
 
         // CHỜ TẤT CẢ ENTRY SONG SONG HOÀN THÀNH
-        foreach (var c in runningEntries)
-            yield return c;
+            foreach (var c in runningEntries)
+                yield return c;
 
-        // Đợi đến khi TẤT CẢ skill object explode/destroy trước khi destroy spawner
-        yield return StartCoroutine(WaitForAllSpawnedObjectsDestroyed());
+            // Đợi đến khi TẤT CẢ skill object explode/destroy trước khi destroy spawner
+            yield return StartCoroutine(WaitForAllSpawnedObjectsDestroyed());
 
-        Destroy(gameObject);
+            Destroy(gameObject);
     }
 
     IEnumerator WaitForAllSpawnedObjectsDestroyed()
@@ -141,7 +141,7 @@ public class SkillSpawnmer : MonoBehaviour
         }
 
         // chờ tất cả nổ
-        yield return StartCoroutine(WaitForAllExplode(spawned));
+            yield return StartCoroutine(WaitForAllExplode(spawned));
     }
     IEnumerator SpawnWithInterval(SpawnEntry entry, Vector3 origin)
     {
@@ -177,7 +177,7 @@ public class SkillSpawnmer : MonoBehaviour
             yield return new WaitForSeconds(entry.interval);
         }
 
-        yield return StartCoroutine(WaitForAllExplode(spawned));
+            yield return StartCoroutine(WaitForAllExplode(spawned));
     }
     IEnumerator SpawnWithBurst(SpawnEntry entry, Vector3 origin)
     {
@@ -225,9 +225,9 @@ public class SkillSpawnmer : MonoBehaviour
             // nếu còn burst tiếp theo → delay
             if (spawnedCount < entry.count)
                 yield return new WaitForSeconds(entry.burstInterval);
-        }
-
-        yield return StartCoroutine(WaitForAllExplode(spawned));
+                }
+                
+            yield return StartCoroutine(WaitForAllExplode(spawned));
     }
 
 

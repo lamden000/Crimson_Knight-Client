@@ -15,10 +15,9 @@ public class CharacterTabUIManager : MonoBehaviour
     public CharacterEquipSlot slotPants;
 
     [Header("Player Preview")]
-    public Transform previewRoot;
+    public PlayerPreview preview;
 
     private Player player;
-    public PlayerPreview preview;
     private void OnEnable()
     {
         player = ClientReceiveMessageHandler.Player;
@@ -31,12 +30,8 @@ public class CharacterTabUIManager : MonoBehaviour
         LoadEquipments();
         if (preview == null)
         {
-            preview = previewRoot.GetComponent<PlayerPreview>();
-            if (preview == null)
-            {
-                Debug.LogError("[CHAR TAB] previewRoot thiếu PlayerPreview component");
-                return;
-            }
+            Debug.LogError("[CHAR TAB] PlayerPreview component chưa được gán!");
+            return;
         }
 
         preview.Show(player);

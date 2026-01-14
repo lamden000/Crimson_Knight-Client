@@ -83,6 +83,25 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void SetUp()
     {
+        // Đảm bảo dictionaries đã được khởi tạo (nếu Awake() chưa chạy)
+        if (spriteRenderers == null)
+        {
+            spriteRenderers = new Dictionary<CharacterPart, SpriteRenderer>();
+            foreach (var pair in spriteRenderersInspector)
+            {
+                spriteRenderers[pair.part] = pair.renderer;
+            }
+        }
+
+        if (partVariants == null)
+        {
+            partVariants = new Dictionary<CharacterPart, int>();
+            foreach (var pair in variantsInspector)
+            {
+                partVariants[pair.part] = pair.variant;
+            }
+        }
+
         database = CharacterSpriteDatabase.Instance;
         character = gameObject.GetComponent<Character>();
         currentDir = Direction.Down;
