@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
     }
 
     #region Dialog
-    public void ShowYesNo(string message, int idDialog, Action<bool, int> callback)
+    public void ShowYesNo(string message, int idDialog, Action<bool, int> callback = null)
     {
         Debug.Log("[UIManager] ShowYesNo");
         var dialog = dialogFactory.CreateYesNo();

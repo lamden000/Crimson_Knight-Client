@@ -1,3 +1,4 @@
+using Assets.Scripts.Networking;
 using System;
 using TMPro;
 using UnityEngine;
@@ -24,6 +25,7 @@ public class DialogYesNo : DialogBase
         yesButton.onClick.RemoveAllListeners();
         yesButton.onClick.AddListener(() =>
         {
+            RequestManager.SelectDialogYesNo(DialogYesNoId.ENTER_PHO_BAN, true);
             Debug.Log($"Yes clicked on dialog id = {dialogId}");
             callback?.Invoke(true, dialogId);
             Close();
@@ -32,6 +34,7 @@ public class DialogYesNo : DialogBase
         noButton.onClick.RemoveAllListeners();
         noButton.onClick.AddListener(() =>
         {
+            RequestManager.SelectDialogYesNo(DialogYesNoId.ENTER_PHO_BAN, false);
             Debug.Log($"No clicked on dialog id = {dialogId}");
             callback?.Invoke(false, dialogId);
             Close();

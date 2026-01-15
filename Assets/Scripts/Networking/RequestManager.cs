@@ -75,5 +75,13 @@ namespace Assets.Scripts.Networking
             msg.WriteByte((byte)type);
             Session.AddMessage(msg);
         }
+
+        public static void SelectDialogYesNo(DialogYesNoId id, bool isOk)
+        {
+            Message msg = new Message(MessageId.CLIENT_SELECT_DIALOG_YES_NO);
+            msg.WriteByte((byte)id);
+            msg.WriteBool(isOk);
+            Session.AddMessage(msg);
+        }
     }
 }

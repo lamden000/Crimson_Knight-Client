@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -34,6 +35,12 @@ namespace Assets.Scripts.Networking
                     break;
                 case MessageId.SERVER_SHOW_MENU:
                     ClientReceiveMessageHandler.ShowMenu(msg);
+                    break;
+                case MessageId.SERVER_SHOW_DIALOG_OK:
+                    UIManager.Instance.ShowOK(msg.ReadString());
+                    break;
+                case MessageId.SERVER_SHOW_DIALOG_YES_NO:
+                    UIManager.Instance.ShowYesNo(msg.ReadString(), msg.ReadByte());
                     break;
                 case MessageId.SERVER_PLAYER_EXIT_MAP:
                     int otherPlayerId = msg.ReadInt();
