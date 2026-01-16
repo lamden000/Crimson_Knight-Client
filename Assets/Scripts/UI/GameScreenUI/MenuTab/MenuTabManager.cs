@@ -10,11 +10,11 @@ public class MenuTabManager : BaseUIManager
     {
         public Button button;
         public GameObject panel;
+        public Button closeButton;
     }
 
     public List<Tab> tabs = new List<Tab>();
 
-    [SerializeField] private Button btnClose;
     [SerializeField] private TextMeshProUGUI txtGold;
 
     private int currentIndex = -1;
@@ -24,13 +24,14 @@ public class MenuTabManager : BaseUIManager
         for (int i = 0; i < tabs.Count; i++)
         {
             int id = i;
-            tabs[i].button.onClick.AddListener(() => OpenTab(id));
-        }
 
-        btnClose?.onClick.AddListener(() =>
-        {
-            UIManager.Instance.gameScreenUIManager.ShowHUD();
-        });
+            tabs[i].button.onClick.AddListener(() => OpenTab(id));
+
+            if (tabs[i].closeButton != null)
+            {
+                tabs[i].closeButton.onClick.AddListener(() => CloseTab(id));
+            }
+        }
 
         OpenTab(0);
     }
@@ -63,10 +64,25 @@ public class MenuTabManager : BaseUIManager
         }
     }
 
+    public void CloseTab(int index)
+    {
+        if (index < 0 || index >= tabs.Count)
+            return;
+
+        tabs[index].panel.SetActive(false);
+
+        if (currentIndex == index)
+            currentIndex = -1;
+
+        UIManager.Instance.gameScreenUIManager.ShowHUD();
+    }
+
     public void CloseAllTabs()
     {
         foreach (var t in tabs)
+        {
             t.panel.SetActive(false);
+        }
 
         currentIndex = -1;
     }
