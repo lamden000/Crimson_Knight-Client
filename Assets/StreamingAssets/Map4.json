@@ -1636,8 +1636,8 @@
                  "type":"Collider",
                  "visible":true,
                  "width":556,
-                 "x":61.3333333333333,
-                 "y":1901.33333333333
+                 "x":65.3333333333334,
+                 "y":1919.33333333333
                 }, 
                 {
                  "height":21.3333333333335,
@@ -1695,15 +1695,15 @@
                  "y":1788
                 }, 
                 {
-                 "height":28,
+                 "height":12.3771091256313,
                  "id":173,
                  "name":"",
-                 "rotation":0,
+                 "rotation":308.728922550499,
                  "type":"Collider",
                  "visible":true,
-                 "width":46.6666666666667,
-                 "x":50.6666666666667,
-                 "y":1872
+                 "width":65.3121801327472,
+                 "x":53.3709932897727,
+                 "y":1914.31657216301
                 }, 
                 {
                  "height":24,
@@ -1825,6 +1825,39 @@
                  "width":33.3333333333333,
                  "x":1112.43127810515,
                  "y":525.138666920191
+                }, 
+                {
+                 "height":19,
+                 "id":192,
+                 "name":"1_Down",
+                 "rotation":0,
+                 "type":"Depart Point",
+                 "visible":true,
+                 "width":133,
+                 "x":414,
+                 "y":1910
+                }, 
+                {
+                 "height":72,
+                 "id":193,
+                 "name":"1",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":37,
+                 "x":459,
+                 "y":1823
+                }, 
+                {
+                 "height":74,
+                 "id":194,
+                 "name":"Default",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":59,
+                 "x":729,
+                 "y":1021
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1833,7 +1866,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":190,
+ "nextobjectid":196,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -1163,7 +1163,7 @@
                 {
                  "height":133.333333333333,
                  "id":129,
-                 "name":"Town",
+                 "name":"0",
                  "rotation":0,
                  "type":"Spawn Point",
                  "visible":true,
@@ -1251,13 +1251,35 @@
                 {
                  "height":84,
                  "id":142,
-                 "name":"Forest",
+                 "name":"2",
                  "rotation":0,
                  "type":"Spawn Point",
                  "visible":true,
                  "width":41.3333333333333,
                  "x":1820,
                  "y":642.666666666667
+                }, 
+                {
+                 "height":25.3333333333333,
+                 "id":143,
+                 "name":"4_Up",
+                 "rotation":0,
+                 "type":"Depart Point",
+                 "visible":true,
+                 "width":140,
+                 "x":913.333333333333,
+                 "y":-5.33333333333333
+                }, 
+                {
+                 "height":100,
+                 "id":144,
+                 "name":"4",
+                 "rotation":0,
+                 "type":"Spawn Point",
+                 "visible":true,
+                 "width":48,
+                 "x":960,
+                 "y":48
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1266,7 +1288,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":143,
+ "nextobjectid":145,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
