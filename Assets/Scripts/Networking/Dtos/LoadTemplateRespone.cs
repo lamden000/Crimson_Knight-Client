@@ -16,5 +16,6 @@ namespace Assets.Scripts.Networking.Dtos
         public List<ItemMaterialTemplate> ItemMaterialTemplates;
         public Dictionary<StatId, StatDefinition> StatDefinitions;
         public List<int> Levels;
+        public List<QuestTemplate> QuestTemplates;
     }
 }

@@ -101,6 +101,9 @@ namespace Assets.Scripts.Networking
                     long gold = msg.ReadLong();
                     ClientReceiveMessageHandler.Player.Gold = gold;
                     break;
+                case MessageId.SERVER_QUEST_INFO:
+                    ClientReceiveMessageHandler.LoadQuest(msg);
+                    break;
                 default:
                     break;
             }

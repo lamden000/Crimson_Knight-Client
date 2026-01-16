@@ -31,6 +31,8 @@ public class Player : BasePlayer
 
     private float lastClickTime = 0f;
 
+    public Quest Quest;
+
     public static Player Create(int id, string name, ClassType classType, Gender gender)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);

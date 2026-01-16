@@ -510,4 +510,25 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         string content = msg.ReadString();
         CenterNotifications.Enqueue(content);
     }
+
+    public static void LoadQuest(Message msg)
+    {
+        bool hasQuest = msg.ReadBool();
+        if(hasQuest)
+        {
+            int id = msg.ReadInt();
+            int quantityCur = msg.ReadInt();
+            QuestState state = (QuestState)msg.ReadByte();
+            Player.Quest = new Quest()
+            {
+                Id = id,
+                QuantityCur = quantityCur,
+                QuestState = state
+            };
+        }
+        else
+        {
+            Player.Quest = null;
+        }
+    }
 }
