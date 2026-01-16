@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.GameManager.Map;
 using Assets.Scripts.GameManager.Players;
+using Assets.Scripts.Map;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
@@ -85,8 +86,11 @@ public class Player : BasePlayer
         {
             RequestManager.ChangePkType((PkType)4);
         }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            MapManager.LoadMapById(4);
+        }
 
-       
     }
 
     public string EffectName = "ConductedEffect";
