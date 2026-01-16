@@ -16,4 +16,5 @@ public class TemplateManager
     public static Dictionary<StatId, StatDefinition> StatDefinitions = new Dictionary<StatId, StatDefinition>();
     public static List<int> Levels = new List<int>();
     public static List<QuestTemplate> QuestTemplates = new List<QuestTemplate>();
+    public static List<ItemShop> ItemShops = new List<ItemShop>();
 }
