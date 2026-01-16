@@ -488,9 +488,9 @@ public class GridmapLoader : MonoBehaviour
                     //case "Monster":
                     //    SpawnMonster(obj, monsterParent.transform);
                     //    break;
-                    case "Spawn Point":
-                        CreateSpawnPoint(obj, spawnParent.transform);
-                        break;
+                    //case "Spawn Point":
+                    //    CreateSpawnPoint(obj, spawnParent.transform);
+                    //    break;
                     case "Depart Point":
                         CreateDepartPoint(obj, departParent.transform);
                         break;

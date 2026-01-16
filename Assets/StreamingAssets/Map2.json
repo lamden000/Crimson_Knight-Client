@@ -2330,17 +2330,6 @@
                  "y":2151.51515151515
                 }, 
                 {
-                 "height":31,
-                 "id":244,
-                 "name":"City_Up",
-                 "rotation":0,
-                 "type":"Depart Point",
-                 "visible":true,
-                 "width":69,
-                 "x":1384,
-                 "y":940
-                }, 
-                {
                  "height":42.5,
                  "id":245,
                  "name":"Cave_Forest",

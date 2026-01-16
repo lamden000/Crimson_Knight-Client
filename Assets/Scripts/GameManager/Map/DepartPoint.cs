@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Utils;
 using System.IO;
 using UnityEngine;
 
@@ -64,8 +65,16 @@ public class DepartPoint : MonoBehaviour
         arrowStartLocalPos = arrowTransform.localPosition + (-arrowDirVector) * arrowOffsetDistance;
     }
 
+
+    private static long startTime = 0;
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(SystemUtil.CurrentTimeMillis() - startTime < 5000)
+        {
+            ClientReceiveMessageHandler.CenterNotifications.Enqueue("Vui lòng thao tác sang map chậm lại.");
+            return;
+        }
+        startTime = SystemUtil.CurrentTimeMillis();
         if (!other.CompareTag("Player"))
             return;
 
