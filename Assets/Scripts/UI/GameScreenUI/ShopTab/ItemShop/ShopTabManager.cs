@@ -9,6 +9,8 @@ public class ShopTabManager : BaseUIManager
 {
     public static ShopTabManager Instance;
 
+    [SerializeField] private Button btnClose;
+
     [Header("Slots")]
     public Transform slotParent;
     public ShopItemSlot slotPrefab;
@@ -17,32 +19,33 @@ public class ShopTabManager : BaseUIManager
     public Image infoIconCur;
     public TextMeshProUGUI infoNameCur;
     public TextMeshProUGUI infoDescriptionCur;
-
-    [Header("Info Panel Buttons")]
     public TextMeshProUGUI useButtonText;
 
-    private List<ShopItemSlot> slots = new List<ShopItemSlot>();
+    private readonly List<ShopItemSlot> slots = new List<ShopItemSlot>();
+    private ShopItemSlot selectedSlot;
+
+    private const int SIZE_INVEN = 48;
 
     private void Awake()
     {
         Instance = this;
-    }
 
-    private static bool isInit = false;
-    private static readonly int SIZE_INVEN = 48;
+        if (btnClose != null)
+            btnClose.onClick.AddListener(Close);
+    }
 
     private void OnEnable()
     {
-        InitSlots();
+        if (slots.Count == 0)
+            InitSlots();
+
         LoadItems();
     }
 
     private void InitSlots()
     {
-        if (isInit) return;
-        isInit = true;
-
         slots.Clear();
+
         for (int i = 0; i < SIZE_INVEN; i++)
         {
             ShopItemSlot slot = Instantiate(slotPrefab, slotParent);
@@ -64,42 +67,34 @@ public class ShopTabManager : BaseUIManager
         foreach (var itemshop in TemplateManager.ItemShops)
         {
             BaseItem item = null;
+
             if (itemshop.ItemType == ItemType.Equipment)
-            {
                 item = new ItemEquipment(itemshop.IdItem.ToString(), itemshop.IdItem);
-            }
             else if (itemshop.ItemType == ItemType.Consumable)
-            {
                 item = new ItemConsumable(itemshop.IdItem, 1);
-            }
             else if (itemshop.ItemType == ItemType.Material)
-            {
                 item = new ItemMaterial(itemshop.IdItem, 1);
-            }
-            if(item != null)
-            {
+
+            if (item != null)
                 items.Add(new Tuple<BaseItem, int>(item, itemshop.Price));
-            }
         }
 
         for (int i = 0; i < items.Count && i < slots.Count; i++)
-        {
-            if (items[i] != null)
-                SetItemToSlot(i, items[i].Item1, items[i].Item2);
-        }
+            SetItemToSlot(i, items[i].Item1, items[i].Item2);
     }
 
-    private void SetItemToSlot(int slotIndex, BaseItem item, int price)
+    private void SetItemToSlot(int index, BaseItem item, int price)
     {
         Sprite sprite = GetSprite(item.GetIcon(), item.GetItemType());
         if (sprite == null) return;
 
-        slots[slotIndex].SetItem(item, sprite, price);
+        slots[index].SetItem(item, sprite, price);
     }
 
     private Sprite GetSprite(int iconId, ItemType type)
     {
         Sprite sprite = null;
+
         switch (type)
         {
             case ItemType.Equipment:
@@ -112,10 +107,9 @@ public class ShopTabManager : BaseUIManager
                 ResourceManager.ItemMaterialsIconSprites.TryGetValue(iconId, out sprite);
                 break;
         }
+
         return sprite;
     }
-
-    private ShopItemSlot selectedSlot;
 
     public void SelectSlot(ShopItemSlot slot)
     {
@@ -137,50 +131,31 @@ public class ShopTabManager : BaseUIManager
         }
 
         BaseItem item = slot.Item;
+
         infoIconCur.enabled = true;
         infoIconCur.sprite = slot.GetSprite();
-
         infoNameCur.text = item.GetName();
+
         infoDescriptionCur.text =
-            $"Giá bán: {slot.Price} vàng\nCấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
-        if (slot.Item.GetItemType() == ItemType.Equipment)
+            $"Giá bán: {slot.Price} vàng\n" +
+            $"Cấp yêu cầu: {item.GetLevelRequired()}\n" +
+            $"{item.GetDescription()}";
+
+        if (item.GetItemType() == ItemType.Equipment)
         {
             var stats = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Stats;
             foreach (var stat in stats.Values)
             {
-                StatDefinition statDefinition = TemplateManager.StatDefinitions[stat.Id];
-                string content = statDefinition.Name + ": ";
-                if (statDefinition.IsPercent)
-                {
-                    content += MathUtil.ToPercentString(stat.Value);
-                }
-                else
-                {
-                    content += stat.Value;
-                }
-                infoDescriptionCur.text += "\n" + content;
+                StatDefinition def = TemplateManager.StatDefinitions[stat.Id];
+                string value = def.IsPercent
+                    ? MathUtil.ToPercentString(stat.Value)
+                    : stat.Value.ToString();
+
+                infoDescriptionCur.text += "\n" + def.Name + ": " + value;
             }
         }
-        UpdateUseButtonText(item);
-    }
 
-    private void UpdateUseButtonText(BaseItem item)
-    {
-        if (item == null)
-        {
-            useButtonText.text = "";
-            return;
-        }
-
-        switch (item.GetItemType())
-        {
-            case ItemType.Equipment:
-                useButtonText.text = "Mua";
-                break;
-            default:
-                useButtonText.text = "Mua";
-                break;
-        }
+        useButtonText.text = "Mua";
     }
 
     public void ClearInfoCur()
@@ -195,5 +170,12 @@ public class ShopTabManager : BaseUIManager
         infoIconCur.sprite = null;
         infoNameCur.text = "";
         infoDescriptionCur.text = "";
+        useButtonText.text = "";
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+        UIManager.Instance.gameScreenUIManager.ShowHUD();
     }
 }
