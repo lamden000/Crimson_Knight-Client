@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
 
@@ -16,52 +17,67 @@ public class InventoryManager : MonoBehaviour
     public Image infoIconCur;
     public TextMeshProUGUI infoNameCur;
     public TextMeshProUGUI infoDescriptionCur;
-    [Header("Info Panel Buttons")]
     public TextMeshProUGUI useButtonText;
-    private List<InventorySlot> slots = new List<InventorySlot>();
 
+    private readonly List<InventorySlot> slots = new List<InventorySlot>();
+    private InventorySlot selectedSlot;
+
+    private const int SIZE_INVEN = 48;
+    private Coroutine loadRoutine;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    private static bool isInit = false;
     private void OnEnable()
     {
-        InitSlots();
+        Time.timeScale = 1f;
+
+        if (slots.Count == 0)
+            InitSlots();
+
+        if (loadRoutine != null)
+            StopCoroutine(loadRoutine);
+
+        loadRoutine = StartCoroutine(WaitAndLoad());
+    }
+
+    private void OnDisable()
+    {
+        if (loadRoutine != null)
+        {
+            StopCoroutine(loadRoutine);
+            loadRoutine = null;
+        }
+    }
+
+    private IEnumerator WaitAndLoad()
+    {
+        yield return new WaitUntil(() =>
+            ClientReceiveMessageHandler.Player != null &&
+            ClientReceiveMessageHandler.Player.InventoryItems != null &&
+            ResourceManager.ItemEquipmentIconSprites.Count > 0
+        );
+
         LoadFromPlayerInventory();
     }
 
-    private static readonly int SIZE_INVEN = 48;
     private void InitSlots()
     {
-        if (isInit)
-        {
-            return;
-        }
-        isInit = true;
         slots.Clear();
+
         for (int i = 0; i < SIZE_INVEN; i++)
         {
             InventorySlot slot = Instantiate(slotPrefab, slotParent);
             slots.Add(slot);
         }
+
         ClearInfoCur();
     }
 
-
     public void LoadFromPlayerInventory()
     {
-        Debug.Log("[INV] LoadItems");
-
-        if (ClientReceiveMessageHandler.Player == null ||
-            ClientReceiveMessageHandler.Player.InventoryItems == null)
-        {
-            Debug.LogWarning("[INV] Inventory data not ready");
-            return;
-        }
-
         foreach (var slot in slots)
             slot.Clear();
 
@@ -71,25 +87,17 @@ public class InventoryManager : MonoBehaviour
 
         for (int i = 0; i < items.Length && i < slots.Count; i++)
         {
-            BaseItem item = items[i];
-            if (item == null) continue;
-
-            SetItemToSlot(i, item);
+            if (items[i] == null) continue;
+            SetItemToSlot(i, items[i]);
         }
     }
 
-
-    private void SetItemToSlot(int slotIndex, BaseItem item)
+    private void SetItemToSlot(int index, BaseItem item)
     {
-        ItemType type = item.GetItemType();
+        Sprite sprite = GetSprite(item.GetIcon(), item.GetItemType());
+        if (sprite == null) return;
 
-        Sprite sprite = GetSprite(item.GetIcon(), type);
-        if (sprite == null)
-        {
-            Debug.LogWarning($"[INV] Missing sprite iconId={item.GetIcon()}");
-            return;
-        }
-        slots[slotIndex].SetItem(item, sprite);
+        slots[index].SetItem(item, sprite);
     }
 
     private Sprite GetSprite(int iconId, ItemType type)
@@ -112,6 +120,17 @@ public class InventoryManager : MonoBehaviour
         return sprite;
     }
 
+    public void SelectSlot(InventorySlot slot)
+    {
+        if (selectedSlot != null)
+            selectedSlot.SetSelected(false);
+
+        selectedSlot = slot;
+        selectedSlot.SetSelected(true);
+
+        ShowInfo(slot);
+    }
+
     public void ShowInfo(InventorySlot slot)
     {
         if (slot == null || slot.Item == null)
@@ -121,56 +140,39 @@ public class InventoryManager : MonoBehaviour
         }
 
         BaseItem item = slot.Item;
-        Sprite sprite = slot.GetSprite();
-        infoIconCur.enabled = sprite != null;
-        infoIconCur.sprite = sprite;
+
+        infoIconCur.enabled = true;
+        infoIconCur.sprite = slot.GetSprite();
         infoNameCur.text = item.GetName();
-        infoDescriptionCur.text = $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
-        if(slot.Item.GetItemType() == ItemType.Equipment)
+        infoDescriptionCur.text =
+            $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
+
+        if (item.GetItemType() == ItemType.Equipment)
         {
             var stats = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Stats;
-            foreach(var stat in stats.Values)
+            foreach (var stat in stats.Values)
             {
-                StatDefinition statDefinition = TemplateManager.StatDefinitions[stat.Id];
-                string content = statDefinition.Name+": ";
-                if (statDefinition.IsPercent)
-                {
-                    content += MathUtil.ToPercentString(stat.Value);
-                }
-                else
-                {
-                    content += stat.Value;
-                }
-                infoDescriptionCur.text += "\n" + content;
+                StatDefinition def = TemplateManager.StatDefinitions[stat.Id];
+                string value = def.IsPercent
+                    ? MathUtil.ToPercentString(stat.Value)
+                    : stat.Value.ToString();
+
+                infoDescriptionCur.text += "\n" + def.Name + ": " + value;
             }
         }
+
         UpdateUseButtonText(item);
-
-    }
-
-    private InventorySlot selectedSlot;
-
-    public void SelectSlot(InventorySlot slot)
-    {
-        if (selectedSlot != null)
-            selectedSlot.SetSelected(false);
-        selectedSlot = slot;
-        selectedSlot.SetSelected(true);
-
-        ShowInfo(slot);
     }
 
     private void UpdateUseButtonText(BaseItem item)
     {
-        if (item == null || useButtonText == null)
+        if (item == null)
         {
             useButtonText.text = "";
             return;
         }
 
-        ItemType type = item.GetItemType();
-
-        switch (type)
+        switch (item.GetItemType())
         {
             case ItemType.Equipment:
                 useButtonText.text = "Trang bị";
@@ -185,7 +187,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-
     public void ClearInfoCur()
     {
         if (selectedSlot != null)
@@ -193,9 +194,11 @@ public class InventoryManager : MonoBehaviour
             selectedSlot.SetSelected(false);
             selectedSlot = null;
         }
+
         infoIconCur.enabled = false;
         infoIconCur.sprite = null;
         infoNameCur.text = "";
         infoDescriptionCur.text = "";
+        useButtonText.text = "";
     }
 }
