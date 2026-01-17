@@ -18,13 +18,13 @@ public class AttackAnimationController : MonoBehaviour
         switch (weaponType)
         {
             case CharacterPart.Sword:
-                animator.runtimeAnimatorController = wizardAttackAC;
+                animator.runtimeAnimatorController = knightAttackAC;
                 break;
             case CharacterPart.Knive:
                 animator.runtimeAnimatorController = assassinAttackAC;
                 break;
             case CharacterPart.Staff:
-                animator.runtimeAnimatorController = knightAttackAC;
+                animator.runtimeAnimatorController = wizardAttackAC;
                 break;
             case CharacterPart.Gun:
                 animator.runtimeAnimatorController = markmanAttackAC;
