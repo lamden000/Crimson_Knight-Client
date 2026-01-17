@@ -10,6 +10,7 @@ public class ShopItemSlot : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI quantityText;
 
     public BaseItem Item;
+    public int Price;
 
     private void Awake()
     {
@@ -19,10 +20,10 @@ public class ShopItemSlot : MonoBehaviour, IPointerClickHandler
         Clear();
     }
 
-    public void SetItem(BaseItem data, Sprite sprite)
+    public void SetItem(BaseItem data, Sprite sprite, int price)
     {
         Item = data;
-
+        this.Price = price;
         iconImage.sprite = sprite;
         iconImage.enabled = true;
         iconImage.raycastTarget = true;

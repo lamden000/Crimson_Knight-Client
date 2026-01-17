@@ -104,6 +104,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_QUEST_INFO:
                     ClientReceiveMessageHandler.LoadQuest(msg);
                     break;
+                case MessageId.SERVER_SHOP_INFO:
+                    ClientReceiveMessageHandler.ShopInfo(msg);
+                    break;
                 default:
                     break;
             }

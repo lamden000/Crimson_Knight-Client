@@ -531,4 +531,9 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             Player.Quest = null;
         }
     }
+
+    public static void ShopInfo(Message msg)
+    {
+        UIManager.Instance.gameScreenUIManager.ShowShopTab();
+    }
 }

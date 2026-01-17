@@ -9,6 +9,7 @@ public class GameScreenUIManager : BaseUIManager
     [SerializeField] public HUDManager hudManager;
     [SerializeField] private MenuTabManager menuTabManager;
     [SerializeField] private TalkingUIManager talkingUIManager;
+    [SerializeField] private ShopTabManager shopTabManager;
 
     [SerializeField] private TextMeshProUGUI txtCenterNotification;
     private static long startTimeShowTxtCenterNotification;
@@ -35,6 +36,7 @@ public class GameScreenUIManager : BaseUIManager
         hudManager.ShowUI();
         menuTabManager.HideUI();
         talkingUIManager.HideUI();
+        shopTabManager.HideUI();
     }
 
     public void ShowMenuTab()
@@ -42,6 +44,7 @@ public class GameScreenUIManager : BaseUIManager
         menuTabManager.ShowUI();
         hudManager.HideUI();
         talkingUIManager.HideUI();
+        shopTabManager.HideUI();
     }
 
     public void ShowHUD()
@@ -49,6 +52,7 @@ public class GameScreenUIManager : BaseUIManager
         hudManager.ShowUI();
         menuTabManager.HideUI();
         talkingUIManager.HideUI();
+        shopTabManager.HideUI();
     }
 
 
@@ -57,7 +61,17 @@ public class GameScreenUIManager : BaseUIManager
         hudManager.HideUI();
         menuTabManager.HideUI();
         talkingUIManager.ShowUI();
+        shopTabManager.HideUI();
     }
+
+    public void ShowShopTab()
+    {
+        hudManager.HideUI();
+        menuTabManager.HideUI();
+        talkingUIManager.HideUI();
+        shopTabManager.ShowUI();
+    }
+
     public void ShowTalking(BaseObject baseObject)
     {
         if (baseObject == null || !baseObject.IsNpc())

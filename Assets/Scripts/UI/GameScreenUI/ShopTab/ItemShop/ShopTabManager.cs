@@ -3,8 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using Assets.Scripts;
+using System;
 
-public class ShopTabManager : MonoBehaviour
+public class ShopTabManager : BaseUIManager
 {
     public static ShopTabManager Instance;
 
@@ -33,7 +34,7 @@ public class ShopTabManager : MonoBehaviour
     private void OnEnable()
     {
         InitSlots();
-        LoadFromPlayerInventory();
+        LoadItems();
     }
 
     private void InitSlots()
@@ -51,32 +52,49 @@ public class ShopTabManager : MonoBehaviour
         ClearInfoCur();
     }
 
-    public void LoadFromPlayerInventory()
+    public void LoadItems()
     {
-        if (ClientReceiveMessageHandler.Player == null ||
-            ClientReceiveMessageHandler.Player.InventoryItems == null)
-            return;
-
         foreach (var slot in slots)
             slot.Clear();
 
         ClearInfoCur();
 
-        BaseItem[] items = ClientReceiveMessageHandler.Player.InventoryItems;
+        List<Tuple<BaseItem, int>> items = new List<Tuple<BaseItem, int>>();
 
-        for (int i = 0; i < items.Length && i < slots.Count; i++)
+        foreach (var itemshop in TemplateManager.ItemShops)
+        {
+            BaseItem item = null;
+            if (itemshop.ItemType == ItemType.Equipment)
+            {
+                item = new ItemEquipment(itemshop.IdItem.ToString(), itemshop.IdItem);
+            }
+            else if (itemshop.ItemType == ItemType.Consumable)
+            {
+                item = new ItemConsumable(itemshop.IdItem, 1);
+            }
+            else if (itemshop.ItemType == ItemType.Material)
+            {
+                item = new ItemMaterial(itemshop.IdItem, 1);
+            }
+            if(item != null)
+            {
+                items.Add(new Tuple<BaseItem, int>(item, itemshop.Price));
+            }
+        }
+
+        for (int i = 0; i < items.Count && i < slots.Count; i++)
         {
             if (items[i] != null)
-                SetItemToSlot(i, items[i]);
+                SetItemToSlot(i, items[i].Item1, items[i].Item2);
         }
     }
 
-    private void SetItemToSlot(int slotIndex, BaseItem item)
+    private void SetItemToSlot(int slotIndex, BaseItem item, int price)
     {
         Sprite sprite = GetSprite(item.GetIcon(), item.GetItemType());
         if (sprite == null) return;
 
-        slots[slotIndex].SetItem(item, sprite);
+        slots[slotIndex].SetItem(item, sprite, price);
     }
 
     private Sprite GetSprite(int iconId, ItemType type)
@@ -124,8 +142,25 @@ public class ShopTabManager : MonoBehaviour
 
         infoNameCur.text = item.GetName();
         infoDescriptionCur.text =
-            $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
-
+            $"Giá bán: {slot.Price} vàng\nCấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
+        if (slot.Item.GetItemType() == ItemType.Equipment)
+        {
+            var stats = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Stats;
+            foreach (var stat in stats.Values)
+            {
+                StatDefinition statDefinition = TemplateManager.StatDefinitions[stat.Id];
+                string content = statDefinition.Name + ": ";
+                if (statDefinition.IsPercent)
+                {
+                    content += MathUtil.ToPercentString(stat.Value);
+                }
+                else
+                {
+                    content += stat.Value;
+                }
+                infoDescriptionCur.text += "\n" + content;
+            }
+        }
         UpdateUseButtonText(item);
     }
 
@@ -140,7 +175,7 @@ public class ShopTabManager : MonoBehaviour
         switch (item.GetItemType())
         {
             case ItemType.Equipment:
-                useButtonText.text = "Mua / Trang bị";
+                useButtonText.text = "Mua";
                 break;
             default:
                 useButtonText.text = "Mua";

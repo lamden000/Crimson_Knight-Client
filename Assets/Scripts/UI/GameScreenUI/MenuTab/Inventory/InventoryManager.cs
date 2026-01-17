@@ -53,7 +53,7 @@ public class InventoryManager : MonoBehaviour
 
     public void LoadFromPlayerInventory()
     {
-        Debug.Log("[INV] LoadFromPlayerInventory");
+        Debug.Log("[INV] LoadItems");
 
         if (ClientReceiveMessageHandler.Player == null ||
             ClientReceiveMessageHandler.Player.InventoryItems == null)
