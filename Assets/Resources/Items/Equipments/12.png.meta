@@ -1,25 +1,10 @@
 fileFormatVersion: 2
-guid: b294ab56a5fd8a94bb8d54c915d11d97
+guid: 7cc93b8451ecb1c4f85ea2e943034d05
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8853573284640580720
-    second: 1044_0
-  - first:
-      213: 1902071754500057496
-    second: 1044_1
-  - first:
-      213: 1528686144051412350
-    second: 1044_2
-  - first:
-      213: 4524113875095498947
-    second: 1044_3
-  - first:
-      213: -1638964831596498415
-    second: 1044_4
-  - first:
-      213: 7576802251279537531
-    second: 1044_5
+      213: -6408826354213899917
+    second: 2337 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -66,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -154,111 +139,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 1044_0
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 271
-        width: 72
-        height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 39ac55fe076ed60449c615e56c7e248d
-      internalID: 8853573284640580720
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1044_1
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 206
-        width: 66
-        height: 60
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb49c8ff16264594e9f8b9a774d3de85
-      internalID: 1902071754500057496
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1044_2
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 136
-        width: 68
-        height: 63
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f64299d9d60e3a742887bd22ec062748
-      internalID: 1528686144051412350
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1044_3
+      name: 2337 1_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
-        width: 80
-        height: 67
+        y: 3
+        width: 36
+        height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: d155268596cd6a848895f7a795d44bf0
-      internalID: 4524113875095498947
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 1044_4
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 0
-        width: 79
-        height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3cd6b38e37b340849a5b7b6f17fed8b4
-      internalID: -1638964831596498415
+      spriteID: 3713be1e2664f07a0800000000000000
+      internalID: -6408826354213899917
       vertices: []
       indices: 
       edges: []
@@ -267,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6667cee91128d424ca332e40e3e6f16e
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -277,11 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      1044_0: 8853573284640580720
-      1044_1: 1902071754500057496
-      1044_2: 1528686144051412350
-      1044_3: 4524113875095498947
-      1044_4: -1638964831596498415
+      2337 1_0: -6408826354213899917
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
