@@ -73,17 +73,38 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 }
             }
             ItemPicks.Clear();
-            MapManager.LoadMapById(MapManager.MapId, () =>
+
+
+            if (TemplateManager.MapTemplates[MapManager.MapId].IsPhoBan)
             {
-                if (Instance != null)
+                MapManager.LoadMapByName("phoban", () =>
                 {
-                    Instance.StartCoroutine(SystemUtil.Delay(0.2f, () => {
-                        Player.SetPosition(x, y);
-                        UIManager.Instance.DisableLoadScreen();
-                        UIManager.Instance.EnableGameScreen();
-                    }));
-                }
-            });
+                    if (Instance != null)
+                    {
+                        Instance.StartCoroutine(SystemUtil.Delay(0.2f, () =>
+                        {
+                            Player.SetPosition(x, y);
+                            UIManager.Instance.DisableLoadScreen();
+                            UIManager.Instance.EnableGameScreen();
+                        }));
+                    }
+                });
+            }
+            else
+            {
+                MapManager.LoadMapById(MapManager.MapId, () =>
+                {
+                    if (Instance != null)
+                    {
+                        Instance.StartCoroutine(SystemUtil.Delay(0.2f, () =>
+                        {
+                            Player.SetPosition(x, y);
+                            UIManager.Instance.DisableLoadScreen();
+                            UIManager.Instance.EnableGameScreen();
+                        }));
+                    }
+                });
+            }
         }
         else
         {

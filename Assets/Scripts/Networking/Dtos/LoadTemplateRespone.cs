@@ -18,5 +18,6 @@ namespace Assets.Scripts.Networking.Dtos
         public List<int> Levels;
         public List<QuestTemplate> QuestTemplates;
         public List<ItemShop> ItemShops;
+        public List<MapTemplate> MapTemplates;
     }
 }

@@ -17,4 +17,5 @@ public class TemplateManager
     public static List<int> Levels = new List<int>();
     public static List<QuestTemplate> QuestTemplates = new List<QuestTemplate>();
     public static List<ItemShop> ItemShops = new List<ItemShop>();
+    public static List<MapTemplate> MapTemplates = new List<MapTemplate>();
 }

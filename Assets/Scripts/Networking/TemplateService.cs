@@ -38,6 +38,7 @@ namespace Assets.Scripts.Networking
                         TemplateManager.Levels = res.Levels;
                         TemplateManager.QuestTemplates = res.QuestTemplates;
                         TemplateManager.ItemShops = res.ItemShops;
+                        TemplateManager.MapTemplates = res.MapTemplates;
                         flag = true;
                     }
                     catch (Exception ex)

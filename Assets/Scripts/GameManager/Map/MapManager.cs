@@ -27,5 +27,10 @@ namespace Assets.Scripts.Map
         {
             _gridmapLoader.LoadMapByName($"map{id}.json", "Default", onLoadComplete);
         }
+
+        public static void LoadMapByName(string name, Action onLoadComplete = null)
+        {
+            _gridmapLoader.LoadMapByName($"{name}.json", "Default", onLoadComplete);
+        }
     }
 }
