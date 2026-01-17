@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -102,46 +103,49 @@ public class SpawnManager : MonoBehaviour
         return displayObj;
     }
 
-    public GameObject SpawnTxtDisplayTakeDamagePrefab(int x, int y, int dame)
+    public void SpawnTxtDisplayTakeDamagePrefab(int x, int y, int dame)
     {
-        IEnumerator MoveUpAndDestroy(GameObject obj, float lifeTime, float speed)
+        Instance.StartCoroutine(SystemUtil.Delay(0.4f, () =>
         {
-            float timer = 0f;
-
-            while (timer < lifeTime)
+            IEnumerator MoveUpAndDestroy(GameObject obj, float lifeTime, float speed)
             {
-                if (obj == null)
-                    yield break;
+                float timer = 0f;
 
-                obj.transform.position += Vector3.up * speed * Time.deltaTime;
-                timer += Time.deltaTime;
-                yield return null;
+                while (timer < lifeTime)
+                {
+                    if (obj == null)
+                        yield break;
+
+                    obj.transform.position += Vector3.up * speed * Time.deltaTime;
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+
+                Destroy(obj);
             }
 
-            Destroy(obj);
-        }
+            if (txtDisplayTakeDamagePrefab == null)
+            {
+                Debug.Log("TxtDisplayTakeDamagePrefab prefab not assigned!");
+                return ;
+            }
 
-        if (txtDisplayTakeDamagePrefab == null)
-        {
-            Debug.Log("TxtDisplayTakeDamagePrefab prefab not assigned!");
-            return null;
-        }
+            GameObject obj = Instantiate(
+                txtDisplayTakeDamagePrefab,
+                new Vector2(x, y),
+                Quaternion.identity
+            );
 
-        GameObject obj = Instantiate(
-            txtDisplayTakeDamagePrefab,
-            new Vector2(x, y),
-            Quaternion.identity
-        );
+            TextMeshPro tmp = obj.GetComponent<TextMeshPro>();
+            if (tmp != null)
+            {
+                tmp.text = "-" + dame;
+            }
 
-        TextMeshPro tmp = obj.GetComponent<TextMeshPro>();
-        if (tmp != null)
-        {
-            tmp.text = "-" + dame;
-        }
+            StartCoroutine(MoveUpAndDestroy(obj, 1.0f, 20.0f));
 
-        StartCoroutine(MoveUpAndDestroy(obj, 1.0f, 20.0f));
-
-        return obj;
+            return ;
+        }));
     }
 
     public GameObject SpawnPkIconPrefab()
