@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class QuestTabUIManager : MonoBehaviour
 {
@@ -7,12 +8,44 @@ public class QuestTabUIManager : MonoBehaviour
     public QuestListItem questItemPrefab;
 
     [Header("Quest Detail")]
+    public GameObject detailPanelRoot;
     public QuestDetailPanel detailPanel;
+
+    private Coroutine loadRoutine;
 
     private void OnEnable()
     {
-        LoadQuestList();
+        if (detailPanelRoot != null)
+            detailPanelRoot.SetActive(false);
+
+        if (loadRoutine != null)
+            StopCoroutine(loadRoutine);
+
+        loadRoutine = StartCoroutine(WaitAndLoad());
+    }
+
+    private void OnDisable()
+    {
+        if (loadRoutine != null)
+        {
+            StopCoroutine(loadRoutine);
+            loadRoutine = null;
+        }
+
+        if (detailPanelRoot != null)
+            detailPanelRoot.SetActive(false);
+
         detailPanel.Clear();
+        ClearContent();
+    }
+
+    private IEnumerator WaitAndLoad()
+    {
+        yield return new WaitUntil(() =>
+            ClientReceiveMessageHandler.Player != null
+        );
+
+        LoadQuestList();
     }
 
     private void LoadQuestList()
@@ -29,7 +62,21 @@ public class QuestTabUIManager : MonoBehaviour
 
     public void ShowQuestDetail(Quest quest)
     {
+        if (quest == null)
+            return;
+
+        if (detailPanelRoot != null)
+            detailPanelRoot.SetActive(true);
+
         detailPanel.Show(quest);
+    }
+
+    public void HideQuestDetail()
+    {
+        if (detailPanelRoot != null)
+            detailPanelRoot.SetActive(false);
+
+        detailPanel.Clear();
     }
 
     private void ClearContent()

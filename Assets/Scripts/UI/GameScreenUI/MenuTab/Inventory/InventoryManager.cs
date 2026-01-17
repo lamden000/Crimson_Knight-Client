@@ -14,6 +14,7 @@ public class InventoryManager : MonoBehaviour
     public InventorySlot slotPrefab;
 
     [Header("Info Panel")]
+    public GameObject infoPanelRoot;
     public Image infoIconCur;
     public TextMeshProUGUI infoNameCur;
     public TextMeshProUGUI infoDescriptionCur;
@@ -32,7 +33,8 @@ public class InventoryManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Time.timeScale = 1f;
+        if (infoPanelRoot != null)
+            infoPanelRoot.SetActive(false);
 
         if (slots.Count == 0)
             InitSlots();
@@ -50,6 +52,11 @@ public class InventoryManager : MonoBehaviour
             StopCoroutine(loadRoutine);
             loadRoutine = null;
         }
+
+        if (infoPanelRoot != null)
+            infoPanelRoot.SetActive(false);
+
+        ClearInfoCur();
     }
 
     private IEnumerator WaitAndLoad()
@@ -131,13 +138,16 @@ public class InventoryManager : MonoBehaviour
         ShowInfo(slot);
     }
 
-    public void ShowInfo(InventorySlot slot)
+    private void ShowInfo(InventorySlot slot)
     {
         if (slot == null || slot.Item == null)
         {
             ClearInfoCur();
             return;
         }
+
+        if (infoPanelRoot != null)
+            infoPanelRoot.SetActive(true);
 
         BaseItem item = slot.Item;
 
