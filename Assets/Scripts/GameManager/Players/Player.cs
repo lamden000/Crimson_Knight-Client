@@ -71,36 +71,12 @@ public class Player : BasePlayer
     {
         if (IsDie())
         {
+            LoseTarget();
             return;
         }
         UpdateTargetLogic();
         UpdateMouse();
         UpdateInput();
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            RequestManager.ChangePkType(0);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            RequestManager.ChangePkType((PkType)1);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            RequestManager.ChangePkType((PkType)2);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            RequestManager.ChangePkType((PkType)3);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            RequestManager.ChangePkType((PkType)4);
-        }
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            MapManager.LoadMapById(4);
-        }
-
     }
 
     public string EffectName = "ConductedEffect";
@@ -194,7 +170,7 @@ public class Player : BasePlayer
     void UpdateTargetLogic()
     {
         int maxTargetDistance = 300;
-
+   
         if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.IsMonster() && objFocus.IsDie()))
         {
             BaseObject newTarget = FindNearestTarget();

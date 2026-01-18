@@ -64,6 +64,7 @@ namespace Assets.Scripts.GameManager.Players
                 {
                     isAnimationDie = false;
                     playerAnimationControllerPrefab.SetAliveState();
+                    LoadPartWearing(this.WearingItems);
                 }
             }
         }
@@ -71,6 +72,7 @@ namespace Assets.Scripts.GameManager.Players
         protected override void LateUpdate()
         {
             base.LateUpdate();
+            CheckCurrentHp();
             if (PkIcon != null)
             {
                 Vector3 targetScale = PkIconOriginalScale;
@@ -177,6 +179,10 @@ namespace Assets.Scripts.GameManager.Players
                 this.WearingItems[i] = items[i];
             }
 
+            if (IsDie())
+            {
+                return;
+            }
             //load
             ItemEquipment vukhi = GetVuKhi();
             int partVk = -1;
