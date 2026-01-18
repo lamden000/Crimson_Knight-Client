@@ -34,6 +34,14 @@ public class Player : BasePlayer
 
     public Quest Quest;
 
+    public int PotentialPoint { get; set; }
+    public int SkillPoint { get; set; }
+    public int StatHp { get; set; }
+    public int StatMp { get; set; }
+    public int StatAtk { get; set; }
+    public int StatDef { get; set; }
+
+
     public static Player Create(int id, string name, ClassType classType, Gender gender)
     {
         GameObject gameObject = SpawnManager.GI().SpawnCharacterPrefab(0, 0);

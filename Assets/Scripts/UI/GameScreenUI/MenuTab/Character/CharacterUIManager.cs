@@ -4,6 +4,7 @@ using TMPro;
 public class CharacterTabUIManager : MonoBehaviour
 {
     [Header("Stats")]
+    public TextMeshProUGUI txtPoint;
     public TextMeshProUGUI txtHP;
     public TextMeshProUGUI txtMP;
     public TextMeshProUGUI txtATK;
@@ -37,14 +38,18 @@ public class CharacterTabUIManager : MonoBehaviour
         preview.Show(player);
     }
 
-    //private void LoadStats()
-    //{
-    //    txtHP.text = $"HP: {player.GetStat(StatId.HP)}";
-    //    txtMP.text = $"MP: {player.GetStat(StatId.MP)}";
-    //    txtATK.text = $"Tấn công: {player.GetStat(StatId.ATK)}";
-    //    txtDEF.text = $"Phòng thủ: {player.GetStat(StatId.DEF)}";
-    //}
-
+    private void Update()
+    {
+        Player p = ClientReceiveMessageHandler.Player;
+        if (p != null)
+        {
+            txtPoint.text = "Điểm tiềm năng: " + p.PotentialPoint.ToString();
+            txtHP.text = "HP: " + p.StatHp.ToString();
+            txtMP.text = "MP: " + p.StatMp.ToString();
+            txtATK.text = "ATK: " + p.StatAtk.ToString();
+            txtDEF.text = "DEF: " + p.StatDef.ToString();
+        }
+    }
 
     private void LoadEquipments()
     {

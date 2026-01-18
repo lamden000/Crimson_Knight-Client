@@ -324,6 +324,12 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int CurrentMp = msg.ReadInt();
         int MaxMp = msg.ReadInt();
         long gold = msg.ReadLong();
+        int potentialPoint = msg.ReadInt();
+        int skillPoint = msg.ReadInt();
+        int statHp = msg.ReadInt();
+        int statMp = msg.ReadInt();
+        int statAtk = msg.ReadInt();
+        int statDef = msg.ReadInt();
         if (playerId == Player.Id)
         {
             Player.Level = Level;
@@ -333,6 +339,12 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             Player.CurrentMp = CurrentMp;
             Player.MaxMp = MaxMp;
             Player.Gold = gold;
+            Player.PotentialPoint = potentialPoint;
+            Player.SkillPoint = skillPoint;
+            Player.StatHp = statHp;
+            Player.StatMp = statMp;
+            Player.StatAtk = statAtk;
+            Player.StatDef = statDef;
         }
         else
         {

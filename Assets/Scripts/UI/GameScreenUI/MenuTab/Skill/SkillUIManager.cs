@@ -33,10 +33,12 @@ public class SkillUIManager : MonoBehaviour
     private float previewCooldown = 0f;
     private const float PREVIEW_COOLDOWN_TIME = 3f;
 
+    [SerializeField] private TextMeshProUGUI txtSkillPoint;
+
     private void Awake()
     {
         Instance = this;
-        
+
         if (previewButton != null)
         {
             previewButton.onClick.AddListener(OnPreviewButtonClicked);
@@ -63,6 +65,12 @@ public class SkillUIManager : MonoBehaviour
                     previewButton.interactable = true;
                 }
             }
+        }
+
+        Player p = ClientReceiveMessageHandler.Player;
+        if (p != null)
+        {
+            txtSkillPoint.text = "Điểm kỹ năng chưa dùng: " + p.SkillPoint;
         }
     }
 
@@ -106,7 +114,7 @@ public class SkillUIManager : MonoBehaviour
     public void ShowSkillInfo(Skill skill)
     {
         currentSkill = skill;
-        
+
         // Chỉnh size camera cho skill preview
         if (playerPreview != null)
         {
@@ -135,15 +143,15 @@ public class SkillUIManager : MonoBehaviour
             int layer = LayerMask.NameToLayer("PlayerPreview");
             SetLayerRecursively(dummyTarget, layer);
         }
-        
+
         // Enable preview button nếu skill đã học
         if (previewButton != null)
         {
             previewButton.interactable = skill.IsLearned && previewCooldown <= 0f;
         }
-        
+
         var template = skill.GetTemplate();
-        
+
         // Ánh xạ icon
         if (ResourceManager.SkillIcons.TryGetValue(template.IconId, out Sprite sp))
         {
@@ -171,7 +179,7 @@ public class SkillUIManager : MonoBehaviour
         {
             int lvCur = 1 + skill.VariantId;
             sb.Append($"Cấp độ skill hiện tại {lvCur}");
-            if(skill.VariantId == template.Variants.Count - 1)
+            if (skill.VariantId == template.Variants.Count - 1)
             {
                 sb.AppendLine(" (Đã tối đa)");
             }
@@ -210,19 +218,19 @@ public class SkillUIManager : MonoBehaviour
         infoName.text = "";
         infoDesc.text = "";
         infoDetail.text = "";
-        
+
         // Ẩn skill info panel
         if (infoPanel != null)
         {
             infoPanel.SetActive(false);
         }
-        
+
         // Reset camera size về character preview
         if (playerPreview != null)
         {
             playerPreview.SetCameraSizeForCharacter();
         }
-        
+
         // Clear preview
         ClearPreview();
     }
