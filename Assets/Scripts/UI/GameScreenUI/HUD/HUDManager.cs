@@ -36,14 +36,7 @@ public class HUDManager : BaseUIManager
         for (int i = 0; i < skillSlots.Length; i++)
             skillSlots[i].Init(i + 1);
 
-        for (int i = 0; i < ClientReceiveMessageHandler.Player.Skills.Count; i++)
-        {
-            Skill skill = ClientReceiveMessageHandler.Player.Skills[i];
-            if (skill.IsLearned)
-            {
-                UIManager.Instance.gameScreenUIManager.hudManager.SetSkill(i + 1,skill);
-            }
-        }
+        
     }
 
     void Update()
@@ -51,6 +44,27 @@ public class HUDManager : BaseUIManager
         UpdateHPMP();
         UpdateSkillHotkeys();
         UpdateLevelInfo();
+        if (ClientReceiveMessageHandler.Player != null)
+        {
+            if (isLoadSkillImediatetly)
+            {
+                isLoadSkillImediatetly = false;
+                LoadSkills();
+            }
+        }
+    }
+
+    public static bool isLoadSkillImediatetly = false;
+    void LoadSkills()
+    {
+        for (int i = 0; i < ClientReceiveMessageHandler.Player.Skills.Count; i++)
+        {
+            Skill skill = ClientReceiveMessageHandler.Player.Skills[i];
+            if (skill.IsLearned)
+            {
+                UIManager.Instance.gameScreenUIManager.hudManager.SetSkill(i + 1, skill);
+            }
+        }
     }
 
     private void UpdateLevelInfo()

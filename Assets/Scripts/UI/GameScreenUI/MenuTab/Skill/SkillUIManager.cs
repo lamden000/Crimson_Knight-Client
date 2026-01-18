@@ -1,6 +1,9 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Networking;
+using System;
 using System.Text;
 using TMPro;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,9 +34,10 @@ public class SkillUIManager : MonoBehaviour
     private bool loaded = false;
     private Skill currentSkill;
     private float previewCooldown = 0f;
-    private const float PREVIEW_COOLDOWN_TIME = 3f;
+    private const float PREVIEW_COOLDOWN_TIME = 1.5f;
 
     [SerializeField] private TextMeshProUGUI txtSkillPoint;
+    [SerializeField] private Button btnAddSkillPoint;
 
     private void Awake()
     {
@@ -49,6 +53,17 @@ public class SkillUIManager : MonoBehaviour
         {
             infoPanel.SetActive(false);
         }
+        btnAddSkillPoint?.onClick.AddListener(AddSkillPoint);
+    }
+
+    private void AddSkillPoint()
+    {
+        if (currentSkill == null)
+        {
+            ClientReceiveMessageHandler.CenterNotifications.Enqueue("Vui lòng chọn skill để cộng");
+            return;
+        }
+        RequestManager.AddSkillPoint(currentSkill.TemplateId);
     }
 
     private void Update()
@@ -72,6 +87,12 @@ public class SkillUIManager : MonoBehaviour
         {
             txtSkillPoint.text = "Điểm kỹ năng chưa dùng: " + p.SkillPoint;
         }
+
+        if (isLoadSkillsImediately)
+        {
+            isLoadSkillsImediately = false;
+            Reload();
+        }
     }
 
     public void EnsureLoaded()
@@ -84,6 +105,8 @@ public class SkillUIManager : MonoBehaviour
 
         loaded = true;
     }
+    public static bool isLoadSkillsImediately = false;
+
 
     public void Reload()
     {
@@ -249,11 +272,11 @@ public class SkillUIManager : MonoBehaviour
             return;
         }
 
-        if (!currentSkill.IsLearned)
-        {
-            Debug.LogWarning("[SKILL] Skill chưa được học, không thể preview!");
-            return;
-        }
+        //if (!currentSkill.IsLearned)
+        //{
+        //    Debug.LogWarning("[SKILL] Skill chưa được học, không thể preview!");
+        //    return;
+        //}
 
         if (previewCooldown > 0f)
         {

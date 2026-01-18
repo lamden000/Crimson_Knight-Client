@@ -92,5 +92,18 @@ namespace Assets.Scripts.Networking
             msg.WriteInt(quantity);
             Session.AddMessage(msg);
         }
+
+        public static void AddPotentialPoint(StatId statId)
+        {
+            Message msg = new Message(MessageId.CLIENT_ADD_POTENTIAL_POINT);
+            msg.WriteByte((byte)statId);
+            Session.AddMessage(msg);
+        }
+        public static void AddSkillPoint(int templateId)
+        {
+            Message msg = new Message(MessageId.CLIENT_ADD_SKILL_POINT);
+            msg.WriteInt(templateId);
+            Session.AddMessage(msg);
+        }
     }
 }

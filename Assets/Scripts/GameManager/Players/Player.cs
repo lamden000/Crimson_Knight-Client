@@ -442,6 +442,8 @@ public class Player : BasePlayer
             Skill skill = new Skill(templateId, variant, this.ClassType);
             Skills.Add(skill);
         }
+        SkillUIManager.isLoadSkillsImediately = true;
+        HUDManager.isLoadSkillImediatetly = true;
     }
 
     public BaseItem GetItemInventoty(int templateId, ItemType type)

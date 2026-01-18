@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using Assets.Scripts.Networking;
 
 public class CharacterTabUIManager : MonoBehaviour
 {
@@ -9,6 +11,10 @@ public class CharacterTabUIManager : MonoBehaviour
     public TextMeshProUGUI txtMP;
     public TextMeshProUGUI txtATK;
     public TextMeshProUGUI txtDEF;
+    public Button btnAddHp;
+    public Button btnAddMp;
+    public Button btnAddAtk;
+    public Button btnAddDef;
 
     [Header("Equipment Slots")]
     public CharacterEquipSlot slotWeapon;
@@ -36,7 +42,24 @@ public class CharacterTabUIManager : MonoBehaviour
         }
 
         preview.Show(player);
+        btnAddHp?.onClick.AddListener(() =>
+        {
+            RequestManager.AddPotentialPoint(StatId.HP);
+        });
+        btnAddMp?.onClick.AddListener(() =>
+        {
+            RequestManager.AddPotentialPoint(StatId.MP);
+        });
+        btnAddAtk?.onClick.AddListener(() =>
+        {
+            RequestManager.AddPotentialPoint(StatId.ATK);
+        });
+        btnAddDef?.onClick.AddListener(() =>
+        {
+            RequestManager.AddPotentialPoint(StatId.DEF);
+        });
     }
+
 
     private void Update()
     {

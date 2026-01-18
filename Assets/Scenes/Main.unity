@@ -3735,7 +3735,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "G\xE1n N\xFAt"
+  m_text: "C\u1ED9ng"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8b540ab5708307740b1d78cb4a5c6757, type: 2}
   m_sharedMaterial: {fileID: 8994662846374023720, guid: 8b540ab5708307740b1d78cb4a5c6757, type: 2}
@@ -10687,6 +10687,10 @@ MonoBehaviour:
   txtMP: {fileID: 694556868}
   txtATK: {fileID: 1217274220}
   txtDEF: {fileID: 1478825535}
+  btnAddHp: {fileID: 486398829}
+  btnAddMp: {fileID: 190573846}
+  btnAddAtk: {fileID: 1461501934}
+  btnAddDef: {fileID: 214071806}
   slotWeapon: {fileID: 2037778446}
   slotArmor: {fileID: 1044756056}
   slotPants: {fileID: 1355049090}
@@ -17767,6 +17771,7 @@ MonoBehaviour:
   dummyCaster: {fileID: 1352886275}
   dummyTarget: {fileID: 242213790}
   txtSkillPoint: {fileID: 697898036}
+  btnAddSkillPoint: {fileID: 1916043489}
 --- !u!1 &964706722
 GameObject:
   m_ObjectHideFlags: 0
@@ -33861,7 +33866,7 @@ GameObject:
   - component: {fileID: 1916043490}
   - component: {fileID: 1916043489}
   m_Layer: 5
-  m_Name: Assign
+  m_Name: btnAddSkillPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
