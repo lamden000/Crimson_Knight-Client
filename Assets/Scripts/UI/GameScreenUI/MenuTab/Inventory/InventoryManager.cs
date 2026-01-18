@@ -4,6 +4,9 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
+using UnityEngine.Events;
+using System;
+using Assets.Scripts.Networking;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -26,13 +29,37 @@ public class InventoryManager : MonoBehaviour
     private const int SIZE_INVEN = 48;
     private Coroutine loadRoutine;
 
+    [SerializeField] private Button btnUse;
+    [SerializeField] private Button btnVutBo;
+
+
     private void Awake()
     {
         Instance = this;
+        btnUse?.onClick.AddListener(UseItem);
+        btnVutBo?.onClick.AddListener(VutBoItem);
     }
+
+    private void VutBoItem()
+    {
+        UIManager.Instance.ShowOK("Chưa có tính năng này");
+    }
+
+    private void UseItem()
+    {
+        if(selectedSlot == null)
+        {
+            return;
+        }
+        RequestManager.UseItem(selectedSlot.Item.Id, selectedSlot.Item.GetItemType());
+    }
+
+    public static bool isLoadImediatetly = true;
 
     private void OnEnable()
     {
+        isLoadImediatetly = true;
+
         if (infoPanelRoot != null)
             infoPanelRoot.SetActive(false);
 
@@ -70,6 +97,14 @@ public class InventoryManager : MonoBehaviour
         LoadFromPlayerInventory();
     }
 
+    private void Update()
+    {
+        if (isLoadImediatetly)
+        {
+            LoadFromPlayerInventory();
+        }
+    }
+
     private void InitSlots()
     {
         slots.Clear();
@@ -85,6 +120,7 @@ public class InventoryManager : MonoBehaviour
 
     public void LoadFromPlayerInventory()
     {
+        isLoadImediatetly = false;
         foreach (var slot in slots)
             slot.Clear();
 
@@ -176,25 +212,7 @@ public class InventoryManager : MonoBehaviour
 
     private void UpdateUseButtonText(BaseItem item)
     {
-        if (item == null)
-        {
-            useButtonText.text = "";
-            return;
-        }
-
-        switch (item.GetItemType())
-        {
-            case ItemType.Equipment:
-                useButtonText.text = "Trang bị";
-                break;
-            case ItemType.Consumable:
-            case ItemType.Material:
-                useButtonText.text = "Sử dụng";
-                break;
-            default:
-                useButtonText.text = "Dùng";
-                break;
-        }
+        useButtonText.text = "Sử dụng";
     }
 
     public void ClearInfoCur()
@@ -209,6 +227,6 @@ public class InventoryManager : MonoBehaviour
         infoIconCur.sprite = null;
         infoNameCur.text = "";
         infoDescriptionCur.text = "";
-        useButtonText.text = "";
+        //useButtonText.text = "";
     }
 }

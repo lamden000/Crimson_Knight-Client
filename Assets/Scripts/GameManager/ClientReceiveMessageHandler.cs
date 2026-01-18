@@ -467,6 +467,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             }
             Player.InventoryItems[i] = item;
         }
+        InventoryManager.isLoadImediatetly = true;
     }
 
     public static void DropItem(Message msg)
