@@ -20,7 +20,17 @@ public class Monster : BaseObject
         monster.Level = monster.Template.Level;
         GameObject nameTag = SpawnManager.GI().SpawnDisplayBaseObjectNamePrefab(monster.Name);
         nameTag.transform.SetParent(monster.transform);
-        nameTag.transform.localPosition = new Vector3(0, monster.GetTopOffsetY(), 0);
+
+        float offsetY = 10;
+        if(templateId == 0 || templateId == 4)
+        {
+            offsetY = 0;
+        }
+        else if(templateId == 7)
+        {
+            offsetY = 20;
+        }
+        nameTag.transform.localPosition = new Vector3(0, monster.GetTopOffsetY() + offsetY, 0);
         monster.SetNameTag(nameTag);
         return monster;
     }

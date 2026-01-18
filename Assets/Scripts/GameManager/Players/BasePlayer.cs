@@ -13,7 +13,7 @@ namespace Assets.Scripts.GameManager.Players
         private Character characterPrefab;
         private PlayerAnimationController playerAnimationControllerPrefab;
 
-        public readonly ItemEquipment[] WearingItems = new ItemEquipment[3];
+        public readonly ItemEquipment[] WearingItems = new ItemEquipment[4];
 
         public void SetupPrefab(bool isMainPlayer = false)
         {
@@ -223,6 +223,14 @@ namespace Assets.Scripts.GameManager.Players
                 partQuan = TemplateManager.ItemEquipmentTemplates[quan.TemplateId].PartId;
             }
             playerAnimationControllerPrefab.LoadPart(CharacterPart.Legs, partQuan);
+
+            ItemEquipment wing = GetWing();
+            int partWing = -1;
+            if (wing != null)
+            {
+                partWing = TemplateManager.ItemEquipmentTemplates[wing.TemplateId].PartId;
+            }
+            playerAnimationControllerPrefab.LoadPart(CharacterPart.Wings, partWing);
         }
 
 
@@ -239,6 +247,11 @@ namespace Assets.Scripts.GameManager.Players
         public ItemEquipment GetQuan()
         {
             return this.WearingItems[(int)EquipmentType.Pants];
+        }
+
+        public ItemEquipment GetWing()
+        {
+            return this.WearingItems[(int)EquipmentType.Wing];
         }
 
 

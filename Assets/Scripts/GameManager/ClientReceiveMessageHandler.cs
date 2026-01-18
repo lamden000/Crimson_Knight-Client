@@ -402,7 +402,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int playerId = msg.ReadInt();
         byte size = msg.ReadByte();
         ItemEquipment[] items = new ItemEquipment[size];
-        if(size != 3)
+        if(size != 4)
         {
             Debug.LogError("PlayerWearingItems quen sua roi kia");
             return;

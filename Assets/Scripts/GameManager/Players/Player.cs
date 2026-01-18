@@ -306,6 +306,10 @@ public class Player : BasePlayer
         }
         else
         {
+            if(skillId == -1)
+            {
+                return;
+            }
             Debug.Log("objfocus: " + target.GetX() + "-" + target.GetY());
             Skill skillUse = Skills[skillId];
             if (skillUse != null && skillUse.CanAttack())
