@@ -190,9 +190,41 @@ public class InventoryManager : MonoBehaviour
         infoIconCur.enabled = true;
         infoIconCur.sprite = slot.GetSprite();
         infoNameCur.text = item.GetName();
-        infoDescriptionCur.text =
-            $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
 
+        if(item.GetItemType() == ItemType.Equipment)
+        {
+            var gender = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Gender;
+            var classType = TemplateManager.ItemEquipmentTemplates[item.TemplateId].ClassType;
+            var className = "Chiến binh";
+            if(classType == ClassType.SAT_THU)
+            {
+                className = "Sát thủ";
+            }
+            else if(classType == ClassType.PHAP_SU)
+            {
+                className = "Pháp sư";
+            }
+            else if(classType == ClassType.XA_THU)
+            {
+                className = "Xạ thủ";
+            }
+
+            if (gender != Gender.Unisex)
+            {
+                infoDescriptionCur.text = $"Giới tính: {gender.ToString()}\n";
+            }
+            if(classType != ClassType.NONE)
+            {
+                infoDescriptionCur.text = $"Phái: {className}\n";
+            }
+            infoDescriptionCur.text+=
+          $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
+        }
+        else
+        {
+            infoDescriptionCur.text =
+          $"Cấp yêu cầu: {item.GetLevelRequired()}\n{item.GetDescription()}";
+        }
         if (item.GetItemType() == ItemType.Equipment)
         {
             var stats = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Stats;

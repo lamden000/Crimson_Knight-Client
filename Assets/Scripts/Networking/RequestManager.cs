@@ -83,5 +83,14 @@ namespace Assets.Scripts.Networking
             msg.WriteBool(isOk);
             Session.AddMessage(msg);
         }
+
+        public static void BuyItem(int templateId, ItemType type, int quantity)
+        {
+            Message msg = new Message(MessageId.CLIENT_BUY_ITEM);
+            msg.WriteInt(templateId);
+            msg.WriteByte((byte)type);
+            msg.WriteInt(quantity);
+            Session.AddMessage(msg);
+        }
     }
 }

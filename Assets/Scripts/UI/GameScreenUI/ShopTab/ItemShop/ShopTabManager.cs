@@ -4,6 +4,8 @@ using TMPro;
 using System.Collections.Generic;
 using Assets.Scripts;
 using System;
+using UnityEngine.Events;
+using Assets.Scripts.Networking;
 
 public class ShopTabManager : BaseUIManager
 {
@@ -25,6 +27,10 @@ public class ShopTabManager : BaseUIManager
     private ShopItemSlot selectedSlot;
 
     private const int SIZE_INVEN = 48;
+    [SerializeField] private Button btnBuy;
+    [SerializeField] private TMP_InputField txtQuantity;
+    [SerializeField] private TextMeshProUGUI txtGold;
+
 
     private void Awake()
     {
@@ -32,6 +38,50 @@ public class ShopTabManager : BaseUIManager
 
         if (btnClose != null)
             btnClose.onClick.AddListener(Close);
+        btnBuy?.onClick.AddListener(BuyItem);
+    }
+    private void Update()
+    {
+        if (txtGold != null && ClientReceiveMessageHandler.Player != null)
+        {
+            txtGold.text = Helpers.MoneyToString(ClientReceiveMessageHandler.Player.Gold);
+        }
+    }
+
+    private void BuyItem()
+    {
+        if(selectedSlot == null || selectedSlot.Item == null)
+        {
+            ClientReceiveMessageHandler.CenterNotifications.Enqueue("Vui lòng chọn vật phẩm để mua");
+            return;
+        }
+
+        if(txtQuantity == null || string.IsNullOrEmpty(txtQuantity.text))
+        {
+            ClientReceiveMessageHandler.CenterNotifications.Enqueue("Vui lòng nhập số lượng");
+            return;
+        }
+
+        try
+        {
+            int quantity = int.Parse(txtQuantity.text);
+            if (quantity < 0)
+            {
+                ClientReceiveMessageHandler.CenterNotifications.Enqueue("Số lượng phải > 0");
+                return;
+            }
+
+            if(quantity > 1000)
+            {
+                ClientReceiveMessageHandler.CenterNotifications.Enqueue("Số lượng phải <=1000");
+                return;
+            }
+            RequestManager.BuyItem(selectedSlot.Item.TemplateId, selectedSlot.Item.GetItemType(), quantity);
+        }
+        catch 
+        {
+            ClientReceiveMessageHandler.CenterNotifications.Enqueue("Vui lòng nhập số lượng hợp lệ");
+        }
     }
 
     private void OnEnable()
@@ -40,6 +90,7 @@ public class ShopTabManager : BaseUIManager
             InitSlots();
 
         LoadItems();
+        txtQuantity.text = "1";
     }
 
     private void InitSlots()
@@ -136,10 +187,46 @@ public class ShopTabManager : BaseUIManager
         infoIconCur.sprite = slot.GetSprite();
         infoNameCur.text = item.GetName();
 
-        infoDescriptionCur.text =
+        if (item.GetItemType() == ItemType.Equipment)
+        {
+            var gender = TemplateManager.ItemEquipmentTemplates[item.TemplateId].Gender;
+            var classType = TemplateManager.ItemEquipmentTemplates[item.TemplateId].ClassType;
+            var className = "Chiến binh";
+            if (classType == ClassType.SAT_THU)
+            {
+                className = "Sát thủ";
+            }
+            else if (classType == ClassType.PHAP_SU)
+            {
+                className = "Pháp sư";
+            }
+            else if (classType == ClassType.XA_THU)
+            {
+                className = "Xạ thủ";
+            }
+
+            if (gender != Gender.Unisex)
+            {
+                infoDescriptionCur.text = $"Giới tính: {gender.ToString()}\n";
+            }
+            if (classType != ClassType.NONE)
+            {
+                infoDescriptionCur.text = $"Phái: {className}\n";
+            }
+            infoDescriptionCur.text +=
+             $"Giá bán: {slot.Price} vàng\n" +
+             $"Cấp yêu cầu: {item.GetLevelRequired()}\n" +
+             $"{item.GetDescription()}";
+        }
+        else
+        {
+            infoDescriptionCur.text =
             $"Giá bán: {slot.Price} vàng\n" +
             $"Cấp yêu cầu: {item.GetLevelRequired()}\n" +
             $"{item.GetDescription()}";
+        }
+
+        
 
         if (item.GetItemType() == ItemType.Equipment)
         {
@@ -170,7 +257,7 @@ public class ShopTabManager : BaseUIManager
         infoIconCur.sprite = null;
         infoNameCur.text = "";
         infoDescriptionCur.text = "";
-        useButtonText.text = "";
+        useButtonText.text = "Mua";
     }
 
     public void Close()
