@@ -20,6 +20,7 @@ namespace Assets.Scripts.Networking
 
 
             LoginRequest req = new LoginRequest { Username = username, Password = password };
+            req.Version = "e8eb7ee5-3abc-4da5-8869-15cd10cf3b23";
             string jsonBody = JsonUtility.ToJson(req);
 
             using (UnityWebRequest request = new UnityWebRequest(NetworkingUtil.GetLoginApiUrl(), "POST"))

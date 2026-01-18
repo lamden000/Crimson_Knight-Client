@@ -10,5 +10,6 @@ namespace Assets.Scripts.Networking.Dtos
     {
         public string Username;
         public string Password;
+        public string Version;
     }
 }
