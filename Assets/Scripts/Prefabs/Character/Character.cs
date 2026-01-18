@@ -44,6 +44,10 @@ public class Character : MonoBehaviour
 
     public void AniTakeDamage()
     {
+        if (m_Controller == null)
+        {
+            return;
+        }
         m_Controller.HandleGetHit();        
     }
 

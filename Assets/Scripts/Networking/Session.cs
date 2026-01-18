@@ -107,10 +107,10 @@ namespace Assets.Scripts.Networking
                 {
                     Debug.LogError($"Lỗi xử lý tin nhắn: {ex.Message}");
                 }
-                finally
-                {
-                    msg.Close();
-                }
+                //finally
+                //{
+                //    msg.Close();
+                //}
             }
         }
 
