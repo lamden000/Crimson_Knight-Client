@@ -315,7 +315,7 @@ public class Player : BasePlayer
                 if (target.IsOtherPlayer())
                 {
                     OtherPlayer otherPlayer = (OtherPlayer)target;
-                    if (otherPlayer.PkType == this.PkType)
+                    if (otherPlayer.PkType == this.PkType || otherPlayer.PkType == PkType.None)
                     {
                         Debug.Log("cung type pk");
                         return;
@@ -334,7 +334,7 @@ public class Player : BasePlayer
                         if (otherPlayer.IsDie())
                             continue;
 
-                        if (otherPlayer.PkType == this.PkType)
+                        if (otherPlayer.PkType == this.PkType || otherPlayer.PkType == PkType.None)
                             continue;
 
                         int dist = MathUtil.Distance(this, otherPlayer);
