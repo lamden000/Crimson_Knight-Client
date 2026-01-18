@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using Assets.Scripts.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -90,7 +91,7 @@ public class RegisterScreenUIManager : BaseUIManager
         Debug.Log($"[RegisterScreen] Gender changed to: {genderNames[(int)currentGender]}");
     }
 
-    private void OnClickRegister()
+    private async void OnClickRegister()
     {
         string username = inputUsername.text;
         string password = inputPassword.text;
@@ -116,6 +117,14 @@ public class RegisterScreenUIManager : BaseUIManager
         Debug.Log($"Giới tính: {genderNames[(int)currentGender]} ({(int)currentGender})");
         Debug.Log("===============");
 
+        RegisterRequest request = new RegisterRequest()
+        {
+            UserName = username,
+            Password = password,
+            ClassType = currentClass,
+            Gender = currentGender
+        };
+        await RegisterService.Register(request);
         // TODO: Gửi request đăng ký lên server
     }
 

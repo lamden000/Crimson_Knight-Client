@@ -13,6 +13,11 @@ namespace Assets.Scripts.Utils
             return GetBaseUri() + ":" + GetPortHttp() + "/login";
         }
 
+        public static string GetRegisterApiUrl()
+        {
+            return GetBaseUri() + ":" + GetPortHttp() + "/register";
+        }
+
         public static string GetLoadTemplateApiUrl()
         {
             return GetBaseUri() + ":" + GetPortHttp() + "/load-templates";
@@ -22,6 +27,7 @@ namespace Assets.Scripts.Utils
         public static string GetBaseUri()
         {
            return "http://localhost";
+          // return "http://103.67.199.174";
         }
 
         public static int GetPortHttp()
