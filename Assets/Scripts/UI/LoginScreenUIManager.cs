@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,12 +11,20 @@ public class LoginScreenUIManager : BaseUIManager
     private TMP_InputField inputPassword;
     [SerializeField]
     private Button btnLogin;
+    [SerializeField]
+    private Button btnRegister;
 
 
     void Awake()
     {
         btnLogin.onClick.RemoveAllListeners();
         btnLogin.onClick.AddListener(onClickLogin);
+
+        if (btnRegister != null)
+        {
+            btnRegister.onClick.RemoveAllListeners();
+            btnRegister.onClick.AddListener(onClickRegister);
+        }
     }
 
     private async void onClickLogin()
@@ -38,5 +46,11 @@ public class LoginScreenUIManager : BaseUIManager
 
         Debug.Log("[UIManager] SendLoginRequest");
         await LoginService.SendLoginRequest(username, password);
+    }
+
+    private void onClickRegister()
+    {
+        Debug.Log("[UIManager] Register button clicked - Switch to Register Screen");
+        UIManager.Instance.EnableRegisterScreen();
     }
 }

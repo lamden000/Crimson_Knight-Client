@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -151,6 +151,12 @@ namespace Assets.Scripts.GameManager.Players
 
             }
             playerAnimation.SetAnimation(dirToTarget, State.Attack);
+            
+            // Phát âm thanh tấn công dựa trên class
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAttackSound(this.ClassType);
+            }
         }
 
 
