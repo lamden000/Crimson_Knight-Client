@@ -1,4 +1,4 @@
-﻿using Assets.Scripts;
+using Assets.Scripts;
 using Assets.Scripts.Map;
 using Assets.Scripts.Networking;
 using System;
@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private DialogFactory dialogFactory;
 
     [SerializeField] private LoginScreenUIManager loginScreenUIManager;
+    [SerializeField] private RegisterScreenUIManager registerScreenUIManager;
     [SerializeField] public GameScreenUIManager gameScreenUIManager;
     [SerializeField] private LoadScreenUIManager loadScreenUIManager;
 
@@ -70,6 +71,8 @@ public class UIManager : MonoBehaviour
         UIManager.CurrentScreenType = ScreenType.LoginScreen;
 
         this.loginScreenUIManager.ShowUI();
+        if (this.registerScreenUIManager != null)
+            this.registerScreenUIManager.HideUI();
         this.loadScreenUIManager.HideUI();
         this.gameScreenUIManager.HideUI();
 
@@ -85,12 +88,34 @@ public class UIManager : MonoBehaviour
         Debug.Log("[UIManager] DisableLoginScreen");
     }
 
+    public void EnableRegisterScreen()
+    {
+        UIManager.CurrentScreenType = ScreenType.RegisterScreen;
+
+        if (this.registerScreenUIManager != null)
+            this.registerScreenUIManager.ShowUI();
+        this.loginScreenUIManager.HideUI();
+        this.loadScreenUIManager.HideUI();
+        this.gameScreenUIManager.HideUI();
+
+        Debug.Log("[UIManager] EnableRegisterScreen");
+    }
+
+    public void DisableRegisterScreen()
+    {
+        if (this.registerScreenUIManager != null)
+            this.registerScreenUIManager.HideUI();
+        Debug.Log("[UIManager] DisableRegisterScreen");
+    }
+
     public void EnableLoadScreen()
     {
         UIManager.CurrentScreenType = ScreenType.LoadScreen;
 
         Debug.Log(loginScreenUIManager.gameObject.name);
         this.loginScreenUIManager.HideUI();
+        if (this.registerScreenUIManager != null)
+            this.registerScreenUIManager.HideUI();
         this.loadScreenUIManager.ShowUI();
         this.gameScreenUIManager.HideUI();
 
@@ -107,12 +132,12 @@ public class UIManager : MonoBehaviour
     {
         this.gameScreenUIManager.ShowUI();
         this.loginScreenUIManager.HideUI();
+        if (this.registerScreenUIManager != null)
+            this.registerScreenUIManager.HideUI();
         this.loadScreenUIManager.HideUI();
 
         Debug.Log("[UIManager] EnableGameScreen");
-        Debug.Log("[UIManager] Play Game Music");
-
-        AudioManager.Instance?.PlayGameMusic();
+        // Map music sẽ được phát tự động khi load map thông qua MapManager
     }
 
     public void DisableGameScreen()

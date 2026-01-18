@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,12 +25,29 @@ namespace Assets.Scripts.Map
         }
         public static void LoadMapById(int id, Action onLoadComplete = null)
         {
-            _gridmapLoader.LoadMapByName($"map{id}.json", "Default", onLoadComplete);
+            MapId = (short)id;
+            _gridmapLoader.LoadMapByName($"map{id}.json", "Default", () =>
+            {
+                // Tự động phát nhạc cho map khi load xong
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayMapMusic(id);
+                }
+                onLoadComplete?.Invoke();
+            });
         }
 
         public static void LoadMapByName(string name, Action onLoadComplete = null)
         {
-            _gridmapLoader.LoadMapByName($"{name}.json", "Default", onLoadComplete);
+            _gridmapLoader.LoadMapByName($"{name}.json", "Default", () =>
+            {
+                // Nếu đã có MapId được set trước đó, phát nhạc cho map đó
+                if (MapId > 0 && AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayMapMusic(MapId);
+                }
+                onLoadComplete?.Invoke();
+            });
         }
     }
 }
