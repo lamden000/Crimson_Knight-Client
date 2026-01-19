@@ -79,6 +79,9 @@ public class AudioManager : MonoBehaviour
 
         // Build dictionary từ list để tìm kiếm nhanh hơn
         BuildMapMusicDictionary();
+
+        // Load saved settings
+        LoadSettings();
     }
 
     private void BuildMapMusicDictionary()
@@ -95,7 +98,6 @@ public class AudioManager : MonoBehaviour
                 mapAudioDictionary[entry.mapId] = entry;
             }
         }
-        Debug.Log($"[AudioManager] Loaded {mapAudioDictionary.Count} map audio entries.");
     }
 
     /// <summary>
@@ -109,9 +111,10 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        musicSource.volume = loginMusicVolume;
+        // Load volume từ settings (background music volume)
+        float bgMusicVolume = PlayerPrefs.GetFloat("BackgroundMusicVolume", 1.0f);
+        musicSource.volume = bgMusicVolume;
         PlayMusic(loginMusic);
-        Debug.Log("[AudioManager] Playing login music");
     }
 
     /// <summary>
@@ -148,7 +151,6 @@ public class AudioManager : MonoBehaviour
                 {
                     mapMusicSource.volume = mapMusicVolume;
                     PlayMapMusicClip(entry.musicClip);
-                    Debug.Log($"[AudioManager] Playing map background music for Map ID: {mapId}");
                 }
             }
             else
@@ -167,7 +169,6 @@ public class AudioManager : MonoBehaviour
                 {
                     mapNoiseSource.volume = mapNoiseVolume;
                     PlayMapNoiseClip(entry.noiseClip);
-                    Debug.Log($"[AudioManager] Playing map noise/ambient audio for Map ID: {mapId}");
                 }
             }
             else
@@ -537,6 +538,48 @@ public class AudioManager : MonoBehaviour
         {
             mapNoiseSource.volume = volume;
         }
+    }
+
+    /// <summary>
+    /// Đặt volume cho background music (map music + login music) - dùng cho settings
+    /// </summary>
+    /// <param name="volume">Volume từ 0 đến 1</param>
+    public void SetBackgroundMusicVolume(float volume)
+    {
+        volume = Mathf.Clamp01(volume);
+        // Áp dụng cho cả map music và login music
+        SetMapMusicVolume(volume);
+        if (musicSource != null)
+        {
+            musicSource.volume = volume;
+        }
+    }
+
+    /// <summary>
+    /// Đặt volume cho noise và effects (map noise + attack effects) - dùng cho settings
+    /// </summary>
+    /// <param name="volume">Volume từ 0 đến 1</param>
+    public void SetNoiseAndEffectsVolume(float volume)
+    {
+        volume = Mathf.Clamp01(volume);
+        SetMapNoiseVolume(volume);
+        SetAttackEffectVolume(volume);
+    }
+
+    /// <summary>
+    /// Load settings từ PlayerPrefs
+    /// </summary>
+    public void LoadSettings()
+    {
+        const string PREFS_BACKGROUND_MUSIC_VOLUME = "BackgroundMusicVolume";
+        const string PREFS_NOISE_AND_EFFECTS_VOLUME = "NoiseAndEffectsVolume";
+
+        float bgMusicVolume = PlayerPrefs.GetFloat(PREFS_BACKGROUND_MUSIC_VOLUME, 1.0f);
+        float noiseAndEffectsVolume = PlayerPrefs.GetFloat(PREFS_NOISE_AND_EFFECTS_VOLUME, 1.0f);
+
+        SetBackgroundMusicVolume(bgMusicVolume);
+        SetNoiseAndEffectsVolume(noiseAndEffectsVolume);
+
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Networking;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Utils;
 using System;
 using TMPro;
@@ -10,12 +10,20 @@ public class GameScreenUIManager : BaseUIManager
     [SerializeField] private MenuTabManager menuTabManager;
     [SerializeField] private TalkingUIManager talkingUIManager;
     [SerializeField] private ShopTabManager shopTabManager;
+    [SerializeField] private SettingsPanelUIManager settingsPanelUIManager;
 
     [SerializeField] private TextMeshProUGUI txtCenterNotification;
     private static long startTimeShowTxtCenterNotification;
 
     private void Update()
     {
+        // Xử lý ESC key để mở/đóng settings panel
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+     
+            ToggleSetting();
+        }
+
         if(SystemUtil.CurrentTimeMillis() - startTimeShowTxtCenterNotification > 2000)
         {
             if (ClientReceiveMessageHandler.CenterNotifications.TryDequeue(out var msg))
@@ -30,6 +38,24 @@ public class GameScreenUIManager : BaseUIManager
         }
     }
 
+    public void ToggleSetting()
+    {
+        if (settingsPanelUIManager != null)
+        {
+            if (settingsPanelUIManager.gameObject.activeSelf)
+            {
+                settingsPanelUIManager.HideUI();
+            }
+            else
+            {
+                settingsPanelUIManager.ShowUI();
+            }
+        }
+        else         {
+            Debug.LogWarning("SettingsPanelUIManager is not assigned in GameScreenUIManager.");
+        }
+    }
+
     public override void ShowUI()
     {
         base.ShowUI();
@@ -37,6 +63,10 @@ public class GameScreenUIManager : BaseUIManager
         menuTabManager.HideUI();
         talkingUIManager.HideUI();
         shopTabManager.HideUI();
+        if (settingsPanelUIManager != null)
+        {
+            settingsPanelUIManager.HideUI();
+        }
     }
 
     public void ShowMenuTab()
