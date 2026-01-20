@@ -173,7 +173,7 @@ public class SkillObject : MonoBehaviour
 
     IEnumerator Homing()
     {
-        while (target != null && Vector3.Distance(transform.position, target.position) > 1f)
+        while (target != null && Vector3.Distance(transform.position, target.position) > 10f)
         {
             Vector2 dir = target.position - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

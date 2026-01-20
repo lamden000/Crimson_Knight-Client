@@ -31,7 +31,7 @@ MonoBehaviour:
   aftermathSortingOrder: 5
   explosionRotatesWithMovement: 1
   autoExplosionTime: 1000
-  speed: 300
+  speed: 400
   explosionDelay: 0
   canOverrideDuration: 0
   scale: {x: 1, y: 1, z: 1}

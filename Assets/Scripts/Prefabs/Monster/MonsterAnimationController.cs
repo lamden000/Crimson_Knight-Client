@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MonsterPrefab))]
@@ -36,9 +36,14 @@ public class MonsterAnimationController : MonoBehaviour
         Sprite idleSprite = database.GetSprites(monster.ImageId, MonsterState.Idle)[0];
         Bounds spriteBounds = idleSprite.bounds;
 
-        boxCollider.size = spriteBounds.size;
+        // Đặt size: giữ nguyên x, giảm y xuống 0.3
+        boxCollider.size = new Vector2(spriteBounds.size.x*0.5f,spriteBounds.size.y* 0.3f);
 
-        boxCollider.offset = spriteBounds.center;
+        // Dịch collider xuống đáy của sprite
+        // Offset y = min.y của sprite + một nửa chiều cao collider (0.15)
+        // Offset x giữ nguyên ở center của sprite
+        float colliderCenterY = spriteBounds.min.y + boxCollider.size.y/2;
+        boxCollider.offset = new Vector2(spriteBounds.center.x, colliderCenterY);
     }
 
     void Update()
