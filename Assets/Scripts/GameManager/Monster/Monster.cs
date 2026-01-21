@@ -7,12 +7,13 @@ using UnityEngine;
 public class Monster : BaseObject
 {
     public MonsterTemplate Template;
-
+    public MonsterMovementController MonsterMovementController;
 
     public static Monster Create(int id, short x, short y, int templateId)
     {
         GameObject gameObject = SpawnManager.GI().SpawnMonsterPrefab(x, y, templateId);
         Monster monster = gameObject.AddComponent<Monster>();
+        monster.MonsterMovementController = gameObject.GetComponent<MonsterMovementController>();
         monster.SetPosition(x, y);
         monster.Id = id;
         monster.Template = TemplateManager.MonsterTemplates[templateId];
@@ -30,6 +31,10 @@ public class Monster : BaseObject
         {
             offsetY = 20;
         }
+        else if (templateId == 9)
+        {
+            offsetY = 120;
+        }
         nameTag.transform.localPosition = new Vector3(0, monster.GetTopOffsetY() + offsetY, 0);
         monster.SetNameTag(nameTag);
         return monster;
@@ -37,6 +42,11 @@ public class Monster : BaseObject
 
     public override void AutoMoveToXY(int x, int y)
     {
+    }
+
+    public void MoveToTarget(Transform target, float stopRange, float arrivalDistance = 10f)
+    {
+        MonsterMovementController.MoveToTarget(target, stopRange, arrivalDistance);
     }
   
     public override bool IsMonster()

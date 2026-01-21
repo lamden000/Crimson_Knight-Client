@@ -188,7 +188,7 @@ public abstract class MovementControllerBase : MonoBehaviour
     }
 
     // Build path to a dynamic target (Transform) and follow it until within stopRange of the target.
-    protected IEnumerator MoveToTarget(Transform target, float stopRange, float arrivalDistance = 10f)
+    public IEnumerator MoveToTarget(Transform target, float stopRange, float arrivalDistance = 10f)
     {
         if (target == null) yield break;
         if (!EnsurePathfinder()) yield break;

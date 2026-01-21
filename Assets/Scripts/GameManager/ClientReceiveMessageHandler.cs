@@ -570,4 +570,42 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     {
         UIManager.Instance.gameScreenUIManager.ShowShopTab();
     }
+
+    public static void MonsterMove(Message msg)
+    {
+        if(Player == null)
+        {
+            return;
+        }
+        int monsterId = msg.ReadInt();
+        short x = msg.ReadShort();
+        short y = msg.ReadShort();
+        int playerId = msg.ReadInt();
+
+        BaseObject target = null;
+        if(Player.Id == playerId)
+        {
+            target = Player;
+        }
+        else
+        {
+            OtherPlayers.TryGetValue(playerId, out var value);
+            target = value;
+        }
+
+        if (Monsters.TryGetValue(monsterId, out var monster))
+        {
+            if (monster.IsDie())
+            {
+                return;
+            }
+            if(target!= null)
+            {
+                monster.StartCoroutine(SystemUtil.Delay(0, () =>
+                {
+                    monster.MoveToTarget(target.transform, 100);
+                }));
+            }
+        }
+    }
 }

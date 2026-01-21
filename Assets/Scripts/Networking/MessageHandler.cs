@@ -107,6 +107,9 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_SHOP_INFO:
                     ClientReceiveMessageHandler.ShopInfo(msg);
                     break;
+                case MessageId.SERVER_MONSTER_MOVE:
+                    ClientReceiveMessageHandler.MonsterMove(msg);
+                    break;
                 default:
                     break;
             }
