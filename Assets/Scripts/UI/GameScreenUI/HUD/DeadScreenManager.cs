@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Networking;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class DeadScreenManager : MonoBehaviour
@@ -19,11 +20,11 @@ public class DeadScreenManager : MonoBehaviour
 
     private void OnClickRespawn()
     {
-        Debug.Log("Đã nhấn: Respawn");
+        RequestManager.Revive(true);
     }
 
     private void OnClickRecall()
     {
-        Debug.Log("Đã nhấn: Recall");
+        RequestManager.Revive(false);
     }
 }

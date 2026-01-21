@@ -27,6 +27,8 @@ public class HUDManager : BaseUIManager
     [SerializeField]
     private TextMeshProUGUI txtPtLevel;
 
+    [SerializeField] private GameObject deadScreen;
+
 
     void Start()
     {
@@ -50,6 +52,20 @@ public class HUDManager : BaseUIManager
             {
                 isLoadSkillImediatetly = false;
                 LoadSkills();
+            }
+            if (ClientReceiveMessageHandler.Player.IsDie())
+            {
+                if (!deadScreen.activeSelf)
+                {
+                    deadScreen.SetActive(true);
+                }
+            }
+            else
+            {
+                if (deadScreen.activeSelf)
+                {
+                    deadScreen.SetActive(false);
+                }
             }
         }
     }

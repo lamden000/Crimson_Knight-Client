@@ -105,5 +105,13 @@ namespace Assets.Scripts.Networking
             msg.WriteInt(templateId);
             Session.AddMessage(msg);
         }
+
+
+        public static void Revive(bool isRevive)
+        {
+            Message msg = new Message(MessageId.CLIENT_REVIVE);
+            msg.WriteBool(isRevive);
+            Session.AddMessage(msg);
+        }
     }
 }

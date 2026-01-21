@@ -95,7 +95,7 @@ public class Player : BasePlayer
 
     private int GetSkillIdCanAttack()
     {
-        foreach(var skill in Skills)
+        foreach (var skill in Skills)
         {
             if (skill.IsLearned && skill.CanAttack())
             {
@@ -170,7 +170,7 @@ public class Player : BasePlayer
     void UpdateTargetLogic()
     {
         int maxTargetDistance = 300;
-   
+
         if (objFocus == null || MathUtil.Distance(this, objFocus) > maxTargetDistance || (objFocus.IsMonster() && objFocus.IsDie()))
         {
             BaseObject newTarget = FindNearestTarget();
@@ -247,7 +247,7 @@ public class Player : BasePlayer
 
         foreach (var op in ClientReceiveMessageHandler.OtherPlayers.Values)
             Check(op);
-        foreach(var item in ClientReceiveMessageHandler.ItemPicks.Values)
+        foreach (var item in ClientReceiveMessageHandler.ItemPicks.Values)
             Check(item);
 
         return result;
@@ -277,7 +277,7 @@ public class Player : BasePlayer
         }
         else if (target.IsItemPick())
         {
-            if(SystemUtil.CurrentTimeMillis() - startTimePickItem > 500)
+            if (SystemUtil.CurrentTimeMillis() - startTimePickItem > 500)
             {
                 Debug.Log("item pick " + ((ItemPick)target).IdItemPick);
                 startTimePickItem = SystemUtil.CurrentTimeMillis();
@@ -290,7 +290,7 @@ public class Player : BasePlayer
         }
         else
         {
-            if(skillId == -1)
+            if (skillId == -1)
             {
                 return;
             }
@@ -312,7 +312,11 @@ public class Player : BasePlayer
                 int range = skillUse.GetRange();
 
                 List<BaseObject> targets = new List<BaseObject>();
-                if (target.IsOtherPlayer())
+                if (this.PkType == PkType.None && target.IsOtherPlayer())
+                {
+                    return;
+                }
+                if (target.IsOtherPlayer() && this.PkType != PkType.None)
                 {
                     OtherPlayer otherPlayer = (OtherPlayer)target;
                     if (otherPlayer.PkType == this.PkType || otherPlayer.PkType == PkType.None)
@@ -326,6 +330,10 @@ public class Player : BasePlayer
                 if (remainSlot > 0)
                 {
                     int ranPlayer = MathUtil.RandomInt(0, remainSlot);
+                    if(this.PkType == PkType.None)
+                    {
+                        ranPlayer = 0;
+                    }
                     foreach (var otherPlayer in ClientReceiveMessageHandler.OtherPlayers.Values)
                     {
                         if (ranPlayer <= 0)
@@ -391,7 +399,7 @@ public class Player : BasePlayer
                 this.CurrentMp -= skillUse.GetMpLost();
                 Debug.Log("Send attack " + skillUse.TemplateId);
 
-                foreach(var t in targets)
+                foreach (var t in targets)
                 {
                     SpawnManager.GI().SpawnEffectPrefab(skillUse.GetTemplate().EffectName, this.transform, t.transform);
                 }
@@ -424,11 +432,11 @@ public class Player : BasePlayer
 
     public BaseItem GetItemInventoty(int templateId, ItemType type)
     {
-        foreach(var item in this.InventoryItems)
+        foreach (var item in this.InventoryItems)
         {
-            if(item != null)
+            if (item != null)
             {
-                if(item.TemplateId == templateId && item.GetItemType() == type)
+                if (item.TemplateId == templateId && item.GetItemType() == type)
                 {
                     return item;
                 }
