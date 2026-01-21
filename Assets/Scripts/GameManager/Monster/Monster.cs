@@ -8,7 +8,7 @@ public class Monster : BaseObject
 {
     public MonsterTemplate Template;
     public MonsterMovementController MonsterMovementController;
-
+    public bool IsBoos;
     public static Monster Create(int id, short x, short y, int templateId)
     {
         GameObject gameObject = SpawnManager.GI().SpawnMonsterPrefab(x, y, templateId);
@@ -34,9 +34,12 @@ public class Monster : BaseObject
         else if (templateId == 9)
         {
             offsetY = 120;
+            //tam thoi lam nhu nay de chay deadline
+            monster.IsBoos = true;
         }
         nameTag.transform.localPosition = new Vector3(0, monster.GetTopOffsetY() + offsetY, 0);
         monster.SetNameTag(nameTag);
+        monster.MonsterMovementController.IsBoss = monster.IsBoos;
         return monster;
     }
 
@@ -46,7 +49,7 @@ public class Monster : BaseObject
 
     public void MoveToTarget(Transform target, float stopRange, float arrivalDistance = 10f)
     {
-        MonsterMovementController.MoveToTarget(target, stopRange, arrivalDistance);
+        //MonsterMovementController.MoveToTarget(target, stopRange, arrivalDistance);
     }
   
     public override bool IsMonster()

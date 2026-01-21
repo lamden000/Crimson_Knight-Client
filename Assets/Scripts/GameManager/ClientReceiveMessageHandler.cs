@@ -65,9 +65,9 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             short y = msg.ReadShort();
             CenterNotifications.Clear();
 
-            foreach(var item in ItemPicks.Values)
+            foreach (var item in ItemPicks.Values)
             {
-                if(item != null)
+                if (item != null)
                 {
                     item.DestroyObject();
                 }
@@ -168,7 +168,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             {
                 continue;
             }
-            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO,classType, gender);
+            OtherPlayer player = OtherPlayer.Create(id, name, xO, yO, classType, gender);
             player.ClassType = classType;
             if (!OtherPlayers.TryAdd(id, player))
             {
@@ -247,7 +247,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         {
             OtherPlayers.TryGetValue(playerId, out var value);
             attacker = value;
-          
+
         }
 
         int targetSize = msg.ReadByte();
@@ -263,7 +263,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 if (ClientReceiveMessageHandler.Player.Id == targetId)
                 {
                     target = ClientReceiveMessageHandler.Player;
-                    
+
                 }
                 else
                 {
@@ -289,7 +289,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                         target = monster;
                         if (attacker != null)
                         {
-                            monster.AniTakeDamage(dam,attacker);
+                            monster.AniTakeDamage(dam, attacker);
                         }
                     }
                 }
@@ -300,7 +300,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 firstTarget = target;
             }
 
-            if(target!=null && attacker != null && attacker.IsOtherPlayer())
+            if (target != null && attacker != null && attacker.IsOtherPlayer())
             {
                 OtherPlayer otherPlayer = attacker as OtherPlayer;
                 SpawnManager.GI().SpawnEffectPrefab(Skill.GetSkillTemplate(skillUseId, otherPlayer.ClassType).EffectName, otherPlayer.transform, target.transform);
@@ -387,13 +387,13 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             if (playerId == Player.Id)
             {
                 target = Player;
-                Player.AniTakeDamage(dam,attacker);
+                Player.AniTakeDamage(dam, attacker);
             }
             else
             {
                 OtherPlayers.TryGetValue(playerId, out var value);
                 target = value;
-                if(value != null)
+                if (value != null)
                 {
                     value.AniTakeDamage(dam, attacker);
                 }
@@ -414,12 +414,12 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int playerId = msg.ReadInt();
         byte size = msg.ReadByte();
         ItemEquipment[] items = new ItemEquipment[size];
-        if(size != 4)
+        if (size != 4)
         {
             Debug.LogError("PlayerWearingItems quen sua roi kia");
             return;
         }
-        for(int i = 0;i< size;i++)
+        for (int i = 0; i < size; i++)
         {
             bool has = msg.ReadBool();
             if (has)
@@ -432,7 +432,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
 
         BasePlayer player = null;
 
-        if(playerId == Player.Id)
+        if (playerId == Player.Id)
         {
             player = Player;
         }
@@ -451,7 +451,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     {
         byte size = msg.ReadByte();
         Player.InventoryItems = new BaseItem[size];
-        for(int i = 0;i< size; i++)
+        for (int i = 0; i < size; i++)
         {
             BaseItem item = null;
             bool has = msg.ReadBool();
@@ -467,7 +467,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 else
                 {
                     int quantity = msg.ReadInt();
-                    if(type == ItemType.Consumable)
+                    if (type == ItemType.Consumable)
                     {
                         item = new ItemConsumable(templateId, quantity);
                     }
@@ -489,7 +489,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         ItemType itemType = (ItemType)msg.ReadByte();
         short x = msg.ReadShort();
         short y = msg.ReadShort();
-        ItemPicks.TryAdd(id,ItemPick.Create(id,templateId,itemType,x,y));
+        ItemPicks.TryAdd(id, ItemPick.Create(id, templateId, itemType, x, y));
     }
 
     public static void PlayerPickItem(Message msg)
@@ -507,7 +507,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 }
                 else
                 {
-                    if(OtherPlayers.TryGetValue(playerId, out var player))
+                    if (OtherPlayers.TryGetValue(playerId, out var player))
                     {
                         player.AniPickupItem(item);
 
@@ -526,7 +526,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
                 ItemPicks.Remove(idItem);
             }
         }
-       
+
     }
 
     public static void RemoveItemPick(Message msg)
@@ -548,7 +548,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
     public static void LoadQuest(Message msg)
     {
         bool hasQuest = msg.ReadBool();
-        if(hasQuest)
+        if (hasQuest)
         {
             int id = msg.ReadInt();
             int quantityCur = msg.ReadInt();
@@ -573,7 +573,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
 
     public static void MonsterMove(Message msg)
     {
-        if(Player == null)
+        if (Player == null)
         {
             return;
         }
@@ -583,7 +583,7 @@ public class ClientReceiveMessageHandler : MonoBehaviour
         int playerId = msg.ReadInt();
 
         BaseObject target = null;
-        if(Player.Id == playerId)
+        if (Player.Id == playerId)
         {
             target = Player;
         }
@@ -599,12 +599,51 @@ public class ClientReceiveMessageHandler : MonoBehaviour
             {
                 return;
             }
-            if(target!= null)
+            if (target != null)
             {
                 monster.StartCoroutine(SystemUtil.Delay(0, () =>
                 {
                     monster.MoveToTarget(target.transform, 100);
                 }));
+            }
+        }
+    }
+
+    public static void MonsterMoveImediatetly(Message msg)
+    {
+        int monsterId = msg.ReadInt();
+        short x = msg.ReadShort();
+        short y = msg.ReadShort();
+        if (Monsters.TryGetValue(monsterId, out var monster))
+        {
+            if (monster.IsDie())
+            {
+                return;
+            }
+            monster.SetPosition(x, y);
+        }
+    }
+
+    public static void EffectInfo(Message msg)
+    {
+        int monsterId = msg.ReadInt();
+        int playerId = msg.ReadInt();
+        string effName = msg.ReadString();
+        if (Monsters.TryGetValue(monsterId, out var monster))
+        {
+            BaseObject target = null;
+            if (playerId == Player.Id)
+            {
+                target = Player;
+            }
+            else
+            {
+                OtherPlayers.TryGetValue(playerId, out var value);
+                target = value;
+            }
+            if (target != null)
+            {
+                SpawnManager.GI().SpawnEffectPrefab(effName, monster.transform,target.transform);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Map;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -28,7 +29,7 @@ public class HUDManager : BaseUIManager
     private TextMeshProUGUI txtPtLevel;
 
     [SerializeField] private GameObject deadScreen;
-
+    [SerializeField] private TextMeshProUGUI txtRemainTime;
 
     void Start()
     {
@@ -40,7 +41,7 @@ public class HUDManager : BaseUIManager
 
         
     }
-
+    public static long RemainTime = 0;//tam thoi nhu nay cho pho ban
     void Update()
     {
         UpdateHPMP();
@@ -66,6 +67,15 @@ public class HUDManager : BaseUIManager
                 {
                     deadScreen.SetActive(false);
                 }
+            }
+
+            if (TemplateManager.MapTemplates[MapManager.MapId].IsPhoBan)
+            {
+                txtRemainTime.text = FormatRemainingTime(RemainTime);
+            }
+            else
+            {
+                txtRemainTime.text = "";
             }
         }
     }
@@ -156,5 +166,18 @@ public class HUDManager : BaseUIManager
         }
         Sprite icon = ResourceManager.SkillIcons[skill.GetTemplate().IconId];
         skillSlots[slot - 1].AssignSkill(skill, icon);
+    }
+
+
+    public static string FormatRemainingTime(long remainingMs)
+    {
+        if (remainingMs <= 0)
+            return "00:00";
+
+        long totalSeconds = remainingMs / 1000;
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
+
+        return $"{minutes:D2}:{seconds:D2}";
     }
 }

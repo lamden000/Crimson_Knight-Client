@@ -110,6 +110,15 @@ namespace Assets.Scripts.Networking
                 case MessageId.SERVER_MONSTER_MOVE:
                     ClientReceiveMessageHandler.MonsterMove(msg);
                     break;
+                case MessageId.SERVER_MONSTER_MOVE_IMEDIATETLY:
+                    ClientReceiveMessageHandler.MonsterMoveImediatetly(msg);
+                    break;
+                case MessageId.SERVER_REMAINING_TIME_INFO:
+                    HUDManager.RemainTime = msg.ReadLong();
+                    break;
+                case MessageId.SERVER_EFFECT_INFO:
+                    ClientReceiveMessageHandler.EffectInfo(msg);
+                    break;
                 default:
                     break;
             }

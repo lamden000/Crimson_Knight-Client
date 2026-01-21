@@ -26,6 +26,10 @@ public class MonsterMovementController : MovementControllerBase
             enabled = false;
             return;
         }
+        if (IsBoss)
+        {
+            return;
+        }
         StartCoroutine(WaitForPathfinderInitialization());
     }
 
@@ -94,6 +98,10 @@ public class MonsterMovementController : MovementControllerBase
 
     void Update()
     {
+        if (IsBoss)
+        {
+            return;
+        }
         // Only perform frame-based MoveAlongPath when not already running the follow coroutine.
         if (isPatrolling && followCoroutine == null && currentPath != null && pathIndex < currentPath.Count)
         {
@@ -150,7 +158,10 @@ public class MonsterMovementController : MovementControllerBase
     }
 
     private TileNode debugEndNote;
-     IEnumerator PatrolRoutine()
+
+    public bool IsBoss { get; internal set; }
+
+    IEnumerator PatrolRoutine()
     {
         isPatrolling = true;
         int failCount = 0; // số lần liên tiếp không tìm được đường
